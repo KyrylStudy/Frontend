@@ -1,0 +1,130 @@
+<!-- main-screen.component.html -->
+
+<!--<svg [style.width]="'100%'" [style.height]="'100%'" style="position: absolute; top: 63.2; left: 1;">
+    <line *ngFor="let item of ecus" 
+          [attr.x1]="200"
+          [attr.y1]="200"
+          [attr.x2]="400" 
+          [attr.y2]="400"
+          style="stroke: black; stroke-width: 2"/>
+</svg>-->
+
+    
+    <!-- Your draggable items will go here -->
+    <div class="main-screen">
+        <div class="button-set">
+            <button class="zoomButton" (click)="zoomIn()">+</button>
+            <button class="zoomButton" (click)="zoomOut()">-</button>
+        </div>
+        <div class="drag-boundary" [style.zoom]="zoomLevel">
+
+           <!-- <svg id="svg-container" class="connestion-line-container">
+                <line class="connestion-line" *ngFor="let connection of ecus " 
+                      [attr.x1]="ecus[0].position.x + ECUwidth/2" 
+                      [attr.y1]="ecus[0].position.y - 20"
+                      [attr.x2]="ecus[1].position.x + ECUwidth/2" 
+                      [attr.y2]="ecus[1].position.y - 20"
+                      style="stroke: black; stroke-width: 2"/>
+            </svg>-->
+            <svg id="svg-container" class="connestion-line-container">
+                <line class="connestion-line" *ngFor="let line of lines" 
+                      [attr.x1]="line.positionFrom.x" 
+                      [attr.y1]="line.positionFrom.y"
+                      [attr.x2]="line.positionTo.x" 
+                      [attr.y2]="line.positionTo.y"/>
+            </svg>
+              
+
+            <div *ngFor="let item of ecus"
+            cdkDrag
+            cdkDragBoundary=".drag-boundary"
+            [style.transform]="'translateX(' + item.position.x + 'px) translateY(' + item.position.y + 'px)'"
+            (cdkDragEnded)="onDragEnded($event, item)"
+            (cdkDragMoved)="rewriteLine($event, item)"
+            class="draggable-item"
+            (click)="openSidebar(item)"
+            (click)="onEcuClick(item)">
+           <div class="label-draggable-item">{{ item.label }}</div>
+           <div class="content-draggable-item">{{item.sample_service.length}} Services</div>
+       </div>
+       <!--(cdkDragMoved)="rewriteLine($event, item)" удалиитт что бі посмотреть как рисует линии(оно создает обьекти)-->
+
+        </div>
+
+        <div class="sidebar" [class.active]="isSidebarOpen">
+            <button class="close-button" (click)="closeSidebar()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div *ngIf="selectedEcu">
+                <h3>{{ selectedEcu.label }}</h3>
+                <div class="input-sidebar">
+                    <button class="sidebar-services-button" (click)="showListOfServices()">Services</button>
+                </div>
+                <div>
+                    <h4>Software:</h4>
+                    <ul>
+                        <li *ngFor="let detail of getSoftwareDetails(selectedEcu)">
+                            {{ detail.key }}: {{ detail.value }}
+                        </li>
+                    </ul>
+                </div>
+                <div class="input-sidebar">
+                    <input type="text" placeholder="Software Key" [(ngModel)]="softwareKey">
+                    <input type="text" placeholder="Software Value" [(ngModel)]="softwareValue">
+                    <button class="sidebar-button" (click)="addSoftwareValue()">Add Software Value</button>
+                </div>
+                <div>
+                    <h4>Hardware:</h4>
+                    <ul>
+                        <li *ngFor="let detail of getHardwareDetails(selectedEcu)">
+                            {{ detail.key }}: {{ detail.value }}
+                        </li>
+                    </ul>
+                </div>
+                <div class="input-sidebar">
+                    <input type="text" placeholder="Hardware Key" [(ngModel)]="hardwareKey">
+                    <input type="text" placeholder="Hardware Value" [(ngModel)]="hardwareValue">
+                    <button class="sidebar-button" (click)="addHardwareValue()">Add Hardware Value</button>
+                </div>
+            </div>
+
+
+
+            <div *ngIf="servisecOfSelectedEcu">
+                <h3>{{ servisecOfSelectedEcu.label }}: {{servisecOfSelectedEcu.sample_service[0].label}} </h3>
+                <div>
+                    <h4>Software:</h4>
+                    <ul>
+                        <li *ngFor="let detail of getSoftwareDetails(servisecOfSelectedEcu)">
+                            {{ detail.key }}: {{ detail.value }}
+                        </li>
+                    </ul>
+                </div>
+                <div class="input-sidebar">
+                    <input type="text" placeholder="Software Key" [(ngModel)]="softwareKey">
+                    <input type="text" placeholder="Software Value" [(ngModel)]="softwareValue">
+                    <button class="sidebar-button" (click)="addSoftwareValue()">Add Software Value</button>
+                </div>
+                <div>
+                    <h4>Hardware:</h4>
+                    <ul>
+                        <li *ngFor="let detail of getHardwareDetails(servisecOfSelectedEcu)">
+                            {{ detail.key }}: {{ detail.value }}
+                        </li>
+                    </ul>
+                </div>
+                <div class="input-sidebar">
+                    <input type="text" placeholder="Hardware Key" [(ngModel)]="hardwareKey">
+                    <input type="text" placeholder="Hardware Value" [(ngModel)]="hardwareValue">
+                    <button class="sidebar-button" (click)="addHardwareValue()">Add Hardware Value</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+
+
+
+
+

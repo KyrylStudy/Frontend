@@ -1,0 +1,192 @@
+/* header.component.css */
+/*.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 2px solid #801D1A;
+    height: 40px;
+}*/
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 2px solid #801D1A;
+    height: 40px;
+    /*position: fixed;*/
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: white; 
+    z-index: 1000; 
+  }
+
+.header-left, .header-right {
+    display: flex;
+    align-items: center;
+}
+
+.logo, .user-logo {
+    height: 50px; /* Adjust as per your logo size */
+    margin-right: 20px;
+}
+
+.user-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%; /* Makes the image circular */
+    object-fit: cover; /* Ensures the image covers the area without distortion */
+}
+  
+.user-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #801D1A;
+    background-color: white;
+    color: #252525;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+}
+
+/* custom-dropdown.component.css */
+.dropdown-container {
+    position: relative;
+    border: 2px solid transparent;
+    width: 200px; /* Adjust as needed */
+    cursor: pointer;
+    background-color: white;
+}
+
+.dropdown-display {
+    padding: 10px;
+    color: #252525; /* Dark text for readability */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-top: none;
+    z-index: 1000;
+    max-height: 200px; /* Adjust as needed */
+    overflow-y: auto;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-item {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    border-bottom: 1px solid #801D1A;
+}
+
+.dropdown-item:hover {
+    background-color: #f0f0f0;
+}
+
+/* Optional: Add an icon to the dropdown display */
+.dropdown-display::after {
+    content: '\25BC'; /* Downward arrow */
+    font-size: 0.8em;
+    margin-left: 5px;
+}
+
+
+.dropdown-container:hover, .move-button:hover, .search-field:hover, .filter-field:hover  {
+    border-bottom-color: #801D1A; /* Color change on hover */
+}
+
+.dropdown-container:focus, .move-button:hover, .search-field:focus, .filter-field:focus {
+    outline: none;
+    border-bottom-color: #801D1A;
+}
+
+.move-button {
+    margin-right: 10px;
+    padding: 10px 20px;
+    background-color: white;
+    color: #252525;
+    font-size: 1rem;
+    border: 2px solid transparent;
+    cursor: pointer;
+}
+
+.generate-button {
+    margin-right: 10px;
+    padding: 10px 20px;
+    background-color: white;
+    color: #252525;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 2px solid #009BA0;
+    cursor: pointer;
+}
+
+.generate-button:hover {
+    background-color: #cef8fa; /* Darker shade for hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for a "lift" effect */
+}
+
+.generate-button:active {
+    background-color: #009BA0;
+    color: white;
+}
+
+.search-box {
+    position: relative;
+}
+
+.search-field {
+    margin-right: 10px;
+    padding: 10px;
+    border: 2px solid transparent;
+    color: #252525;
+    font-size: 1rem;
+}
+
+.magnifier-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    padding-right: 10px;
+    transform: translateY(-50%);
+    color: #252525;
+    font-size: 1rem;
+}
+
+.filter-box {
+    position: relative;
+    /* Additional styling as needed */
+}
+
+.filter-field {
+    margin-right: 10px;
+    padding: 10px;
+    border: 2px solid transparent;
+    font-size: 1rem;
+}
+
+.filter-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    padding-right: 10px;
+    transform: translateY(-50%);
+    color: #252525;
+    font-size: 1rem;
+}
+
+/* Add more CSS for responsive design, hover effects, etc., as needed */
+/*--------------17.03.2024-----------------*/
+
+
