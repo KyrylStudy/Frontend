@@ -1,0 +1,44 @@
+<div class="dialog-container">
+    <div class="dialog-content">
+        <button *ngIf="showService" class="create-datastream-button" (click)="createDatastream()">Create Datastream</button>
+        <button class="dialog-save-button" (click)="saveServices()">Save</button>
+        <button class="dialog-close-button" (click)="close()">Close</button> <!-- Move close button here -->
+        <div *ngIf="dialogData.selectedEcu && dialogData.isEcuDetailsMod">
+            <h3>{{ dialogData.selectedEcu.label }}</h3>
+            <div class="input-sidebar">
+               <!--<button class="sidebar-services-button" (click)="dialogData.showListOfServices()">Services</button>--> 
+               <button class="sidebar-services-button" (click)="openDialog()">Services</button>
+            </div>
+            <div>
+                <h4>Software:</h4>
+                <ul>
+                    <li *ngFor="let detail of dialogData.software">
+                        {{ detail.name }}: {{ detail.value }}
+                    </li>
+                </ul>
+            </div>
+            <div class="input-sidebar">
+                <input type="text" placeholder="Software" [(ngModel)]="dialogData.softwareKey">
+                <input type="text" placeholder="Description" [(ngModel)]="dialogData.softwareValue">
+                <button class="sidebar-button" (click)="dialogData.addSoftwareValue()">Add Software</button>
+            </div>
+            <div>
+                <h4>Hardware:</h4>
+                <ul>
+                    <li *ngFor="let detail of dialogData.hardware">
+                        {{ detail.name }}: {{ detail.value }}
+                    </li>
+                </ul>
+            </div>
+            <div class="input-sidebar">
+                <input type="text" placeholder="Hardware" [(ngModel)]="dialogData.hardwareKey">
+                <input type="text" placeholder="Description" [(ngModel)]="dialogData.hardwareValue">
+                <button class="sidebar-button" (click)="dialogData.addHardwareValue()">Add Hardware</button>
+            </div>
+            <button class="dialog-delete-button" (click)="delete()">Delete</button> <!-- Move close button here -->
+        </div>
+        <app-service *ngIf="showService" [serviceData]="dialogData" (closeDialog)="onCloseDialog()"></app-service>
+    </div>
+</div>
+
+

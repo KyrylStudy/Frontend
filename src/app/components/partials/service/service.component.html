@@ -1,0 +1,75 @@
+<div class="main-screen">
+
+    <div class="button-set">
+        <button class="zoomButton" (click)="zoomIn()">+</button>
+        <button class="zoomButton" (click)="zoomOut()">-</button>
+    </div>
+    <div class="horisontal-wrapper">
+        
+        <div class="ecu">
+            
+
+            <h4 class="ecu-name">{{ serviceData.selectedEcu.label + "|" + serviceData.selectedEcu.id }}</h4>
+            <div class="drag-boundary" [style.zoom]="zoomLevel">
+
+                <div *ngFor="let item of serviceData.servicesMap.get(serviceData.selectedEcu.id)"
+                    cdkDrag
+                    cdkDragBoundary=".drag-boundary"
+                    [style.transform]="'translateX(' + item.positionX + 'px) translateY(' + item.positionY + 'px)'"
+                    (cdkDragEnded)="onDragEnded($event, item)"
+                    (cdkDragMoved)="rewriteLine(item)"
+                    class="draggable-item"
+                    (dblclick)="serviceData.openDialog(item)"
+                    (click)="onEcuClick(item, $event)"
+                    [attr.ecuId]="item.id" >
+                    <div class="label-draggable-item">{{ item.name + "|" + item.id }}</div>
+                    <div class="content-draggable-item">Service</div> <!--number of services-->
+                </div>
+            </div>
+        </div>
+        <div class="ecu" #scrollableEcu style="overflow: scroll;">
+            <div *ngFor="let item1 of serviceData.ecus"><!-- </ng-container>-->
+                <div *ngIf="item1.id !== serviceData.selectedEcu.id"><!-- </ng-container>-->
+                    <div class="ecu1">
+                        <h4 class="ecu-name">{{ item1.label + "|" + item1.id }}</h4>
+                        <div class="drag-boundary" [style.zoom]="zoomLevel">
+                            <div *ngFor="let item of serviceData.servicesMap.get(item1.id)"
+                                cdkDrag
+                                cdkDragBoundary=".drag-boundary"
+                                [style.transform]="'translateX(' + item.positionX + 'px) translateY(' + item.positionY + 'px)'"
+                                (cdkDragEnded)="onDragEnded($event, item)"
+                                (cdkDragMoved)="rewriteLine(item)"
+                                class="draggable-item"
+                                (dblclick)="serviceData.openDialog(item)"
+                                (click)="onEcuClick(item, $event)"
+                                [attr.ecuId]="item.id" >
+                                <div class="label-draggable-item">{{ item.name + "|" + item.id }}</div>
+                                <div class="content-draggable-item">Service</div> <!--number of services-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>  
+        </div>
+        <svg id="svg-container" class="connestion-line-container" [style.zoom]="zoomLevel">
+            <line class="connestion-line" *ngFor="let line of serviceData.dataStreams" 
+                  [attr.x1]="line.positionFromX" 
+                  [attr.y1]="line.positionFromY"
+                  [attr.x2]="line.positionToX" 
+                  [attr.y2]="line.positionToY"
+                  [attr.connectedFrom]="line.connectedFrom"
+                  [attr.connectedTo]="line.connectedTo"
+                  [attr.id]="line.id"
+                  (dblclick)="serviceData.openBusDialog(line)"/>
+            <line class="connestion-line-overlay" *ngFor="let line of serviceData.dataStreams" 
+                  [attr.x1]="line.positionFromX" 
+                  [attr.y1]="line.positionFromY"
+                  [attr.x2]="line.positionToX" 
+                  [attr.y2]="line.positionToY"
+                  [attr.connectedFrom]="line.connectedFrom"
+                  [attr.connectedTo]="line.connectedTo"
+                  [attr.id]="line.id"
+                  (dblclick)="serviceData.openBusDialog(line)"/>     
+        </svg>
+    </div>
+</div>

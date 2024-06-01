@@ -1,7 +1,15 @@
 export class Service {
-    id!: number;
-    label!: string;
+    id!: BigInt;
+    name!: string;
     type!: string;
-    connectedTo!: number;
-    software!: { [key: string]: any, option2: any, option3: any,  option4: any};
+    description!: string;
+    positionX!: number;
+    positionY!: number;
+    connectedTo!: string;
+}
+
+export class Connection {
+    id!: number;
+    ecuId!: number;
+    busId!: number;
 }

@@ -1,4 +1,4 @@
-import {Service} from './app/shared/models/service'
+import {Service} from './app/shared/models/service1'
 
 export const sample_service: Service[] = [
     {id: 1, label: 'Service 1', type: 'Service', connectedTo: 2,

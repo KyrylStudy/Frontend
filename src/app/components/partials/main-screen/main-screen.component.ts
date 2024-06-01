@@ -1,11 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Renderer2, ElementRef } from '@angular/core';
 import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Ecu } from '../../../shared/models/ecu';
+import { Ecu, EcuPost } from '../../../shared/models/ecu';
 import { Line } from '../../../shared/models/line';
+import { NewLine } from '../../../shared/models/line';
 import { EcuService } from '../../../services/ecu.service';
 //import { HeaderComponent } from '../header/header.component';
 //import { sample_lines } from '../../../../data'; // Import sample_lines from data.ts
 import { LineCreationService } from '../../../services/header-main.service';
+import { Software } from '../../../shared/models/software';
+import { NewSoftware } from '../../../shared/models/software';
+import { Hardware } from '../../../shared/models/hardware';
+import { NewHardware } from '../../../shared/models/hardware';
+import { ServicesIncideEcuService } from '../../../services/services-incide-ecu.service';
+import { Architecture } from '../../../shared/models/architectures';
+import { Connection } from '../../../shared/models/service';
+import { DialogComponent } from '../ecu-dialog/ecu-dialog.component';
+import { Service } from '../../../shared/models/service';
+import { Observable, concatMap, forkJoin, tap } from 'rxjs';
 
 
 
@@ -16,6 +27,42 @@ import { LineCreationService } from '../../../services/header-main.service';
 
 })
 export class MainScreenComponent implements OnInit{
+
+  showBusDialog: boolean = false;
+  showDialog: boolean = false;
+  dialogData: any = this;
+
+  openDialog(ecu: Ecu): void {
+    this.showDialog = true;
+    this.isEcuDetailsMod = true;
+    this.openSidebar(ecu);
+   // this.selectedEcu = ecu;
+    console.log("ecu: ", this.selectedEcu)
+  }
+
+  openBusDialog(bus: Line): void {
+    this.showBusDialog = true;
+    this.selectedBus = bus;
+    console.log( this.selectedBus )
+  }
+
+  selectedBus: Line | null = null;
+  /*openBusDialog(ecu: Ecu): void {
+    this.selectedEcu = ecu;
+    this.getAllSoftwareByEcuId(ecu.id);
+    console.log(this.software)
+    this.getAllHardwareByEcuId(ecu.id);
+    console.log(this.hardware)
+    this.isSidebarOpen = true;
+  }*/
+
+  onCloseDialog(): void {
+    this.showDialog = false;
+    this.isEcuDetailsMod = false;
+  }
+  onCloseBusDialog(): void {
+    this.showBusDialog = false;
+  }
 
  //--------01.04.--------------
  lines: Line[] = [];
@@ -32,10 +79,13 @@ export class MainScreenComponent implements OnInit{
   isSidebarOpen = false;
   servisecOfSelectedEcu: Ecu | null = null;;
   selectedEcu: Ecu | null = null;
+  isEcuDetailsMod = false;
 
-  constructor(private ecuService:EcuService, private lineCreationService: LineCreationService) { 
-    this.ecus = ecuService.getAll();
-    //this.lines = ecuService.getLines();
+  dataFromHeader: any;
+
+  constructor(private ecuService:EcuService, private lineCreationService: LineCreationService, private renderer: Renderer2,
+    private elementRef: ElementRef) { 
+
 
   }
   
@@ -45,14 +95,13 @@ export class MainScreenComponent implements OnInit{
     const boundingClientRect = element.getBoundingClientRect();
     const parentPosition = this.getElementPosition(element.parentElement);
 
-    ecu.position.x = boundingClientRect.x - parentPosition.left;
-    ecu.position.y = boundingClientRect.y - parentPosition.top;
+    ecu.positionX = boundingClientRect.x - parentPosition.left;
+    ecu.positionY = boundingClientRect.y - parentPosition.top;
   
-    this.rewriteLine(event, ecu);//удалить что бі посмотреть как создает новые линии
-    console.log('x1 = ',  this.lineX1, 'Y1 = ', this.lineY1, 'x2 = ', this.lineX2, 'Y2 = ', this.lineY2)
+    this.rewriteLine(ecu);
  
-  
   }
+
 
   private getElementPosition(element: any): { left: number, top: number } {
     const rect = element.getBoundingClientRect();
@@ -62,56 +111,30 @@ export class MainScreenComponent implements OnInit{
     return { top: rect.top + scrollTop, left: rect.left + scrollLeft };
   }
 
+  rewriteLine(ecu: Ecu) {
+   
+    const ecuDragging: any = document.querySelector('.cdk-drag-dragging');
 
- rewriteLine(event: any, ecu: Ecu) {
-    const svgContainer = document.getElementById('svg-container');
-    if (!svgContainer) {
-        return;
+    var ecuRect = ecuDragging.getBoundingClientRect();
+    for(let i = 0; i < this.lines.length; i++){
+      if(this.lines[i].connectedFrom == ecu.id.toString()){
+        this.lines[i].positionFromX = (ecuRect.left + (this.ECUwidth/2)).toString();
+        this.lines[i].positionFromY = (ecuRect.top - ((this.ECUheight/2) / this.zoomLevel)).toString();
+      }else if(this.lines[i].connectedTo == ecu.id.toString()){
+        this.lines[i].positionToX = (ecuRect.left + (this.ECUwidth/2)).toString();;
+        this.lines[i].positionToY = (ecuRect.top - ((this.ECUheight/2) / this.zoomLevel)).toString();;
+      }
     }
+}
 
-    const ecuElements = document.querySelectorAll('.draggable-item');
-    const ecuArray = Array.from(ecuElements);
-
-    //const ecuElements = document.querySelectorAll('.connestion-line');
-    //const ecuArray = Array.from(ecuElements);
-
-    // Clear the existing lines from the SVG container
-    while (svgContainer.firstChild) {
-        svgContainer.removeChild(svgContainer.firstChild);
-    }
-
-    // Re-add the lines based on the updated positions in the ecus array
-    for (let i = 0; i < ecuArray.length - 1; i++) {
-        const ecu1 = ecuArray[i];
-        const ecu2 = ecuArray[i + 1];
-
-        // Get the positions of the dragged elements
-        const ecu1Rect = ecu1.getBoundingClientRect();
-        const ecu2Rect = ecu2.getBoundingClientRect();
-
-        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        this.lineX1 = ecu1Rect.left + (this.ECUwidth/2);
-        this.lineY1 = ecu1Rect.top - ((this.ECUheight/2) / this.zoomLevel);
-        this.lineX2 = ecu2Rect.left + (this.ECUwidth/2);
-        this.lineY2 = ecu2Rect.top - ((this.ECUheight/2) / this.zoomLevel);
-        line.setAttribute('x1', (this.lineX1).toString());
-        line.setAttribute('y1', (this.lineY1).toString());
-        line.setAttribute('x2', (this.lineX2).toString());
-        line.setAttribute('y2', (this.lineY2).toString());
- 
-        line.setAttribute('style', 'stroke: black; stroke-width: 2; cursor: pointer');
-
-        svgContainer.appendChild(line);
-    }
- }
-
- lineX1 = 0;
- lineY1 = 0;
- lineX2 = 0;
- lineY2 = 0;
+//-----------------software----------hardware----------
 
   openSidebar(ecu: Ecu): void {
     this.selectedEcu = ecu;
+    this.getAllSoftwareByEcuId(ecu.id);
+    //console.log(this.software)
+    this.getAllHardwareByEcuId(ecu.id);
+    //console.log(this.hardware)
     this.isSidebarOpen = true;
   }
 
@@ -119,20 +142,37 @@ export class MainScreenComponent implements OnInit{
     this.isSidebarOpen = false;
   }
 
-  getSoftwareDetails(ecu: Ecu): Array<{key: string, value: string}> {
-    return Object.entries(ecu.software).map(([key, value]) => ({key, value}));
+  // Variables to hold software and hardware input values
+softwareKey: string = '';
+softwareValue: string = '';
+hardwareKey: string = '';
+hardwareValue: string = '';
+
+
+ //software: Software | null = null;
+ software:Software[] = [];
+ hardware:Software[] = [];
+
+  private getAllSoftwareByEcuId(id: BigInt){
+    this.ecuService.getAllSoftwareByEcuId(id).subscribe(data => {
+      this.software = data;
+    });
   }
 
-  getHardwareDetails(ecu: Ecu): Array<{key: string, value: string}> {
-    return Object.entries(ecu.hardware).map(([key, value]) => ({key, value}));
+  private getAllHardwareByEcuId(id: BigInt){
+    this.ecuService.getAllHardwareByEcuId(id).subscribe(data => {
+      this.hardware = data;
+    });
   }
-//--------------------------------------------------------------------------------------13.03.2024
+
+  //--------------------------------------------------
+
   zoomLevel: number = 1; // Initial zoom level
 
   zoomIn() {
-    console.log(228)
-    this.zoomLevel += 0.1; // Increase zoom level
-    
+    this.zoomLevel += 0.1; // Increase zoom level 
+
+    console.log(this.servicesMap) 
   }
 
   zoomOut() {
@@ -143,15 +183,15 @@ export class MainScreenComponent implements OnInit{
 
 //------------------------------------------------------------------------------------------- 17.03.2024
 
-// Variables to hold software and hardware input values
-softwareKey: string = '';
-softwareValue: string = '';
-hardwareKey: string = '';
-hardwareValue: string = '';
+
 
 addSoftwareValue(): void {
   if (this.selectedEcu && this.softwareKey && this.softwareValue) {
-    this.selectedEcu.software[this.softwareKey] = this.softwareValue;
+    const NewSoftware: NewSoftware = {name: this.softwareKey, value: this.softwareValue};
+  
+    this.ecuService.createSoftware(NewSoftware, this.selectedEcu.id).subscribe(data =>{
+      this.software[this.software.length] = data
+    });
     this.softwareKey = '';
     this.softwareValue = '';
   }
@@ -159,7 +199,13 @@ addSoftwareValue(): void {
 
 addHardwareValue(): void {
   if (this.selectedEcu && this.hardwareKey && this.hardwareValue) {
-    this.selectedEcu.hardware[this.hardwareKey] = this.hardwareValue;
+
+    const NewHardware: NewHardware = {name: this.hardwareKey, value: this.hardwareValue};
+  
+    this.ecuService.createHardware(NewHardware, this.selectedEcu.id).subscribe(data =>{
+      this.hardware[this.hardware.length] = data
+    });
+
     this.hardwareKey = '';
     this.hardwareValue = '';
   }
@@ -171,74 +217,348 @@ showListOfServices(): void {
   this.servisecOfSelectedEcu = this.selectedEcu;
   this.selectedEcu = null;
   console.log(this.servisecOfSelectedEcu)
+  console.log(this.selectedEcu)
 }
 
 //----------------------01.04.--------------------------------------------------------02.04
 creatingLine = false;
 
-startEcu: Ecu | null = null;
-endEcu: Ecu | null = null;
-
-onEcuClick(ecu: Ecu): void {
-  if (this.creatingLine) {
-    if (!this.startEcu) {
-      // First click, select start ECU
-      this.startEcu = ecu;
-      console.log('Selected start ECU:', this.startEcu);
-    } else if (!this.endEcu) {
-      // Second click, select end ECU and create line
-      this.endEcu = ecu;
-      console.log('Selected end ECU:', this.endEcu);
-      if (this.startEcu !== this.endEcu) {
-        // Ensure start and end ECUs are different
-        const newLine: Line = {
-          positionFrom: { x: this.startEcu.position.x, y: this.startEcu.position.y },
-          positionTo: { x: this.endEcu.position.x, y: this.endEcu.position.y },
-          connectedFrom: this.startEcu.id,
-          connectedTo: this.endEcu.id
-        };
-        // Add new line to service
-        this.ecuService.addNewLine(newLine);
-        console.log('New line created:', newLine);
-      } else {
-        console.log('Start and end ECUs cannot be the same');
-      }
-      // Reset start and end ECUs
-      this.startEcu = null;
-      this.endEcu = null;
-    }
-    console.log('Creating a line between ECUs');
-  } else {
-    // Default ECU click handling logic
-    console.log('Normal ECU click handling');
-  }
-}
 
 
 
   ngOnInit(): void{
-    // Initialize positions if necessary
-    this.ecus.forEach(ecu => {
-      ecu.position = ecu.position || { x: 0, y: 0 };
-    });
 
-    // Fetch lines data from wherever it's stored (e.g., API call, local storage)
-    this.lines = this.ecuService.getLines();
+    this.getAllBus(1);
+    this.getAllEcus(1);  
+    this.getAllArchitectures();
 
+    this.getAllServices();
 
-    //this.ecus = this.ecuService.getAll();
-    //this.lines = this.ecuService.getLines();
-    //--------------02.04-----------------------
-    this.lineCreationService.creatingLine$.subscribe((value: boolean) => {
-      this.creatingLine = value;
-      if (this.creatingLine) {
-        // Change background color or apply any other necessary styles
-        document.body.style.backgroundColor = 'lightblue';
-      } else {
-        // Revert background color or styles if needed
-        document.body.style.backgroundColor = 'white';
-      }
+  }
+
+  private getAllBus(architectureId: number){
+    this.lineCreationService.getAllBus(architectureId).subscribe(data => {
+      this.lines = data;
     });
   }
 
+  private getAllEcus(id: number) {
+     this.ecuService.getAll(id).subscribe(data => {
+      this.ecus = data;
+      
+    });
+  }
+
+  architectures: Architecture[] | null = null;
+  private getAllArchitectures(){
+    this.ecuService.getAllArchitectures().subscribe(data => {
+      this.architectures = data;
+      
+    });
+    if(this.architectures)
+    this.selectedArchitecture = this.architectures[0];
+  }
+
+  /*services: Service[][] = [];
+  private getAllServices(){
+    const requests = this.ecus.map(ecu => this.ecuService.getAllServicesByEcuId(ecu.id));
+    
+    forkJoin(requests).subscribe(results => {
+      this.services = results;
+    });
+
+  }*/
+
+  servicesCountMap: Map<BigInt, number> = new Map();
+  servicesMap: Map<BigInt, Service[]> = new Map();
+  getAllServices(): void {
+    // Assuming ecus array is already populated, otherwise, you need to fetch it first
+    if (this.ecus.length > 0) {
+      const serviceObservables: Observable<Service[]>[] = this.ecus.map(ecu => this.ecuService.getAllServicesByEcuId(ecu.id));
+
+      forkJoin(serviceObservables).subscribe(serviceArrays => {
+        serviceArrays.forEach((services, index) => {
+          const ecuId = this.ecus[index].id;
+          this.servicesCountMap.set(ecuId, services.length);
+          this.servicesMap.set(ecuId, services);
+        });
+      });
+    }
+  }
+
+//------------------------28.05
+
+dataStreams: Line[] = [];
+creatingDatastreamModus: Boolean = false;
+
+
+//----------------------01.06
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//----------------------------------------------------------------------------HEADER---START-----
+
+options = [
+  { id: 1, label: 'new ECU' },
+  { id: 2, label: 'new Service' },
+  { id: 3, label: 'new Bus' },
+  { id: 4, label: 'new Architecture' },
+];
+selectedOption: any = null;
+
+
+   private updateBus(Line: Line, id: BigInt){
+    //console.log(Line)
+    this.lineCreationService.updateBus(Line, id).subscribe();
+   }
+
+   private updateEcu(Ecu: Ecu, id: BigInt){
+    //console.log(Line)
+    this.ecuService.updateEcu(Ecu, id).subscribe();
+   }
+
+   saveLines() {
+    
+
+      for(let i = 0; i < this.lines.length; ++i){
+        //console.log(this.linesFromMain[i])
+        this.updateBus(this.lines[i], this.lines[i].id);
+      }
+      for(let i = 0; i < this.ecus.length; ++i){
+        //console.log(this.linesFromMain[i])
+        this.updateEcu(this.ecus[i], this.ecus[i].id);
+      }
+      //console.log(this.dataFromMain)
+
+   }
+
+showDropdown = false; 
+toggleDropdownCreate(): void {
+    this.showDropdown = !this.showDropdown;
 }
+
+
+showDropdownSelectArchitecture = false; 
+toggleDropdownSelectArchitecture(): void {
+    this.showDropdownSelectArchitecture = !this.showDropdownSelectArchitecture;
+}
+
+selectedArchitecture: any | null = null;
+async selectArchitecture(option: any): Promise<void> {
+  this.selectedArchitecture = option;
+
+  const svgContainer = document.getElementById('svg-container');
+
+  if (!svgContainer) {
+      return;
+  }
+
+  const lines = svgContainer.querySelectorAll('line');
+    lines.forEach(line => {
+      svgContainer.removeChild(line); // Remove each line element
+    });
+
+  await this.getAllEcus(option.id); 
+  await this.getAllBus(option.id);
+  var that = this;
+ setTimeout(function(){
+   that.getAllServices();
+ }, 100) 
+
+  this.showDropdownSelectArchitecture = false;
+}
+
+startEcu: Ecu | null = null;
+endEcu: Ecu | null = null;
+creatingBusModus: Boolean = false;
+startTargetEcuElementNewBus: any;
+endTargetEcuElementNewBus: any;
+
+onEcuClick(ecu: Ecu, event: MouseEvent){
+  if(this.creatingBusModus){
+    if (!this.startEcu) {
+      // First click, select start ECU
+      this.startTargetEcuElementNewBus = event.target as HTMLElement;
+      this.renderer.addClass(this.startTargetEcuElementNewBus, 'selected');
+
+      //ecu.connectedTo = "777";
+      this.startEcu = ecu;
+      console.log('Selected start ECU:', this.startEcu);
+    } else if (!this.endEcu) {
+      // Second click, select end ECU and create line
+      this.endTargetEcuElementNewBus = event.target as HTMLElement;
+      this.renderer.addClass(this.endTargetEcuElementNewBus, 'selected');
+
+     // ecu.connectedTo = "777";
+      this.endEcu = ecu;
+      console.log('Selected end ECU:', this.endEcu);
+      if (this.startEcu !== this.endEcu) {
+        // Ensure start and end ECUs are different
+        const newLine: NewLine = {name: 'Bus ' + (this.lines.length + 1), type: 'Bus',
+        description: 'default description', positionFromX: (this.startEcu.positionX + (this.ECUwidth/2)).toString(),
+        positionFromY: this.startEcu.positionY.toString(), positionToX: (this.endEcu.positionX + (this.ECUwidth/2)).toString(),
+        positionToY: this.endEcu.positionY.toString(), connectedFrom: this.startEcu.id.toString(),
+        connectedTo: this.endEcu.id.toString(), twoWayConnection: false};
+        // Add new line to service
+       
+        this.lineCreationService.createBus(this.selectedArchitecture.id, newLine).subscribe(data =>{
+          this.lines[this.lines.length] = data
+          console.log(this.lines)
+          //this.setValueToShare(this);
+        });
+
+        console.log('New line created:', newLine);
+      } else {
+        //ecu.connectedTo = "";
+        console.log('Start and end ECUs cannot be the same');
+      }
+      // Reset start and end ECUs
+      
+      this.startEcu = null;
+      this.endEcu = null;
+      this.creatingBusModus = false;
+      setTimeout(()=>{
+        this.renderer.removeClass(this.startTargetEcuElementNewBus, 'selected');
+        this.renderer.removeClass(this.endTargetEcuElementNewBus, 'selected');
+      }, 1000)
+
+    }
+    console.log('Creating a line between ECUs');
+  } else {
+    // Default ECU click handling logic
+    console.log("default ecu click")
+  }
+  }
+
+  
+   
+
+
+selectOption(option: any): void {
+   if (option.label === 'new ECU') {
+    //console.log(this.dataFromMain.ecus)
+    const newEcu: EcuPost = {label: 'ECU ' + (this.ecus.length + 1), type: 'ECU',
+    description: 'default description', positionX: 228, positionY: 229, connectedTo: this.ecus.length};
+  
+    this.ecuService.createEcu(newEcu, this.selectedArchitecture.id).subscribe(data =>{
+      this.ecus[this.ecus.length] = data
+      console.log(this.ecus)
+      //this.setValueToShare(this);
+    }
+    );
+  
+    //this.selectedOption = newEcu;
+  } else if (option.label === 'new Bus') {
+    this.creatingBusModus = true;
+    //document.body.style.backgroundColor = 'green'; // Change background color to green
+  } else {
+    this.selectedOption = option;
+  }
+  this.showDropdown = false;  //---------------------------commited-->
+
+}
+
+
+userImage: string | null = null; // Path to user image, set to null if not available
+userName: string = 'John Doe'; // Default user name
+
+//--------------------02.04.2024
+creatingNewLine = false;
+
+//---------------------------------------------------HEADER---END------------------
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EcuComponent } from './ecu.component';
+import { DialogComponent } from './ecu-dialog.component';
 
-describe('EcuComponent', () => {
-  let component: EcuComponent;
-  let fixture: ComponentFixture<EcuComponent>;
+describe('DialogComponent', () => {
+  let component: DialogComponent;
+  let fixture: ComponentFixture<DialogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [EcuComponent]
+      declarations: [DialogComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(EcuComponent);
+    fixture = TestBed.createComponent(DialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

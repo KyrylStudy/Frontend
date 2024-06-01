@@ -1,8 +1,8 @@
 import {Ecu} from './app/shared/models/ecu'
-import {Line} from './app/shared/models/line'
+//import {Connection} from './app/shared/models/architectures'
 import { sample_service } from './data-for-services'
 
-export const sample_ecu: Ecu[] = [
+/*export const sample_ecu: Ecu[] = [
     { position: { x: 200, y: 200 }, id: 1, label: 'ECU 1', type: 'ECU', connectedTo: 2,
      software: { option1: 'Value 1', option2: 'Value 1', option3: 'Value 1',  option4: 'Value 1'},
      hardware: { option1: 'Value 1', option2: 'Value 1', option3: 'Value 1',  option4: 'Value 1'},
@@ -11,18 +11,26 @@ export const sample_ecu: Ecu[] = [
     software: { option1: 'Value 1', option2: 'Value 1', option3: 'Value 1',  option4: 'Value 1'},
     hardware: { option1: 'Value 1', option2: 'Value 1', option3: 'Value 1',  option4: 'Value 1'},
     sample_service: sample_service},
-    { position: { x: 500, y: 100 }, id: 3, label: 'ECU 3', type: 'ECU', connectedTo: 1,
+    { position: { x: 500, y: 100 }, id: 3, label: 'ECU 3', type: 'ECU', connectedTo: 2,
+    software: { option1: 'Value 1', option2: 'Value 1', option3: 'Value 1',  option4: 'Value 1'},
+    hardware: { option1: 'Value 1', option2: 'Value 1', option3: 'Value 1',  option4: 'Value 1'},
+    sample_service: sample_service},
+    { position: { x: 100, y: 400 }, id: 4, label: 'ECU 4', type: 'ECU', connectedTo: 2,
     software: { option1: 'Value 1', option2: 'Value 1', option3: 'Value 1',  option4: 'Value 1'},
     hardware: { option1: 'Value 1', option2: 'Value 1', option3: 'Value 1',  option4: 'Value 1'},
     sample_service: sample_service}
 
-]
+]*/
 
-export const sample_lines: Line[] = [
-    { positionFrom: { x: 200, y: 200 }, positionTo: { x: 400, y: 400 }, connectedFrom: 1, connectedTo: 2},
-    { positionFrom: { x: 200, y: 200 }, positionTo: { x: 500, y: 100 }, connectedFrom: 2, connectedTo: 3},
+/*export const sample_connections: Connection[] = [
+    { id: 1, ecuId: 1, connectedTo: 2},
+    { id: 2, ecuId: 1, connectedTo: 3},
+    { id: 3, ecuId: 2, connectedTo: 1},
+    { id: 4, ecuId: 3, connectedTo: 1}
     // Add more line objects as needed
-];
+];*/
+
+
 
 
 

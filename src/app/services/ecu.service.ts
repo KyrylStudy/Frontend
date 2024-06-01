@@ -1,8 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Ecu } from '../shared/models/ecu';
-import { sample_ecu } from '../../data';
+import { EcuPost } from '../shared/models/ecu';
+//import { sample_ecu } from '../../data';
 import { Line } from '../shared/models/line';
-import { sample_lines } from '../../data';
+//import { sample_lines } from '../../data';
+import { HttpClient } from '@angular/common/http';
+import { Software } from '../shared/models/software';
+import { NewSoftware } from '../shared/models/software';
+import { Hardware } from '../shared/models/hardware';
+import { NewHardware } from '../shared/models/hardware';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { Architecture } from '../shared/models/architectures';
+import { Service } from '../shared/models/service';
 
 
 @Injectable({
@@ -10,58 +19,77 @@ import { sample_lines } from '../../data';
 })
 export class EcuService {
 
- // private lines: Line[] = [];
+ 
+  constructor(private httpClient: HttpClient/*, private mainScreenComponent: MainScreenComponent*/) { }
 
-  constructor() { }
-
-  getAll():Ecu[]{
-    return sample_ecu
+  //---------------ECU
+  baseUrl = "http://localhost:8080/api/ecus/architecture"
+  getAll(id: number):Observable<Ecu[]>{
+    return this.httpClient.get<Ecu[]>(`${this.baseUrl + '/' + id }`);
   }
 
-  addNewEcu(newEcu: Ecu): void {
-    sample_ecu.push(newEcu);
+  updateEcuUrl = "http://localhost:8080/api/ecus";
+  updateEcu(Ecu: Ecu, id: BigInt): Observable<any> {
+    return this.httpClient.put(`${this.updateEcuUrl + '/' + id + '/' + 'update'}`, Ecu);
   }
 
-  updateEcu(updatedEcu: Ecu): void {
-    const index = sample_ecu.findIndex(ecu => ecu.id === updatedEcu.id);
-    if (index !== -1) {
-      sample_ecu[index] = updatedEcu;
+  creareEcuUrl = 'http://localhost:8080/api/ecus';
+  createEcu(EcuPost: EcuPost, id: number): Observable<any> {
+      console.log(EcuPost);
+      return this.httpClient.post<any>(`${this.creareEcuUrl + '/' + id + '/' + 'ecu'}`, EcuPost);
+  }
+
+  deleteEcuUrl = 'http://localhost:8080/api/ecus/';
+  deleteEcu(id: BigInt): Observable<any> {
+    return this.httpClient.delete(`${this.deleteEcuUrl + id + '/delete'}`);
     }
+
+
+  //---------------Architecture
+
+  getAllArchitecturesUrl = "http://localhost:8080/api/architecture"
+  getAllArchitectures():Observable<Architecture[]>{
+    return this.httpClient.get<Architecture[]>(`${this.getAllArchitecturesUrl}`);
   }
 
-  //---------01.04.------------------
-  getLines(): Line[] {
-    return sample_lines;
+  //--------------Software
+
+  softwareUrl = "http://localhost:8080/api/ecus"
+  getAllSoftwareByEcuId(id: BigInt):Observable<Software[]>{
+    return this.httpClient.get<Software[]>(`${this.softwareUrl + '/' + id + '/softwares' }`);
   }
 
-  setLines(lines: Line[]): void {
-  //  this.lines = lines;
+  createSoftware(NewSoftware: NewSoftware, id: BigInt): Observable<any> {
+      console.log(NewSoftware);
+      return this.httpClient.post<any>(`${this.softwareUrl + '/' + id + '/software'}`, NewSoftware);
   }
 
-  //-------02.04.---------ноч
-  private createLineMode: boolean = false;
-  // Getter for createLineMode
-  getCreateLineMode(): boolean {
-    return this.createLineMode;
+
+  //--------------Hardware
+
+  hardwareUrl = "http://localhost:8080/api/ecus"
+  getAllHardwareByEcuId(id: BigInt):Observable<Hardware[]>{
+    return this.httpClient.get<Hardware[]>(`${this.hardwareUrl + '/' + id + '/hardwares' }`);
   }
 
-  // Setter for createLineMode
-  setCreateLineMode(mode: boolean): void {
-    this.createLineMode = mode;
-  }
+  createHardware(NewHardware: NewHardware, id: BigInt): Observable<any> {
+    console.log(NewHardware);
+    return this.httpClient.post<any>(`${this.hardwareUrl + '/' + id + '/hardware'}`, NewHardware);
+}
 
-  // Function to add a new line
-  addNewLine(line: Line): void {
-    sample_lines.push(line);
-  }
+//---------------------Service
 
-  // Function to clear create line mode
-  clearCreateLineMode(): void {
-    this.createLineMode = false;
-  }
+serviceUrl = "http://localhost:8080/api/services/ecu/"
+getAllServicesByEcuId(ecu_id: BigInt):Observable<Service[]>{
+  return this.httpClient.get<Service[]>(`${this.serviceUrl + ecu_id }`);
+}
 
-  // Function to update lines
- /* updateLines(updatedLines: any[]): void {
-    this.lines = updatedLines;
-  }*/
+updateServiceUrl = "http://localhost:8080/api/services/"
+updadeService(Service: Service, id: BigInt):Observable<any>{
+  return this.httpClient.put(`${this.updateServiceUrl + id  + '/update'}`, Service);
+}
+
+
+
+
 }
