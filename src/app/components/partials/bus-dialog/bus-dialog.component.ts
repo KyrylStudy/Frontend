@@ -58,6 +58,13 @@ export class BusDialogComponent {
 
   private deleteBus(id: BigInt){
     this.lineCreationService.deleteBus(id).subscribe();
+
+    let indexToRemove = this.dialogData.lines.findIndex((obj: { id: BigInt; }) => obj.id === id);
+
+    // Удаляем объект, если он найден
+    if (indexToRemove > -1) {
+      this.dialogData.lines.splice(indexToRemove, 1);
+    }
   }
 
   private updateEcu(Ecu: Ecu, id: BigInt){

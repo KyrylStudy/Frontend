@@ -116,15 +116,66 @@ export class MainScreenComponent implements OnInit{
     const ecuDragging: any = document.querySelector('.cdk-drag-dragging');
 
     var ecuRect = ecuDragging.getBoundingClientRect();
-    for(let i = 0; i < this.lines.length; i++){
-      if(this.lines[i].connectedFrom == ecu.id.toString()){
-        this.lines[i].positionFromX = (ecuRect.left + (this.ECUwidth/2)).toString();
-        this.lines[i].positionFromY = (ecuRect.top - ((this.ECUheight/2) / this.zoomLevel)).toString();
-      }else if(this.lines[i].connectedTo == ecu.id.toString()){
-        this.lines[i].positionToX = (ecuRect.left + (this.ECUwidth/2)).toString();;
-        this.lines[i].positionToY = (ecuRect.top - ((this.ECUheight/2) / this.zoomLevel)).toString();;
+
+   
+//console.log(ecuDragging.offsetWidth)
+   //----------------------------------------------------------------------вот єту штуку можно вставить на удаление 
+          
+          var numberOfConnections = 0;
+         
+            for(let i = 0; i < this.lines.length; i++){
+              if(this.lines[i].connectedFrom == ecu.id.toString()
+                || this.lines[i].connectedTo == ecu.id.toString()){
+                  numberOfConnections++;
+              }
+            }
+       
+
+
+          //const busWidth = ecuDragging.children[0].offsetWidth;
+
+          var positionOfConnection = 0;
+          if(numberOfConnections >= 1){
+            //debugger
+            var positionOfConnection = Number(ecuRect.width)/(numberOfConnections - 1);
+          }else{
+            positionOfConnection = 0
+          }
+          //console.log('positionOfConnection  ', positionOfConnection)
+
+          numberOfConnections = 0;
+
+    if(ecu.type == 'BUS' || ecu.type == 'CAN'){
+      for(let i = 0; i < this.lines.length; i++){
+        if(this.lines[i].connectedFrom == ecu.id.toString()
+          || this.lines[i].connectedTo == ecu.id.toString()){
+            if(this.lines[i].connectedTo == ecu.id.toString()){
+              this.lines[i].positionToX = (ecuRect.left + positionOfConnection*numberOfConnections).toString();
+              this.lines[i].positionToY = (ecuRect.top - 100).toString();
+              //console.log(this.lines[i].positionToX = (ecuRect.left + positionOfConnection*numberOfConnections).toString())
+            }else {
+              this.lines[i].positionFromX = (ecuRect.left + positionOfConnection*numberOfConnections).toString();
+              this.lines[i].positionFromY = (ecuRect.top - 100).toString();
+             // console.log(this.lines[i].positionFromX = (ecuRect.left + positionOfConnection*numberOfConnections).toString())
+            }
+           // console.log('positionToX  ', this.lines[i].positionToX )
+            numberOfConnections++;
+        }
+      }//----------------------------------------------------------------------вот єту штуку можно вставить на удаление 
+    }else{
+      for(let i = 0; i < this.lines.length; i++){
+        if(this.lines[i].connectedFrom == ecu.id.toString()){
+          this.lines[i].positionFromX = (ecuRect.left + (this.ECUwidth/2)).toString();
+          this.lines[i].positionFromY = (ecuRect.top - ((this.ECUheight/2) / this.zoomLevel)).toString();
+        }else if(this.lines[i].connectedTo == ecu.id.toString()){
+          this.lines[i].positionToX = (ecuRect.left + (this.ECUwidth/2)).toString();
+          this.lines[i].positionToY = (ecuRect.top - ((this.ECUheight/2) / this.zoomLevel)).toString();
+        }
       }
     }
+
+
+
 }
 
 //-----------------software----------hardware----------
@@ -172,7 +223,9 @@ hardwareValue: string = '';
   zoomIn() {
     this.zoomLevel += 0.1; // Increase zoom level 
 
-    console.log(this.servicesMap) 
+    //console.log(this.servicesMap) 
+    this.initializeGraph(this.lines);
+    console.log('can i reach? ', this.canReach('59', '50'));//-----------------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   }
 
   zoomOut() {
@@ -293,7 +346,77 @@ creatingDatastreamModus: Boolean = false;
 
 
 //----------------------01.06
+viewSwitch: boolean = true;
+toggleView(){
+  if(this.viewSwitch){
+    this.viewSwitch = false
+    console.log(this.viewSwitch)
+  }else {
+    this.viewSwitch = true
+    console.log(this.viewSwitch)
+  }
+  
 
+}
+//---------------------03.06
+
+private graph: { [key: string]: string[] } = {};
+
+
+  public initializeGraph(lines: Line[]): void {
+    this.graph = {};
+
+    lines.forEach(line => {
+      if (!this.graph[line.connectedFrom]) {
+        this.graph[line.connectedFrom] = [];
+      }
+      if (!this.graph[line.connectedTo]) {
+        this.graph[line.connectedTo] = [];
+      }
+
+      // Добавляем оба направления, так как порядок не важен
+      this.graph[line.connectedFrom].push(line.connectedTo);
+      this.graph[line.connectedTo].push(line.connectedFrom);
+
+      // Если соединение двустороннее, добавляем обратную связь
+      if (line.twoWayConnection) {
+        this.graph[line.connectedTo].push(line.connectedFrom);
+        this.graph[line.connectedFrom].push(line.connectedTo);
+      }
+    });
+  }
+
+  // Метод для проверки возможности перехода от одного блока к другому
+  public canReach(start: string, end: string): boolean {
+    if (start === end) {
+      return true;
+    }
+
+    let visited: Set<string> = new Set();
+    let queue: string[] = [start];
+
+    while (queue.length > 0) {
+      const current = queue.shift();
+      if (current === undefined) continue;
+
+      if (current === end) {
+        return true;
+      }
+
+      visited.add(current);
+
+      if(this.graph[current]){
+        for (let neighbor of this.graph[current]) {
+          if (!visited.has(neighbor)) {
+            queue.push(neighbor);
+          }
+        }
+      }
+      
+    }
+
+    return false;
+  }
 
 
 
@@ -453,6 +576,8 @@ endEcu: Ecu | null = null;
 creatingBusModus: Boolean = false;
 startTargetEcuElementNewBus: any;
 endTargetEcuElementNewBus: any;
+busWidthStart: any;
+busWidthEnd: any;
 
 onEcuClick(ecu: Ecu, event: MouseEvent){
   if(this.creatingBusModus){
@@ -463,6 +588,10 @@ onEcuClick(ecu: Ecu, event: MouseEvent){
 
       //ecu.connectedTo = "777";
       this.startEcu = ecu;
+      if(this.startEcu.type == "BUS" || this.startEcu.type == "CAN"){
+        this.busWidthStart = event.target as HTMLElement;
+      }
+      
       console.log('Selected start ECU:', this.startEcu);
     } else if (!this.endEcu) {
       // Second click, select end ECU and create line
@@ -474,20 +603,152 @@ onEcuClick(ecu: Ecu, event: MouseEvent){
       console.log('Selected end ECU:', this.endEcu);
       if (this.startEcu !== this.endEcu) {
         // Ensure start and end ECUs are different
-        const newLine: NewLine = {name: 'Bus ' + (this.lines.length + 1), type: 'Bus',
-        description: 'default description', positionFromX: (this.startEcu.positionX + (this.ECUwidth/2)).toString(),
-        positionFromY: this.startEcu.positionY.toString(), positionToX: (this.endEcu.positionX + (this.ECUwidth/2)).toString(),
-        positionToY: this.endEcu.positionY.toString(), connectedFrom: this.startEcu.id.toString(),
-        connectedTo: this.endEcu.id.toString(), twoWayConnection: false};
+        
+        //----------------------------------------------------слалать из этого фрагмента функцию
+        if(this.startEcu.type == "BUS" || this.startEcu.type == "CAN"){
+          //console.log('start = bus')
+
+          
+          
+          var numberOfConnections = 0;
+          if(this.startEcu){
+            for(let i = 0; i < this.lines.length; i++){
+              if(this.lines[i].connectedFrom == this.startEcu.id.toString()
+                || this.lines[i].connectedTo == this.startEcu.id.toString()){
+                  numberOfConnections++;
+              }
+            }
+          }
+
+          //console.log('numberOfConnections  ', numberOfConnections)
+
+          var positionOfConnection = 0;
+          if(numberOfConnections >= 1){
+             positionOfConnection = Number(this.busWidthStart.offsetWidth)/(numberOfConnections);
+          }else{
+            positionOfConnection = 0
+          }
+          //console.log('positionOfConnection  ', positionOfConnection)
+
+          numberOfConnections = 0;
+          if(this.startEcu){
+            for(let i = 0; i < this.lines.length; i++){
+              if(this.lines[i].connectedFrom == this.startEcu.id.toString()
+                || this.lines[i].connectedTo == this.startEcu.id.toString()){
+                  if(this.lines[i].connectedFrom == this.startEcu.id.toString()){
+                    this.lines[i].positionFromX = (this.startEcu.positionX + positionOfConnection*numberOfConnections).toString();
+                  }else {
+                    this.lines[i].positionToX = (this.startEcu.positionX + positionOfConnection*numberOfConnections).toString();
+                  }
+                  //console.log('positionFromX  ', this.lines[i].positionFromX )
+                  numberOfConnections++;
+              }
+            }
+          }
+
+
+
+          const newLine: NewLine = {
+          name: 'Bus ' + (this.lines.length + 1), type: 'Bus',
+          description: 'default description',
+          positionFromX:  (this.startEcu.positionX - 2 + positionOfConnection*numberOfConnections).toString(),
+          positionFromY: (this.startEcu.positionY - 38).toString(),
+          positionToX:(this.endEcu.positionX + (this.ECUwidth/2)).toString(),
+          positionToY: (this.endEcu.positionY).toString(),
+          connectedFrom: this.startEcu.id.toString(),
+          connectedTo: this.endEcu.id.toString(),
+          twoWayConnection: false};
+
+          this.lineCreationService.createBus(this.selectedArchitecture.id, newLine).subscribe(data =>{
+            this.lines[this.lines.length] = data
+            //console.log(this.lines)
+            //this.setValueToShare(this);
+          });
+  
+          console.log('New line created:', newLine);
+
+//-------------------------------------------------------слалать из этого фрагмента функцию
+        }else if(this.endEcu.type == "BUS" || this.startEcu.type == "CAN"){
+          console.log('end = bus')
+          this.busWidthEnd = event.target as HTMLElement;
+          
+          var numberOfConnections = 0;
+          if(this.endEcu){
+            for(let i = 0; i < this.lines.length; i++){
+              if(this.lines[i].connectedFrom == this.endEcu.id.toString()
+                || this.lines[i].connectedTo == this.endEcu.id.toString()){
+                  numberOfConnections++;
+              }
+            }
+          }
+
+          //console.log('numberOfConnections  ', numberOfConnections)
+
+          var positionOfConnection = 0;
+          if(numberOfConnections >= 1){
+            var positionOfConnection = Number(this.busWidthEnd.offsetWidth)/(numberOfConnections);
+          }else{
+            positionOfConnection = 0
+          }
+          //console.log('positionOfConnection  ', positionOfConnection)
+
+          numberOfConnections = 0;
+          if(this.endEcu){
+            for(let i = 0; i < this.lines.length; i++){
+              if(this.lines[i].connectedFrom == this.endEcu.id.toString()
+                || this.lines[i].connectedTo == this.endEcu.id.toString()){
+                  if(this.lines[i].connectedTo == this.endEcu.id.toString()){
+                    this.lines[i].positionToX = (this.endEcu.positionX + positionOfConnection*numberOfConnections).toString();
+                  }else {
+                    this.lines[i].positionFromX = (this.endEcu.positionX + positionOfConnection*numberOfConnections).toString();
+                  }
+                 // console.log('positionToX  ', this.lines[i].positionToX )
+                  numberOfConnections++;
+              }
+            }
+          }
+
+
+
+          const newLine: NewLine = {
+          name: 'Bus ' + (this.lines.length + 1), type: 'Bus',
+          description: 'default description', 
+          positionFromX: (this.startEcu.positionX + (this.ECUwidth/2)).toString(),
+          positionFromY: this.startEcu.positionY.toString(), 
+          positionToX: (this.endEcu.positionX - 2 + positionOfConnection*numberOfConnections).toString(),
+          positionToY: (this.endEcu.positionY - 38).toString(), 
+          connectedFrom: this.startEcu.id.toString(),
+          connectedTo: this.endEcu.id.toString(), 
+          twoWayConnection: false};
+
+          this.lineCreationService.createBus(this.selectedArchitecture.id, newLine).subscribe(data =>{
+            this.lines[this.lines.length] = data
+            //console.log(this.lines)
+            //this.setValueToShare(this);
+          });
+  
+         console.log('New line created:', newLine);
+
+//----------------------------------------------------------------------------------------------------------------------------          
+        }else{
+          const newLine: NewLine = {name: 'Bus ' + (this.lines.length + 1), type: 'Bus',
+          description: 'default description', positionFromX: (this.startEcu.positionX + (this.ECUwidth/2)).toString(),
+          positionFromY: this.startEcu.positionY.toString(), positionToX: (this.endEcu.positionX + (this.ECUwidth/2)).toString(),
+          positionToY: this.endEcu.positionY.toString(), connectedFrom: this.startEcu.id.toString(),
+          connectedTo: this.endEcu.id.toString(), twoWayConnection: false};
+
+          this.lineCreationService.createBus(this.selectedArchitecture.id, newLine).subscribe(data =>{
+            this.lines[this.lines.length] = data
+            console.log(this.lines)
+            //this.setValueToShare(this);
+          });
+  
+        //  console.log('New line created:', newLine);
+        }
+
         // Add new line to service
        
-        this.lineCreationService.createBus(this.selectedArchitecture.id, newLine).subscribe(data =>{
-          this.lines[this.lines.length] = data
-          console.log(this.lines)
-          //this.setValueToShare(this);
-        });
 
-        console.log('New line created:', newLine);
       } else {
         //ecu.connectedTo = "";
         console.log('Start and end ECUs cannot be the same');

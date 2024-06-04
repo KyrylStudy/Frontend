@@ -40,6 +40,14 @@
         </div>
     </div>
 
+    <div class="header-center">
+        <!-- Switch Button -->
+        <label class="switch">
+            <input type="checkbox" id="toggleSwitch" (change)="toggleView()">
+            <span class="slider"></span>
+        </label>
+    </div>
+
     <div class="header-right">
 
         <button class="generate-button" (click)="saveLines()">Save</button>
@@ -63,7 +71,7 @@
             <button class="zoomButton" (click)="zoomIn()">+</button>
             <button class="zoomButton" (click)="zoomOut()">-</button>
         </div>
-        <div class="drag-boundary" [style.zoom]="zoomLevel">
+        <div class="drag-boundary" [style.zoom]="zoomLevel" *ngIf="viewSwitch">
 
             <svg id="svg-container" class="connestion-line-container">
                 <line class="connestion-line" *ngFor="let line of lines" 
@@ -87,7 +95,7 @@
             </svg>
               
 
-            <div *ngFor="let item of ecus"
+            <div *ngFor="let item of ecus" 
             cdkDrag
             cdkDragBoundary=".drag-boundary"
             [style.transform]="'translateX(' + item.positionX + 'px) translateY(' + item.positionY + 'px)'"
@@ -97,91 +105,79 @@
             (dblclick)="openDialog(item)"
             (click)="onEcuClick(item, $event)"
             [attr.ecuId]="item.id" >
-           <div class="label-draggable-item">{{ item.label + "|" + item.id}}</div>
-           <div class="content-draggable-item">{{ servicesCountMap.get(item.id) || 0 }} Services</div> <!--number of services-->
-           <!--<div class="content-draggable-item">{{servicesNumber[item.connectedTo]}} Services</div>-->
-           
-       </div>
+            <ng-container *ngIf="item.type == 'ECU'">
+                <div class="ecu">
+                    <div class="label-draggable-item">{{ item.label + "|" + item.id}}</div>
+                    <div class="content-draggable-item">{{ servicesCountMap.get(item.id) || 0 }} Services</div> <!--number of services-->
+                    <!--<div class="content-draggable-item">{{servicesNumber[item.connectedTo]}} Services</div>-->
+                </div>
+            </ng-container>
+            </div>
     </div>
+
+    <div class="drag-boundary" [style.zoom]="zoomLevel" *ngIf="!viewSwitch">
+
+        <svg id="svg-container" class="connestion-line-container">
+            <line class="connestion-line" *ngFor="let line of lines" 
+                  [attr.x1]="line.positionFromX" 
+                  [attr.y1]="line.positionFromY"
+                  [attr.x2]="line.positionToX" 
+                  [attr.y2]="line.positionToY"
+                  [attr.connectedFrom]="line.connectedFrom"
+                  [attr.connectedTo]="line.connectedTo"
+                  [attr.id]="line.id"
+                  (dblclick)="openBusDialog(line)"/>
+            <line class="connestion-line-overlay" *ngFor="let line of lines" 
+                  [attr.x1]="line.positionFromX" 
+                  [attr.y1]="line.positionFromY"
+                  [attr.x2]="line.positionToX" 
+                  [attr.y2]="line.positionToY"
+                  [attr.connectedFrom]="line.connectedFrom"
+                  [attr.connectedTo]="line.connectedTo"
+                  [attr.id]="line.id"
+                  (dblclick)="openBusDialog(line)"/>     
+        </svg>
+          
+
+        <div *ngFor="let item of ecus" 
+        cdkDrag
+        cdkDragBoundary=".drag-boundary"
+        [style.transform]="'translateX(' + item.positionX + 'px) translateY(' + item.positionY + 'px)'"
+        (cdkDragEnded)="onDragEnded($event, item)"
+        (cdkDragMoved)="rewriteLine(item)"
+        class="draggable-item"
+        (dblclick)="openDialog(item)"
+        (click)="onEcuClick(item, $event)"
+        [attr.ecuId]="item.id" >
+        <ng-container *ngIf="item.type == 'ECU'">
+            <div class="ecu">
+                <div class="label-draggable-item">{{ item.label + "|" + item.id}}</div>
+                <div class="content-draggable-item">{{ servicesCountMap.get(item.id) || 0 }} Services</div> <!--number of services-->
+                <!--<div class="content-draggable-item">{{servicesNumber[item.connectedTo]}} Services</div>-->
+            </div>
+        </ng-container>
+        <ng-container *ngIf="item.type == 'BUS'">
+            <div class="bus">
+                <div class="label-bus">{{ item.label + "|" + item.id}}</div>
+                <div class="content-bus"><!--{{ servicesCountMap.get(item.id) || 0 }} Services--></div> <!--number of services-->
+                <!--<div class="content-draggable-item">{{servicesNumber[item.connectedTo]}} Services</div>-->
+            </div>
+        </ng-container>
+        <ng-container *ngIf="item.type == 'CAN'">
+            <div class="can">
+                <div class="label-can">{{ item.label + "|" + item.id}}</div>
+                <div class="content-can"><!--{{ servicesCountMap.get(item.id) || 0 }} Services--></div> <!--number of services-->
+                <!--<div class="content-draggable-item">{{servicesNumber[item.connectedTo]}} Services</div>-->
+            </div>
+        </ng-container>
+
+       
+   </div>
+</div>
 
         <ecu-dialog *ngIf="showDialog && dialogData" [dialogData]="dialogData" (closeDialog)="onCloseDialog()"></ecu-dialog>
         <bus-dialog *ngIf="showBusDialog && dialogData" [dialogData]="dialogData" (closeDialog)="onCloseBusDialog()"></bus-dialog>
  
-
-       <!-- <div class="sidebar" [class.active]="isSidebarOpen">
-            <button class="close-button" (click)="closeSidebar()">
-                <i class="fas fa-times"></i>
-            </button>
-            <div *ngIf="selectedEcu">
-                <h3>{{ selectedEcu.label }}</h3>
-                <div class="input-sidebar">
-                    <button class="sidebar-services-button" (click)="showListOfServices()">Services</button>
-                </div>
-                <div>
-                    <h4>Software:</h4>
-                    <ul>
-                        <li *ngFor="let detail of software">
-                            {{ detail.name }}: {{ detail.value }}
-                        </li>
-                    </ul>
-                </div>
-                <div class="input-sidebar">
-                    <input type="text" placeholder="Software" [(ngModel)]="softwareKey">
-                    <input type="text" placeholder="Description" [(ngModel)]="softwareValue">
-                    <button class="sidebar-button" (click)="addSoftwareValue()">Add Software</button>
-                </div>
-                <div>
-                    <h4>Hardware:</h4>
-                    <ul>
-                        <li *ngFor="let detail of hardware">
-                            {{ detail.name }}: {{ detail.value }}
-                        </li>
-                    </ul>
-                </div>
-                <div class="input-sidebar">
-                    <input type="text" placeholder="Hardware" [(ngModel)]="hardwareKey">
-                    <input type="text" placeholder="Description" [(ngModel)]="hardwareValue">
-                    <button class="sidebar-button" (click)="addHardwareValue()">Add Hardware</button>
-                </div>
-            </div>-->
-
-
-
-
-  
-
-
-            <!--<div *ngIf="servisecOfSelectedEcu">
-                <h3>{{ servisecOfSelectedEcu.label }}: {{servisecOfSelectedEcu.sample_service[0].label}} </h3>
-                <div>
-                    <h4>Software:</h4>
-                    <ul>
-                        <li *ngFor="let detail of getSoftwareDetails(servisecOfSelectedEcu)">
-                            {{ detail.key }}: {{ detail.value }}
-                        </li>
-                    </ul>
-                </div>
-                <div class="input-sidebar">
-                    <input type="text" placeholder="Software Key" [(ngModel)]="softwareKey">
-                    <input type="text" placeholder="Software Value" [(ngModel)]="softwareValue">
-                    <button class="sidebar-button" (click)="addSoftwareValue()">Add Software Value</button>
-                </div>
-                <div>
-                    <h4>Hardware:</h4>
-                    <ul>
-                        <li *ngFor="let detail of getHardwareDetails(servisecOfSelectedEcu)">
-                            {{ detail.key }}: {{ detail.value }}
-                        </li>
-                    </ul>
-                </div>
-                <div class="input-sidebar">
-                    <input type="text" placeholder="Hardware Key" [(ngModel)]="hardwareKey">
-                    <input type="text" placeholder="Hardware Value" [(ngModel)]="hardwareValue">
-                    <button class="sidebar-button" (click)="addHardwareValue()">Add Hardware Value</button>
-                </div>
-            </div>
-        </div>-->      <!--commited-->
-
     </div>
     
     
