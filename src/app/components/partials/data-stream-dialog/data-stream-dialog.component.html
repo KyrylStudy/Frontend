@@ -1,1 +1,11 @@
-<p>data-stream-dialog works!</p>
+<div class="data-stream-container">
+    <div class="data-stream-content">
+        <div *ngIf="dataStreamsData.dataForDataStreamDetails.selectedDataStream">
+            <h3>{{ dataStreamsData.dataForDataStreamDetails.selectedDataStream.name }}</h3>
+            <h4>Description: {{ dataStreamsData.dataForDataStreamDetails.selectedDataStream.description}}</h4>
+            <h4>Connected from: {{ dataStreamsData.dataForDataStreamDetails.selectedDataStream.connectedFrom }}</h4>
+            <h4>Connected to: {{ dataStreamsData.dataForDataStreamDetails.selectedDataStream.connectedTo }}</h4>
+            <button class="dialog-delete-button" (click)="delete()">Delete</button>  
+        </div>
+    </div>
+</div>

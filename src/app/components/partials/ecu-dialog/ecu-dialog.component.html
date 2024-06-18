@@ -8,7 +8,7 @@
         <div *ngIf="dialogData.selectedEcu && dialogData.isEcuDetailsMod">
             <div class="horisontal-container">
                 <h3>{{ dialogData.selectedEcu.label }}</h3>
-                <div>
+                <div *ngIf="dialogData.selectedEcu.type == 'ECU'">
                     <button class="show-services-button" (click)="openDialog()">To Services</button>
                 </div>
             </div>
@@ -40,20 +40,22 @@
                 <h4 class="ecu-properties-header">Properties:</h4>
                 <ul>
                     <li *ngFor="let detail of dialogData.hardware">
-                        {{ detail.name }}: {{ detail.value }}
+                        <span class="property-name">{{ detail.name }}:</span>
+                        <span class="property-value">{{ detail.value }}</span>
                     </li>
                 </ul>
             </div>
             <div class="input-sidebar">
-                <input type="text" placeholder="Property" [(ngModel)]="dialogData.hardwareKey">
-                <input type="text" placeholder="Description" [(ngModel)]="dialogData.hardwareValue">
-                <button class="sidebar-button" (click)="dialogData.addHardwareValue()">Add Property</button>
+                <input class="input-field" type="text" placeholder="Property" [(ngModel)]="dialogData.hardwareKey">
+                <input class="input-field" type="text" placeholder="Description" [(ngModel)]="dialogData.hardwareValue">
+                <button class="add-property-button" (click)="dialogData.addHardwareValue()">Add Property</button>
             </div>
             <button class="dialog-delete-button" (click)="delete()">Delete</button> <!-- Move close button here -->
         </div>
-        <app-service *ngIf="showService" [serviceData]="serviceDialogData" (closeDialog)="onCloseDialog()"></app-service>
+        <app-service *ngIf="showService" [serviceData]="serviceDialogData" (dataStreamsTransport)="getDataStreamsFromServiceComponent($event)" ></app-service>
         <app-create-service-infrastructure-dialog *ngIf="showCreateDialog" [createServiceDialogData]="serviceDialogData" (closeDialog)="onCloseCreateDialog()"></app-create-service-infrastructure-dialog>
-        <app-service-dialog *ngIf="dialogData.showServiceDialog" [serviceDetilsData]="dialogData"></app-service-dialog>
+        <app-service-dialog *ngIf="dialogData.showServiceDialog" [serviceDetilsData]="dialogData" ></app-service-dialog>
+        <app-data-stream-dialog *ngIf="dialogData.showDataStreamDialog" [dataStreamsData]="serviceDialogData"></app-data-stream-dialog>
     </div> 
 </div>
 

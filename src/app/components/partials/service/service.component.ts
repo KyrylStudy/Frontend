@@ -383,6 +383,25 @@ getDataStreamsOfSelectdService(allDataStreams: any){
     this.serviceData.selectedService = null;
     this.getDataStreams(this.serviceData.dialogData.dialogData.selectedArchitecture.id);
   }
+
+  selectedDataStream: any;
+
+  openDataStreamDetails(dataStream: DataStream){//------------------------------add logic!!!
+
+    this.selectedDataStream = dataStream;
+    this.serviceData.dialogData.showDataStreamDialog = true;
+    this.serviceData.showService = false;
+    this.dataStreamsTransport.emit(this);
+  }
+
+  @Output() dataStreamsTransport = new EventEmitter<any>();
+
+
+  /*close(): void {
+    this.closeDialog.emit(true);
+    console.log(this.serviceData.dialogData.dialogData)
+    this.serviceData.selectedService = null;
+  }*/
   
 }
 

@@ -5,6 +5,7 @@ import { EcuService } from '../../../services/ecu.service';
 import { LineCreationService } from '../../../services/header-main.service';
 import { Service } from '../../../shared/models/service';
 import { NewLine } from '../../../shared/models/line';
+import { DataStream } from '../../../shared/models/data_stream';
 
 
 @Component({
@@ -14,11 +15,12 @@ import { NewLine } from '../../../shared/models/line';
 })
 export class DialogComponent /*implements OnInit*/{
   @Input() dialogData: any | null = null;
-  @Output() closeDialog = new EventEmitter<boolean>();
+  @Output() closeDialog = new EventEmitter<boolean>(); 
 
   close(): void {
     this.closeDialog.emit(true);
     this.dialogData.showServiceDialog = false;
+    this.dialogData.showDataStreamDialog = false;
   }
 
   delete(): void {
@@ -137,6 +139,12 @@ export class DialogComponent /*implements OnInit*/{
   /*onCloseServiceDetailsDialog(){
     this.showServiceDialog = !this.showServiceDialog;
   }*/
+
+    dataForDataStreamDetails:any = null;
+    getDataStreamsFromServiceComponent(event: any){
+      this.dataForDataStreamDetails = event;
+      console.log(this.dataForDataStreamDetails)
+    }
 
   
   

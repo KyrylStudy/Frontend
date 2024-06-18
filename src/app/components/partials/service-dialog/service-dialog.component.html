@@ -1,37 +1,31 @@
-<div class="dialog-container">
-    <div class="dialog-content">
 
+        <!-- <button class="dialog-close-button" (click)="close()">Close</button> Move close button here -->
+        <div class="service-details" >
+        <div class="horisontal-container">
             <h3>{{ serviceDetilsData.selectedService.name }}</h3>
-            <div>
-                <h4>Property:</h4>
-                <ul>
-                    <li *ngFor="let detail of serviceDetilsData.software">
-                        {{ detail.name }}: {{ detail.value }}
-                    </li>
-                </ul>
-            </div>
-            <div class="input-sidebar">
-                <input type="text" placeholder="Property" [(ngModel)]="serviceDetilsData.softwareKey">
-                <input type="text" placeholder="Description" [(ngModel)]="serviceDetilsData.softwareValue">
-                <button class="sidebar-button" (click)="serviceDetilsData.addSoftwareValue()">Add Property</button>
-            </div>
-            <!--<div>
-                <h4>Hardware:</h4>
-                <ul>
-                    <li *ngFor="let detail of serviceDetilsData.hardware">
-                        {{ detail.name }}: {{ detail.value }}
-                    </li>
-                </ul>
-            </div>
-            <div class="input-sidebar">
-                <input type="text" placeholder="Hardware" [(ngModel)]="serviceDetilsData.hardwareKey">
-                <input type="text" placeholder="Description" [(ngModel)]="serviceDetilsData.hardwareValue">
-                <button class="sidebar-button" (click)="serviceDetilsData.addHardwareValue()">Add Hardware</button>
-            </div>-->
-            <button class="dialog-delete-button" (click)="delete()">Delete</button> <!-- Move close button here -->
-  
+        </div>
+        <div>
+            <h4 class="ecu-properties-header">Description:</h4>
+            <p class="ecu-description">{{ serviceDetilsData.selectedService.description }}</p>
+        </div>
+       
+        <div>
+            <h4 class="ecu-properties-header">Properties:</h4>
+            <ul>
+                <li *ngFor="let detail of serviceDetilsData.software">   <!-- поменять на проперти-->
+                    <span class="property-name">{{ detail.name }}:</span>
+                    <span class="property-value">{{ detail.value }}</span>
+                </li>
+            </ul>
+        </div>
+        <div class="input-sidebar">
+            <input class="input-field" type="text" placeholder="Property" [(ngModel)]="serviceDetilsData.softwareKey">
+            <input class="input-field" type="text" placeholder="Description" [(ngModel)]="serviceDetilsData.softwareValue">
+            <button class="add-property-button" (click)="serviceDetilsData.addHardwareValue()">Add Property</button>
+        </div>
+        <button class="dialog-delete-button" (click)="delete()">Delete</button> <!-- Move close button here -->
     </div>
-</div>
+
 
 
 

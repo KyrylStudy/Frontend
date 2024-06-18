@@ -1,0 +1,179 @@
+.data-stream-container {
+    display: flex;
+  }
+  
+  .data-stream-content {
+    position: relative; /* Set to relative */
+    text-align: left;
+  }
+  
+  @keyframes slideIn {
+    from {
+      transform: translateY(-20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  .data-stream-content h3 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .data-stream-content h4 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #555;
+  }
+  
+  .data-stream-content ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+  }
+  
+  .data-stream-content li {
+    margin-bottom: 8px;
+    font-size: 16px;
+    color: #666;
+  }
+  
+  .input-sidebar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .input-sidebar input[type="text"] {
+    width: 45%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+  }
+  
+  .input-sidebar input[type="text"]::placeholder {
+    color: #aaa;
+  }
+  
+  .input-sidebar input[type="text"]:focus {
+    outline: none;
+    border-color: #007bff;
+  }
+  
+  .input-sidebar input[type="text"]:focus::placeholder {
+    color: transparent;
+  }
+  
+  .sidebar-services-button,
+  .sidebar-button,
+  .dialog-close-button {
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .dialog-delete-button {
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    //transition: background-color 0.3s ease;
+    background-color: white;
+    border: 2px solid #801D1A;
+  }
+
+  .dialog-delete-button:hover{
+    background-color: #e3a3a9;
+  }
+
+  .dialog-delete-button:active {
+    background-color: #801D1A;
+    color: white;
+  }
+  
+  .sidebar-services-button,
+  .sidebar-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+  }
+  
+  .dialog-close-button {
+    position: absolute; /* Set to absolute */
+    top: 10px;
+    right: 10px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .sidebar-services-button:hover,
+  .sidebar-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .dialog-close-button:hover {
+    background-color: #bd2130;
+  }
+  
+  
+  .input-sidebar input[type="text"],
+  .sidebar-services-button,
+  .sidebar-button,
+  .dialog-close-button {
+      padding: 12px 20px; /* Adjusted padding */
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+  }
+  
+  .dialog-close-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+  }
+  
+  .input-sidebar input[type="text"] {
+      width: calc(50% - 20px); /* Adjusted width */
+      padding: 10px; /* Adjusted padding */
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+      transition: border-color 0.3s ease;
+  }
+  
+  .sidebar-services-button,
+  .sidebar-button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+  }
+  
+  .sidebar-services-button:hover,
+  .sidebar-button:hover,
+  .dialog-close-button:hover {
+      background-color: #0056b3;
+  }
+
+  .dialog-close-button:active {
+    background-color: #801D1A;
+    color: white;
+  }
+  

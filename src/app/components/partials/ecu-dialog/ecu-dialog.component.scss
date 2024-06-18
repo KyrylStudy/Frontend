@@ -53,39 +53,49 @@
   padding: 0;
   margin-top: 10px;
 }
-
+ 
 .dialog-content li {
-  margin-bottom: 8px;
-  font-size: 16px;
+
+  font-size: 1rem;
   color: #666;
+  display: grid;
+  grid-template-columns: 20% 70% 10%; /* 80/20 split */
+  gap: 5px;
+  margin-bottom: 10px;
+  
+}
+
+.property-name,
+.property-value{
+  white-space: normal; /* Allows text to wrap */
+  word-break: break-word; 
 }
 
 .input-sidebar {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: 20% 70% 10%; /* 80/20 split */
+  gap: 5px;
+  margin-bottom: 10px;
 }
 
-.input-sidebar input[type="text"] {
-  width: 45%;
+.input-field {
   padding: 10px;
-  margin-bottom: 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 16px;
   transition: border-color 0.3s ease;
 }
 
-.input-sidebar input[type="text"]::placeholder {
+.input-field::placeholder {
   color: #aaa;
 }
 
-.input-sidebar input[type="text"]:focus {
+.input-field:focus {
   outline: none;
-  border-color: #007bff;
+  border-color: #009BA0;
 }
 
-.input-sidebar input[type="text"]:focus::placeholder {
+.input-field:focus::placeholder {
   color: transparent;
 }
 
@@ -258,7 +268,8 @@
   border: none;
 }*/
 
-.sidebar-button {
+.add-property-button {
+  width: 100%;
   margin-left: 5px;
   padding: 10px 20px;
   background-color: white;
@@ -270,12 +281,12 @@
   z-index: 10;
 }
 
-.sidebar-button:hover {
-  background-color: #cef8fa; /* Darker shade for hover */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for a "lift" effect */
+.add-property-button:hover {
+  background-color: #cef8fa; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
 }
 
-.sidebar-button:active {
+.add-property-button:active {
   background-color: #009BA0;
   color: white;
 }
@@ -306,6 +317,65 @@
   display: flex;
   flex-direction: row;
 }
+
+//--------------------------------
+
+/* General styles for the input area */
+/*.input-area {
+  width: 340px; 
+  padding: 25px;
+  background-color: #f1f3f5;
+  border: 1px solid #ced4da;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+.input-wrapper {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+
+.input-field {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 12px;
+  border: 1px solid #adb5bd;
+  border-radius: 5px;
+  font-size: 15px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-field:focus {
+  border-color: #495057;
+  outline: none;
+  box-shadow: 0 0 8px rgba(73, 80, 87, 0.5);
+}
+
+/* Styles for the add property button */
+/*.add-property-button {
+  width: 100%;
+  padding: 12px 18px;
+  font-size: 16px;
+  color: #ffffff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.add-property-button:hover {
+  background-color: #0056b3;
+  box-shadow: 0 4px 10px rgba(0, 86, 179, 0.3);
+}*/
+
 
 
 

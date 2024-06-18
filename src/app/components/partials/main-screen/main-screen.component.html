@@ -174,8 +174,8 @@
    </div>
 </div>
 
-        <ecu-dialog *ngIf="showDialog && dialogData" [dialogData]="dialogData" (closeDialog)="onCloseDialog()"></ecu-dialog>
-        <bus-dialog *ngIf="showBusDialog && dialogData" [dialogData]="dialogData" (closeDialog)="onCloseBusDialog()"></bus-dialog>
+        <ecu-dialog *ngIf="showDialog" [dialogData]="dialogData" (closeDialog)="onCloseDialog()"></ecu-dialog>
+        <bus-dialog *ngIf="showBusDialog" [dialogData]="dialogData" (closeDialog)="onCloseBusDialog()"></bus-dialog>
         <create-hardware-dialog *ngIf="showCreateHardwareDialog" [createHardwareData]="dialogData" (closeDialog)="onCloseCreateHardwareDialog()"></create-hardware-dialog>
       
  

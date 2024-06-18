@@ -8,12 +8,12 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 export class ServiceDialogComponent {
 
   @Input() serviceDetilsData: any | null = null;
-  @Output() closeDialog = new EventEmitter<boolean>(); 
-
 
   close(): void {
-    this.closeDialog.emit(true);
+    this.serviceDetilsData.showDialog = false;
+    this.serviceDetilsData.showServiceDialog = false;
   }
+
 
   delete(){
     

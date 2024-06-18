@@ -33,6 +33,7 @@ export class MainScreenComponent implements OnInit{
   showCreateHardwareDialog: any = null;
   showBusDialog: boolean = false;
   showDialog: boolean = false;
+  
   dialogData: any = this;
 
   openDialog(ecu: Ecu): void {
@@ -443,6 +444,10 @@ private graph: { [key: string]: string[] } = {};
   //showService: boolean = false;
   showServiceDialog: boolean = false;
   selectedService: any = null;
+  showDataStreamDialog: boolean = false;
+
+
+ 
 
 
 

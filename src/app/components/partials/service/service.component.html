@@ -1,7 +1,9 @@
 <!--<ng-container *ngIf="!showServiceDialog">-->
+   <!-- <div class="dialog-container">
+        <div class="dialog-content">-->
 <div class="dropdown-container" tabindex="0" (blur)="showDropdown = false">
     <div class="dropdown-display" (click)="toggleDropdownCreate()">
-        {{ serviceData.selectedService?.name || 'Select Service' }}
+        {{ serviceData.selectedService?.name || 'Select Service' }} 
     </div>
     <div class="dropdown-menu" *ngIf="showDropdown">
         <div class="dropdown-item" *ngFor="let option of options" (click)="selectOption(option)">
@@ -79,7 +81,7 @@
                   [attr.connectedFrom]="line.connectedFrom"
                   [attr.connectedTo]="line.connectedTo"
                   [attr.id]="line.id"
-                  (dblclick)="serviceData.dialogData.openBusDialog(line)"/>
+                  (dblclick)="openDataStreamDetails(line)"/>
             <line class="connestion-line-overlay" *ngFor="let line of dataStreams" 
                   [attr.x1]="line.positionFromX" 
                   [attr.y1]="line.positionFromY"
@@ -88,9 +90,11 @@
                   [attr.connectedFrom]="line.connectedFrom"
                   [attr.connectedTo]="line.connectedTo"
                   [attr.id]="line.id"
-                  (dblclick)="serviceData.dialogData.openBusDialog(line)"/>     
+                  (dblclick)="openDataStreamDetails(line)"/>     
         </svg>
     </div>
 </div>
+<!--</div>
+</div>-->
 <!--</ng-container>-->
 
