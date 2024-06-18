@@ -439,6 +439,12 @@ private graph: { [key: string]: string[] } = {};
     return false;
   }
 
+  //----------------------service--18.06
+  //showService: boolean = false;
+  showServiceDialog: boolean = false;
+  selectedService: any = null;
+
+
 
 
 

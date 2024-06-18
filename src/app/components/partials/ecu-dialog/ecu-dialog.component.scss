@@ -37,13 +37,13 @@
 }
 
 .dialog-content h3 {
-  font-size: 24px;
+  font-size: 2.5rem;
   margin-bottom: 20px;
-  color: #333;
+  color: #555;
 }
 
 .dialog-content h4 {
-  font-size: 18px;
+  font-size: 1.5rem;
   margin-bottom: 10px;
   color: #555;
 }
@@ -89,22 +89,7 @@
   color: transparent;
 }
 
-.sidebar-services-button,
-.sidebar-button,
-.dialog-close-button {
-  padding: 10px 20px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  z-index: 10;
-}
 
-.sidebar-services-button,
-.sidebar-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-}
 
 .dialog-close-button {
   position: absolute;
@@ -116,13 +101,11 @@
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  font-size: 1rem;
+  padding: 10px 20px;
+  z-index: 10;
 }
 
-.sidebar-services-button:hover,
-.sidebar-button:hover {
-  background-color: #0056b3;
-}
+
 
 .dialog-close-button:hover {
   background-color: #e3a3a9;
@@ -252,4 +235,77 @@
   background-color: #801D1A;
   color: white;
 }
+
+.ecu-description {
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+//-------------------------
+/*.sidebar-services-button,
+.sidebar-button,
+.dialog-close-button {
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  z-index: 10;
+}
+
+.sidebar-services-button,
+.sidebar-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+}*/
+
+.sidebar-button {
+  margin-left: 5px;
+  padding: 10px 20px;
+  background-color: white;
+  color: #252525;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 2px solid #009BA0;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.sidebar-button:hover {
+  background-color: #cef8fa; /* Darker shade for hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for a "lift" effect */
+}
+
+.sidebar-button:active {
+  background-color: #009BA0;
+  color: white;
+}
+
+.show-services-button {
+  margin-left: 20px;
+  padding: 10px 20px;
+  background-color: white;
+  color: #252525;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 2px solid #009BA0;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.show-services-button:hover {
+  background-color: #cef8fa; /* Darker shade for hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for a "lift" effect */
+}
+
+.show-services-button:active {
+  background-color: #009BA0;
+  color: white;
+}
+
+.horisontal-container {
+  display: flex;
+  flex-direction: row;
+}
+
+
 

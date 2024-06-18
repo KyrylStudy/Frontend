@@ -18,6 +18,7 @@ export class DialogComponent /*implements OnInit*/{
 
   close(): void {
     this.closeDialog.emit(true);
+    this.dialogData.showServiceDialog = false;
   }
 
   delete(): void {
@@ -62,6 +63,7 @@ export class DialogComponent /*implements OnInit*/{
   //------------------------19.05
   showService: boolean = false;
 
+
   openDialog(): void {
     this.showService = !this.showService;
     this.dialogData.isEcuDetailsMod = !this.dialogData.isEcuDetailsMod;
@@ -77,7 +79,8 @@ export class DialogComponent /*implements OnInit*/{
   }
 
   onCloseDialog(): void {
-    this.showService = false;
+    this.dialogData.showService = false;
+    
   }
 
  /* private updateService(Service: Service, id: BigInt){
@@ -119,6 +122,21 @@ export class DialogComponent /*implements OnInit*/{
     this.showService = !this.showService;
     this.dialogData.isEcuDetailsMod = !this.dialogData.isEcuDetailsMod;
   }
+
+  dataForServiceDialog = this;
+  //showServiceDialog:boolean = false;
+
+  openServiceDetailsDialog(service: Service){
+
+    this.dialogData.showServiceDialog = true;
+    this.showService = false;
+    this.dialogData.selectedService = service;
+    //this.dialogData.isEcuDetailsMod = !this.dialogData.isEcuDetailsMod;
+  }
+
+  /*onCloseServiceDetailsDialog(){
+    this.showServiceDialog = !this.showServiceDialog;
+  }*/
 
   
   

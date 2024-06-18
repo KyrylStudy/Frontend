@@ -14,6 +14,17 @@ export class ServiceComponent {
 
   @Input() serviceData: any | null = null;
   @Output() closeDialog = new EventEmitter<boolean>();
+  dataForServiceDialog = this;
+  showServiceDialog:boolean = false;
+
+  openServiceDetailsDialog(service: Service){
+    this.showServiceDialog = !this.showServiceDialog;
+    //this.serviceData.showService = !this.serviceData.showService;
+  }
+
+  onCloseServiceDetailsDialog(){
+    this.showServiceDialog = !this.showServiceDialog;
+  }
 
   constructor(private renderer: Renderer2, private el: ElementRef, private ecuService: EcuService, private lineCreationService: LineCreationService) { 
 
@@ -21,8 +32,8 @@ export class ServiceComponent {
 
   close(): void {
     this.closeDialog.emit(true);
-    console.log(this.serviceData)
-    this.selectedService = null;
+    console.log(this.serviceData.dialogData.dialogData)
+    this.serviceData.selectedService = null;
   }
 
 
@@ -82,7 +93,7 @@ zoomLevel: number = 1; // Initial zoom level
 
 zoomIn() {
   this.zoomLevel += 0.1; // Increase zoom level 
-  this.getDataStreams(this.serviceData.selectedArchitecture.id);
+  this.getDataStreams(this.serviceData.dialogData.dialogData.selectedArchitecture.id);
   /*console.log(this.serviceData.selectedEcu.id)
   console.log(this.serviceData.servicesMap.get(this.serviceData.selectedEcu.id))
 
@@ -96,7 +107,7 @@ zoomIn() {
 zoomOut() {
   if (this.zoomLevel > 0.1) {
     this.zoomLevel -= 0.1; // Decrease zoom level, ensuring it doesn't go below 0.1
-    this.getDataStreams(this.serviceData.selectedArchitecture.id);
+    this.getDataStreams(this.serviceData.dialogData.dialogData.selectedArchitecture.id);
     /*for(let i = 0; i < this.serviceData.servicesMap.get(this.serviceData.selectedEcu.id).length; i++){
       this.rewriteLine(this.serviceData.servicesMap.get(this.serviceData.selectedEcu.id)[i]);
     }*/
@@ -104,15 +115,24 @@ zoomOut() {
 }
 
 ngOnInit(): void {
-  this.scrollableEcu.nativeElement.addEventListener('scroll', this.onElementScroll.bind(this));
-  this.getDataStreams(this.serviceData.selectedArchitecture.id);
-  this.options = this.serviceData.servicesMap.get(this.serviceData.selectedEcu.id);
+ // this.el.nativeElement.querySelector(`[serviceId="${''}"]`);
+ 
+ this.scrollableEcu.nativeElement.addEventListener('scroll', this.onElementScroll.bind(this));
+  this.getDataStreams(this.serviceData.dialogData.dialogData.selectedArchitecture.id);
+  this.options = this.serviceData.dialogData.dialogData.servicesMap.get(this.serviceData.dialogData.dialogData.selectedEcu.id);
 }
+
+/*scrollableEcu:any;
+ngAfterViewInit(){
+  //@ViewChild('scrollableEcu', { static: true }) scrollableEcu!: ElementRef;
+  this.scrollableEcu = @ViewChild('scrollableEcu', { static: true }): ElementRef;
+
+}*/
 
 
 private getDataStreams(architectureId: number){
   this.lineCreationService.getAllDataStreams(architectureId).subscribe(data => {
-    if(this.selectedService){
+    if(this.serviceData.selectedService){
       this.getDataStreamsOfSelectdService(data)
     }else{
       this.getAllDataStreams(data)
@@ -132,8 +152,8 @@ dataStreams: DataStream[] = [];
   startLinePsition: any;
 
   onEcuClick(ecu: Service, event: MouseEvent){
-    console.log(this.serviceData.creatingDatastreamModus)
-    if(this.serviceData.creatingDatastreamModus){
+    console.log(this.serviceData.dialogData.dialogData.creatingDatastreamModus)
+    if(this.serviceData.dialogData.dialogData.creatingDatastreamModus){
       if (!this.startEcu) {
         // First click, select start ECU
         this.startTargetEcuElementNewBus = event.target as HTMLElement;
@@ -167,17 +187,17 @@ dataStreams: DataStream[] = [];
           type: 'Service',
           description: 'default description',
           positionFromX: (this.startLinePsition.left /*+ (this.serviceData.ECUwidth/2)*/).toString(),
-          positionFromY: (this.startLinePsition.top - ((this.serviceData.ECUheight/2) / this.serviceData.zoomLevel)).toString(),
+          positionFromY: (this.startLinePsition.top - ((this.serviceData.dialogData.dialogData.ECUheight/2) / this.serviceData.dialogData.dialogData.zoomLevel)).toString(),
           positionToX: (ecuRect.left /*+ (this.serviceData.ECUwidth/2)*/).toString(),
-          positionToY: (ecuRect.top - ((this.serviceData.ECUheight/2) / this.serviceData.zoomLevel)).toString(),
+          positionToY: (ecuRect.top - ((this.serviceData.dialogData.dialogData.ECUheight/2) / this.serviceData.dialogData.dialogData.zoomLevel)).toString(),
           connectedFrom: this.startEcu.id.toString(),
           connectedTo: this.endEcu.id.toString(), twoWayConnection: false};
 
           //this.serviceData.dataStreams[this.serviceData.dataStreams.length] = newDataStream
 
-          this.lineCreationService.createDataStream(this.serviceData.selectedArchitecture.id, newDataStream).subscribe(data =>{
+          this.lineCreationService.createDataStream(this.serviceData.dialogData.dialogData.selectedArchitecture.id, newDataStream).subscribe(data =>{
             //this.dataStreams[this.dataStreams.length] = data
-            this.getDataStreams(this.serviceData.selectedArchitecture.id)
+            this.getDataStreams(this.serviceData.dialogData.dialogData.selectedArchitecture.id)
             //console.log(this.lines)
             //this.setValueToShare(this);
           });
@@ -191,7 +211,7 @@ dataStreams: DataStream[] = [];
         
         this.startEcu = null;
         this.endEcu = null;
-        this.serviceData.creatingDatastreamModus = false;
+        this.serviceData.dialogData.dialogData.creatingDatastreamModus = false;
         setTimeout(()=>{
           this.renderer.removeClass(this.startTargetEcuElementNewBus, 'selected');
           this.renderer.removeClass(this.endTargetEcuElementNewBus, 'selected');
@@ -207,13 +227,14 @@ dataStreams: DataStream[] = [];
 
 //-----------------------------onScroll
 
-    @ViewChild('scrollableEcu', { static: true })
-  scrollableEcu!: ElementRef;
+    @ViewChild('scrollableEcu', { static: true }) scrollableEcu!: ElementRef;
+   //scrollableEcu: any = document.getElementById('myElement');
 
 
 
   previousScrollY: any = 0;
   onElementScroll(): void {
+    
     const element = this.scrollableEcu.nativeElement;
     const scrollTop = element.scrollTop;
     
@@ -222,7 +243,7 @@ dataStreams: DataStream[] = [];
         let adjustFromY = true;
         let adjustToY = true;
       
-        for (let service of this.serviceData.servicesMap.get(this.serviceData.selectedEcu.id)) {
+        for (let service of this.serviceData.dialogData.dialogData.servicesMap.get(this.serviceData.dialogData.dialogData.selectedEcu.id)) {
           if (dataStream.connectedFrom == service.id) {
             adjustFromY = false;
           }
@@ -254,9 +275,9 @@ getLinesForServise(service: Service){
 
 saveServices() {
   //debugger
-  console.log(this.serviceData.ecus);
-  for(let i = 0; i < this.serviceData.ecus.length; ++i){
-    var servicesOfEcu = this.serviceData.servicesMap.get(this.serviceData.ecus[i].id);
+  console.log(this.serviceData.dialogData.dialogData.ecus);
+  for(let i = 0; i < this.serviceData.dialogData.dialogData.ecus.length; ++i){
+    var servicesOfEcu = this.serviceData.dialogData.dialogData.servicesMap.get(this.serviceData.dialogData.dialogData.ecus[i].id);
     console.log("services: ", servicesOfEcu);
     for(let j = 0; j < servicesOfEcu.length; j++){
         this.updateService(servicesOfEcu[j], servicesOfEcu[j].id);
@@ -287,15 +308,15 @@ toggleDropdownCreate(): void {
 
 
 options:any = [];
-selectedService: any = null;
+//selectedService: any = null;
 
 selectOption(option: any): void {
   if(option){
-    this.selectedService = option;
+    this.serviceData.selectedService = option;
     this.dataStreams = [];
-    this.getDataStreams(this.serviceData.selectedArchitecture.id);
+    this.getDataStreams(this.serviceData.dialogData.dialogData.selectedArchitecture.id);
   }else{
-    this.selectedService = null;
+    this.serviceData.selectedService = null;
   }
 
 
@@ -323,11 +344,11 @@ getDataStreamsOfSelectdService(allDataStreams: any){
     var connectedServices: any = [];
    // console.log(this.selectedService)
     for(let i = 0; i < allDataStreams.length; i++){
-      if(allDataStreams[i].connectedFrom == this.selectedService.id){
+      if(allDataStreams[i].connectedFrom == this.serviceData.selectedService.id){
         selectedServiceDataStreams.push(allDataStreams[i]);
         const service = this.el.nativeElement.querySelector(`[serviceId="${Number(allDataStreams[i].connectedTo)}"]`);
         connectedServices.push(service)
-      }else if(allDataStreams[i].connectedTo == this.selectedService.id){
+      }else if(allDataStreams[i].connectedTo == this.serviceData.selectedService.id){
         selectedServiceDataStreams.push(allDataStreams[i]);
         const service = this.el.nativeElement.querySelector(`[serviceId="${Number(allDataStreams[i].connectedFrom)}"]`);
         connectedServices.push(service)
@@ -337,7 +358,7 @@ getDataStreamsOfSelectdService(allDataStreams: any){
     for(let i = 0; i < connectedServices.length; i++){
       this.rewriteLine(connectedServices[i])
     }
-    this.rewriteLine(this.selectedService)
+    this.rewriteLine(this.serviceData.selectedService)
   }
 
 
@@ -359,8 +380,8 @@ getDataStreamsOfSelectdService(allDataStreams: any){
   }
 
   selectAllServices(){
-    this.selectedService = null;
-    this.getDataStreams(this.serviceData.selectedArchitecture.id);
+    this.serviceData.selectedService = null;
+    this.getDataStreams(this.serviceData.dialogData.dialogData.selectedArchitecture.id);
   }
   
 }

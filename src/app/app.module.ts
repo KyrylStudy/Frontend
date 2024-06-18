@@ -16,6 +16,8 @@ import { BusDialogComponent } from './components/partials/bus-dialog/bus-dialog.
 import { ServiceComponent } from './components/partials/service/service.component';
 import { CreateHardwareDialogComponent } from './components/partials/create-hardware-dialog/create-hardware-dialog.component';
 import { CreateServiceInfrastructureDialogComponent } from './components/partials/create-service-infrastructure-dialog/create-service-infrastructure-dialog.component';
+import { ServiceDialogComponent } from './components/partials/service-dialog/service-dialog.component';
+import { DataStreamDialogComponent } from './components/partials/data-stream-dialog/data-stream-dialog.component';
 
 
 @NgModule({
@@ -29,6 +31,8 @@ import { CreateServiceInfrastructureDialogComponent } from './components/partial
     ServiceComponent,
     CreateHardwareDialogComponent,
     CreateServiceInfrastructureDialogComponent,
+    ServiceDialogComponent,
+    DataStreamDialogComponent,
   ],
   imports: [
     BrowserModule,

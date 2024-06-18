@@ -1,6 +1,7 @@
+<!--<ng-container *ngIf="!showServiceDialog">-->
 <div class="dropdown-container" tabindex="0" (blur)="showDropdown = false">
     <div class="dropdown-display" (click)="toggleDropdownCreate()">
-        {{ selectedService?.name || 'Select Service' }}
+        {{ serviceData.selectedService?.name || 'Select Service' }}
     </div>
     <div class="dropdown-menu" *ngIf="showDropdown">
         <div class="dropdown-item" *ngFor="let option of options" (click)="selectOption(option)">
@@ -22,17 +23,17 @@
         <div class="ecu">
             
 
-            <h4 class="ecu-name">{{ serviceData.selectedEcu.label + "|" + serviceData.selectedEcu.id }}</h4>
+            <h4 class="ecu-name">{{ serviceData.dialogData.selectedEcu.label + "|" + serviceData.dialogData.selectedEcu.id }}</h4>
             <div class="drag-boundary" [style.zoom]="zoomLevel">
 
-                <div *ngFor="let item of serviceData.servicesMap.get(serviceData.selectedEcu.id)"
+                <div *ngFor="let item of serviceData.dialogData.servicesMap.get(serviceData.dialogData.selectedEcu.id)"
                     cdkDrag
                     cdkDragBoundary=".drag-boundary"
                     [style.transform]="'translateX(' + item.positionX + 'px) translateY(' + item.positionY + 'px)'"
                     (cdkDragEnded)="onDragEnded($event, item)"
                     (cdkDragMoved)="rewriteLine(item)"
                     class="draggable-item"
-                    (dblclick)="serviceData.openDialog(item)"
+                    (dblclick)="serviceData.openServiceDetailsDialog(item)"
                     (click)="onEcuClick(item, $event)"
                     [attr.serviceId]="item.id" 
                     [id]="item.id"  >
@@ -41,22 +42,22 @@
                 </div>
             </div>
         </div>
-        <div class="ecu" #scrollableEcu style="overflow: scroll;">
-            <div *ngFor="let item1 of serviceData.ecus"><!-- </ng-container>-->
+        <div class="ecu" id="myElement" #scrollableEcu style="overflow: scroll;">
+            <div *ngFor="let item1 of serviceData.dialogData.ecus"><!-- </ng-container>-->
                 <!--<div *ngIf="item1.id !== serviceData.selectedEcu.id"> </ng-container>-->
                 
-                    <div *ngIf="serviceData.canReach(serviceData.selectedEcu.id.toString(), item1.id.toString()) && item1.type =='ECU'">
+                    <div *ngIf="serviceData.dialogData.canReach(serviceData.dialogData.selectedEcu.id.toString(), item1.id.toString()) && item1.type =='ECU'">
                     <div class="ecu1">
                         <h4 class="ecu-name">{{ item1.label + "|" + item1.id }}</h4>
                         <div class="drag-boundary" [style.zoom]="zoomLevel">
-                            <div *ngFor="let item of serviceData.servicesMap.get(item1.id)"
+                            <div *ngFor="let item of serviceData.dialogData.servicesMap.get(item1.id)"
                                 cdkDrag
                                 cdkDragBoundary=".drag-boundary"
                                 [style.transform]="'translateX(' + item.positionX + 'px) translateY(' + item.positionY + 'px)'"
                                 (cdkDragEnded)="onDragEnded($event, item)"
                                 (cdkDragMoved)="rewriteLine(item)"
                                 class="draggable-item"
-                                (dblclick)="serviceData.openDialog(item)"
+                                (dblclick)="serviceData.openServiceDetailsDialog(item)"
                                 (click)="onEcuClick(item, $event)"
                                 [attr.serviceId]="item.id" 
                                 [id]="item.id" 
@@ -78,7 +79,7 @@
                   [attr.connectedFrom]="line.connectedFrom"
                   [attr.connectedTo]="line.connectedTo"
                   [attr.id]="line.id"
-                  (dblclick)="serviceData.openBusDialog(line)"/>
+                  (dblclick)="serviceData.dialogData.openBusDialog(line)"/>
             <line class="connestion-line-overlay" *ngFor="let line of dataStreams" 
                   [attr.x1]="line.positionFromX" 
                   [attr.y1]="line.positionFromY"
@@ -87,9 +88,9 @@
                   [attr.connectedFrom]="line.connectedFrom"
                   [attr.connectedTo]="line.connectedTo"
                   [attr.id]="line.id"
-                  (dblclick)="serviceData.openBusDialog(line)"/>     
+                  (dblclick)="serviceData.dialogData.openBusDialog(line)"/>     
         </svg>
     </div>
-
-  
 </div>
+<!--</ng-container>-->
+
