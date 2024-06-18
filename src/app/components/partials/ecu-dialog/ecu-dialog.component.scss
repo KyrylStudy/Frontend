@@ -126,6 +126,12 @@
 
 .dialog-close-button:hover {
   background-color: #e3a3a9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dialog-close-button:active {
+  background-color: #801D1A;
+  color: white;
 }
 
 .dialog-delete-button {
@@ -139,6 +145,12 @@
 
 .dialog-delete-button:hover {
   background-color: #e3a3a9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dialog-delete-button:active {
+  background-color: #801D1A;
+  color: white;
 }
 
 .dialog-save-button {
@@ -167,10 +179,35 @@
 }
 
 //-----------------------------------------------------28.05-----
-.create-datastream-button {
+.create-service-button {
   position: absolute;
   top: 5px;
   left: 62px;
+  margin-right: 10px;
+  padding: 10px 20px;
+  background-color: white;
+  color: #252525;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 2px solid #009BA0;
+  cursor: pointer;
+  z-index: 9999;
+}
+
+.create-service-button:hover {
+  background-color: #cef8fa; /* Darker shade for hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for a "lift" effect */
+}
+
+.create-service-button:active {
+  background-color: #009BA0;
+  color: white;
+}
+
+.create-datastream-button {
+  position: absolute;
+  top: 5px;
+  left: 220px;
   margin-right: 10px;
   padding: 10px 20px;
   background-color: white;
@@ -189,6 +226,30 @@
 
 .create-datastream-button:active {
   background-color: #009BA0;
+  color: white;
+}
+
+.back-button {
+  position: absolute;
+  top: 5px;
+  left: 30px;
+  padding: 10px 8px;
+  background-color: white;
+  color: #252525;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 2px solid #801D1A;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.back-button:hover {
+  background-color: #e3a3a9; /* Darker shade for hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for a "lift" effect */
+}
+
+.back-button:active {
+  background-color: #801D1A;
   color: white;
 }
 

@@ -14,6 +14,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { DialogComponent } from './components/partials/ecu-dialog/ecu-dialog.component';
 import { BusDialogComponent } from './components/partials/bus-dialog/bus-dialog.component';
 import { ServiceComponent } from './components/partials/service/service.component';
+import { CreateHardwareDialogComponent } from './components/partials/create-hardware-dialog/create-hardware-dialog.component';
+import { CreateServiceInfrastructureDialogComponent } from './components/partials/create-service-infrastructure-dialog/create-service-infrastructure-dialog.component';
 
 
 @NgModule({
@@ -25,6 +27,8 @@ import { ServiceComponent } from './components/partials/service/service.componen
     DialogComponent,
     BusDialogComponent,
     ServiceComponent,
+    CreateHardwareDialogComponent,
+    CreateServiceInfrastructureDialogComponent,
   ],
   imports: [
     BrowserModule,

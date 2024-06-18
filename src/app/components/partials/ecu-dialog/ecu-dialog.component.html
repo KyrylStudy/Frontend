@@ -1,5 +1,7 @@
 <div class="dialog-container">
     <div class="dialog-content">
+        <button *ngIf="showService" class="back-button" (click)="goBack()">&lt;</button>
+        <button *ngIf="showService" class="create-service-button" (click)="openCreateServiceDialog()">Create Service</button>
         <button *ngIf="showService" class="create-datastream-button" (click)="createDatastream()">Create Datastream</button>
         <button class="dialog-save-button" (click)="saveServices()">Save</button>
         <button class="dialog-close-button" (click)="close()">Close</button> <!-- Move close button here -->
@@ -38,6 +40,8 @@
             <button class="dialog-delete-button" (click)="delete()">Delete</button> <!-- Move close button here -->
         </div>
         <app-service *ngIf="showService" [serviceData]="dialogData" (closeDialog)="onCloseDialog()"></app-service>
+        <app-create-service-infrastructure-dialog *ngIf="showCreateDialog" [createServiceDialogData]="serviceDialogData" (closeDialog)="onCloseCreateDialog()"></app-create-service-infrastructure-dialog>
+
     </div>
 </div>
 

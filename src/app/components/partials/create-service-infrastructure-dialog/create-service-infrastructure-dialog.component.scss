@@ -59,13 +59,19 @@
     color: #666;
   }
   
-  .input-sidebar {
+  /*.input-sidebar {
     display: flex;
     justify-content: space-between;
     margin-bottom: 20px;
+  }*/
+
+  .property {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
   }
   
-  .input-sidebar input[type="text"] {
+  .property input[type="text"] {
     width: 45%;
     padding: 10px;
     margin-bottom: 10px;
@@ -75,16 +81,16 @@
     transition: border-color 0.3s ease;
   }
   
-  .input-sidebar input[type="text"]::placeholder {
+  .property input[type="text"]::placeholder {
     color: #aaa;
   }
   
-  .input-sidebar input[type="text"]:focus {
+  .property input[type="text"]:focus {
     outline: none;
     border-color: #007bff;
   }
   
-  .input-sidebar input[type="text"]:focus::placeholder {
+  .property input[type="text"]:focus::placeholder {
     color: transparent;
   }
   
@@ -109,11 +115,6 @@
   .dialog-delete-button:hover{
     background-color: #e3a3a9;
   }
-
-  .dialog-delete-button:active {
-    background-color: #801D1A;
-    color: white;
-  }
   
   .sidebar-services-button,
   .sidebar-button {
@@ -123,29 +124,65 @@
   }
   
   .dialog-close-button {
-    position: absolute; /* Set to absolute */
+    position: absolute;
     top: 10px;
     right: 10px;
-    background-color: #dc3545;
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 6px;
+    padding: 10px 20px;
+    background-color: white;
+    color: #252525;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 2px solid #801D1A;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    z-index: 10;
   }
   
+  .dialog-close-button:hover {
+    background-color: #e3a3a9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .dialog-close-button:active {
+    background-color: #801D1A;
+    color: white;
+  }
+  
+  .dialog-save-button {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    padding: 10px 20px;
+    background-color: white;
+    color: #252525;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 2px solid #009BA0;
+    cursor: pointer;
+    z-index: 10;
+  }
+  
+  .dialog-save-button:hover {
+    background-color: #cef8fa; /* Darker shade for hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for a "lift" effect */
+  }
+  
+  .dialog-save-button:active {
+    background-color: #009BA0;
+    color: white;
+  }
+  
+  .dialog-save-button:disabled{
+    border: 2px solid #801D1A;
+  }
+
+
   .sidebar-services-button:hover,
   .sidebar-button:hover {
     background-color: #0056b3;
   }
   
-  .dialog-close-button:hover {
-    background-color: #bd2130;
-  }
   
-  
-  .input-sidebar input[type="text"],
+  .iproperty input[type="text"],
   .sidebar-services-button,
   .sidebar-button,
   .dialog-close-button {
@@ -155,18 +192,7 @@
       transition: background-color 0.3s ease;
   }
   
-  .dialog-close-button {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background-color: #dc3545;
-      color: white;
-      border: none;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-  }
-  
-  .input-sidebar input[type="text"] {
+  .property input[type="text"] {
       width: calc(50% - 20px); /* Adjusted width */
       padding: 10px; /* Adjusted padding */
       margin-bottom: 10px;
@@ -176,21 +202,63 @@
       transition: border-color 0.3s ease;
   }
   
-  .sidebar-services-button,
-  .sidebar-button {
-      background-color: #007bff;
-      color: white;
-      border: none;
-  }
-  
-  .sidebar-services-button:hover,
-  .sidebar-button:hover,
-  .dialog-close-button:hover {
-      background-color: #0056b3;
-  }
 
-  .dialog-close-button:active {
-    background-color: #801D1A;
-    color: white;
-  }
+
+  /* custom-dropdown.component.css */
+.dropdown-container {
+  position: relative;
+  border: 2px solid transparent;
+  width: 200px; /* Adjust as needed */
+  cursor: pointer;
+  background-color: white;
+}
+
+.dropdown-display {
+  padding: 10px;
+  color: #252525; /* Dark text for readability */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-top: none;
+  z-index: 1000;
+  max-height: 200px; /* Adjust as needed */
+  overflow-y: auto;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-item {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  border-bottom: 1px solid #801D1A;
+}
+
+.dropdown-item:hover {
+  background-color: #f0f0f0;
+}
+
+/* Optional: Add an icon to the dropdown display */
+.dropdown-display::after {
+  content: '\25BC'; /* Downward arrow */
+  font-size: 0.8em;
+  margin-left: 5px;
+}
+
+
+.dropdown-container:hover {
+  border-bottom-color: #801D1A; /* Color change on hover */
+}
+
+.dropdown-container:focus {
+  outline: none;
+  border-bottom-color: #801D1A;
+}
   

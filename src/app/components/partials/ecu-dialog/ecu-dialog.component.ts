@@ -6,6 +6,7 @@ import { LineCreationService } from '../../../services/header-main.service';
 import { Service } from '../../../shared/models/service';
 import { NewLine } from '../../../shared/models/line';
 
+
 @Component({
   selector: 'ecu-dialog',
   templateUrl: './ecu-dialog.component.html',
@@ -62,35 +63,61 @@ export class DialogComponent /*implements OnInit*/{
   showService: boolean = false;
 
   openDialog(): void {
-    this.showService = true;
-    this.dialogData.isEcuDetailsMod = false;
+    this.showService = !this.showService;
+    this.dialogData.isEcuDetailsMod = !this.dialogData.isEcuDetailsMod;
     //console.log(this.dialogData.selectedEcu)
     this.dialogData.getAllServices(this.dialogData.selectedEcu.id)
+    this.dialogData.initializeGraph(this.dialogData.lines);
+    /*for(let i = 0; i < this.dialogData.ecus.length; i++){
+      if(this.dialogData.canReach(this.dialogData.selectedEcu.id.toString(), this.dialogData.ecus[i].id.toString())){
+
+      }
+    }*/
+    
   }
 
   onCloseDialog(): void {
     this.showService = false;
   }
 
-  private updateService(Service: Service, id: BigInt){
+ /* private updateService(Service: Service, id: BigInt){
     //console.log(Line)
     this.ecuService.updadeService(Service, id).subscribe();
-   }
+   }*/
 
-  saveServices() {
-    
+  saveServices() {}
+   /* debugger
+    console.log(this.dialogData.ecus);
     for(let i = 0; i < this.dialogData.ecus.length; ++i){
       var servicesOfEcu = this.dialogData.servicesMap.get(this.dialogData.ecus[i].id);
+      console.log("services: ", servicesOfEcu);
       for(let j = 0; j < servicesOfEcu.length; j++){
           this.updateService(servicesOfEcu[j], servicesOfEcu[j].id);
       }
     }
-  }
+  }*/
 
 //-------------------------------28.05
 
   createDatastream(){
-    this.dialogData.creatingDatastreamModus = true;
+    this.dialogData.creatingDatastreamModus = !this.dialogData.creatingDatastreamModus;
+  }
+
+  serviceDialogData: any = this;
+
+
+  onCloseCreateDialog(){
+    this.showCreateDialog = !this.showCreateDialog;
+  }
+
+  showCreateDialog: boolean = false;
+  openCreateServiceDialog(){
+    this.showCreateDialog = !this.showCreateDialog;
+  }
+
+  goBack(){
+    this.showService = !this.showService;
+    this.dialogData.isEcuDetailsMod = !this.dialogData.isEcuDetailsMod;
   }
 
   

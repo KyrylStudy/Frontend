@@ -11,7 +11,9 @@ import { Hardware } from '../shared/models/hardware';
 import { NewHardware } from '../shared/models/hardware';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Architecture } from '../shared/models/architectures';
+import { newArchitecture } from '../shared/models/architectures';
 import { Service } from '../shared/models/service';
+import { newService } from '../shared/models/service';
 
 
 @Injectable({
@@ -52,6 +54,13 @@ export class EcuService {
     return this.httpClient.get<Architecture[]>(`${this.getAllArchitecturesUrl}`);
   }
 
+  createArchitecturesUrl = "http://localhost:8080/api/architecture"
+  createArchitecture(newArchitecture: newArchitecture): Observable<any> {
+    console.log(newArchitecture);
+    return this.httpClient.post<any>(`${this.createArchitecturesUrl}`, newArchitecture);
+}
+
+
   //--------------Software
 
   softwareUrl = "http://localhost:8080/api/ecus"
@@ -82,6 +91,11 @@ export class EcuService {
 serviceUrl = "http://localhost:8080/api/services/ecu/"
 getAllServicesByEcuId(ecu_id: BigInt):Observable<Service[]>{
   return this.httpClient.get<Service[]>(`${this.serviceUrl + ecu_id }`);
+}
+
+creareServiceUrl = 'http://localhost:8080/api/services/';
+createService(newService: newService, ecu_id: number): Observable<any> {
+    return this.httpClient.post<any>(`${this.creareServiceUrl + ecu_id}`, newService);
 }
 
 updateServiceUrl = "http://localhost:8080/api/services/"

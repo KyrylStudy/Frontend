@@ -4,3 +4,9 @@ export class Architecture {
     type!: String;
     description!: String;
 }
+
+export class newArchitecture {
+    name!: String;
+    type!: String;
+    description!: String;
+}

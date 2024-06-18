@@ -1,8 +1,21 @@
+<div class="dropdown-container" tabindex="0" (blur)="showDropdown = false">
+    <div class="dropdown-display" (click)="toggleDropdownCreate()">
+        {{ selectedService?.name || 'Select Service' }}
+    </div>
+    <div class="dropdown-menu" *ngIf="showDropdown">
+        <div class="dropdown-item" *ngFor="let option of options" (click)="selectOption(option)">
+            {{ option.name }}
+        </div>
+    </div>
+</div>
+<button class="select-all-services-button" (click)="selectAllServices()">Select all Services</button>
+<button class="service-save-button" (click)="saveServices()">Save</button>
 <div class="main-screen">
 
     <div class="button-set">
         <button class="zoomButton" (click)="zoomIn()">+</button>
         <button class="zoomButton" (click)="zoomOut()">-</button>
+        
     </div>
     <div class="horisontal-wrapper">
         
@@ -21,7 +34,8 @@
                     class="draggable-item"
                     (dblclick)="serviceData.openDialog(item)"
                     (click)="onEcuClick(item, $event)"
-                    [attr.ecuId]="item.id" >
+                    [attr.serviceId]="item.id" 
+                    [id]="item.id"  >
                     <div class="label-draggable-item">{{ item.name + "|" + item.id }}</div>
                     <div class="content-draggable-item">Service</div> <!--number of services-->
                 </div>
@@ -29,7 +43,9 @@
         </div>
         <div class="ecu" #scrollableEcu style="overflow: scroll;">
             <div *ngFor="let item1 of serviceData.ecus"><!-- </ng-container>-->
-                <div *ngIf="item1.id !== serviceData.selectedEcu.id"><!-- </ng-container>-->
+                <!--<div *ngIf="item1.id !== serviceData.selectedEcu.id"> </ng-container>-->
+                
+                    <div *ngIf="serviceData.canReach(serviceData.selectedEcu.id.toString(), item1.id.toString()) && item1.type =='ECU'">
                     <div class="ecu1">
                         <h4 class="ecu-name">{{ item1.label + "|" + item1.id }}</h4>
                         <div class="drag-boundary" [style.zoom]="zoomLevel">
@@ -42,7 +58,9 @@
                                 class="draggable-item"
                                 (dblclick)="serviceData.openDialog(item)"
                                 (click)="onEcuClick(item, $event)"
-                                [attr.ecuId]="item.id" >
+                                [attr.serviceId]="item.id" 
+                                [id]="item.id" 
+                                #draggableItem>
                                 <div class="label-draggable-item">{{ item.name + "|" + item.id }}</div>
                                 <div class="content-draggable-item">Service</div> <!--number of services-->
                             </div>
@@ -51,8 +69,8 @@
                 </div>
             </div>  
         </div>
-        <svg id="svg-container" class="connestion-line-container" [style.zoom]="zoomLevel">
-            <line class="connestion-line" *ngFor="let line of serviceData.dataStreams" 
+        <svg id="svg-container" class="connestion-line-container" [style.zoom]="zoomLevel"> 
+            <line class="connestion-line" *ngFor="let line of dataStreams" 
                   [attr.x1]="line.positionFromX" 
                   [attr.y1]="line.positionFromY"
                   [attr.x2]="line.positionToX" 
@@ -61,7 +79,7 @@
                   [attr.connectedTo]="line.connectedTo"
                   [attr.id]="line.id"
                   (dblclick)="serviceData.openBusDialog(line)"/>
-            <line class="connestion-line-overlay" *ngFor="let line of serviceData.dataStreams" 
+            <line class="connestion-line-overlay" *ngFor="let line of dataStreams" 
                   [attr.x1]="line.positionFromX" 
                   [attr.y1]="line.positionFromY"
                   [attr.x2]="line.positionToX" 
@@ -72,4 +90,6 @@
                   (dblclick)="serviceData.openBusDialog(line)"/>     
         </svg>
     </div>
+
+  
 </div>

@@ -3,9 +3,6 @@
         <button class="dialog-close-button" (click)="close()">Close</button> <!-- Move close button here -->
         <div *ngIf="dialogData.selectedBus">
             <h3>{{ dialogData.selectedBus.name }}</h3>
-            <div class="input-sidebar">
-                <button class="sidebar-services-button" (click)="dialogData.showListOfServices()">Services</button>
-            </div>
             <h4>Description: {{ dialogData.selectedBus.description}}</h4>
             <h4>Connected from: {{ dialogData.selectedBus.connectedFrom }}</h4>
             <h4>Connected to: {{ dialogData.selectedBus.connectedTo }}</h4>

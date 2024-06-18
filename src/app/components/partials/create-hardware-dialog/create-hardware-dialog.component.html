@@ -1,0 +1,51 @@
+<div class="dialog-container">
+    <div class="dialog-content">
+        <button class="dialog-close-button" (click)="close()">Close</button> <!-- Move close button here -->
+        <div *ngIf="createHardwareData.showCreateHardwareDialog === hardware ">
+            <h3> Create Hardware</h3>
+
+            <div class="property">
+                <h2>Type*: </h2>
+                <div class="dropdown-container" tabindex="0" (blur)="showDropdown = false">
+                    <div class="dropdown-display" (click)="toggleDropdownType()">
+                        {{ selectedOption?.label || 'Create' }}
+                    </div>
+                    <div class="dropdown-menu" *ngIf="showDropdown">
+                        <div class="dropdown-item" *ngFor="let option of options" (click)="selectOption(option)">
+                            {{ option.label }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="property">
+                <h2>Name*: </h2>
+                <input type="text" placeholder="ECU Name" [(ngModel)]="newHardwareName">
+            </div>
+            
+            <div class="property">
+                <h2>Description*: </h2>
+                <input type="text" placeholder="Description" [(ngModel)]="newHardwareDescription">
+            </div>
+
+             <!--<h4>Description: {{ createHardwareData.selectedBus.description}}</h4>
+            <h4>Connected from: {{ createHardwareData.selectedBus.connectedFrom }}</h4>
+            <h4>Connected to: {{ createHardwareData.selectedBus.connectedTo }}</h4>
+           <button class="dialog-delete-button" (click)="delete()">Delete</button>  Move close button here -->
+        </div>
+        <div *ngIf="createHardwareData.showCreateHardwareDialog === architecture; ">
+            <h3> Create Architecture</h3>
+            <div class="property">
+                <h2>Name*: </h2>
+                <input type="text" placeholder="ECU Name" [(ngModel)]="newArchitectureName">
+            </div>
+            
+            <div class="property">
+                <h2>Description*: </h2>
+                <input type="text" placeholder="Description" [(ngModel)]="newArchitectureDescription">
+            </div>
+        </div>
+        <button class="dialog-save-button" [disabled]="!true" (click)="save()">Save</button> <!-- Move close button here -->
+    </div>
+</div>
+
+

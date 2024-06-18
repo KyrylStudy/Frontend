@@ -40,13 +40,13 @@
         </div>
     </div>
 
-    <div class="header-center">
-        <!-- Switch Button -->
+   <!-- <div class="header-center">
+        
         <label class="switch">
             <input type="checkbox" id="toggleSwitch" (change)="toggleView()">
             <span class="slider"></span>
         </label>
-    </div>
+    </div>-->
 
     <div class="header-right">
 
@@ -71,9 +71,9 @@
             <button class="zoomButton" (click)="zoomIn()">+</button>
             <button class="zoomButton" (click)="zoomOut()">-</button>
         </div>
-        <div class="drag-boundary" [style.zoom]="zoomLevel" *ngIf="viewSwitch">
+        <!--<div class="drag-boundary" [style.zoom]="zoomLevel" *ngIf="viewSwitch">
 
-            <svg id="svg-container" class="connestion-line-container">
+            <svg id="svg-container" class="connestion-line-container" >
                 <line class="connestion-line" *ngFor="let line of lines" 
                       [attr.x1]="line.positionFromX" 
                       [attr.y1]="line.positionFromY"
@@ -108,14 +108,13 @@
             <ng-container *ngIf="item.type == 'ECU'">
                 <div class="ecu">
                     <div class="label-draggable-item">{{ item.label + "|" + item.id}}</div>
-                    <div class="content-draggable-item">{{ servicesCountMap.get(item.id) || 0 }} Services</div> <!--number of services-->
-                    <!--<div class="content-draggable-item">{{servicesNumber[item.connectedTo]}} Services</div>-->
+                    <div class="content-draggable-item">{{ servicesCountMap.get(item.id) || 0 }} Services</div> 
                 </div>
             </ng-container>
             </div>
-    </div>
+    </div>-->
 
-    <div class="drag-boundary" [style.zoom]="zoomLevel" *ngIf="!viewSwitch">
+    <div class="drag-boundary" [style.zoom]="zoomLevel">
 
         <svg id="svg-container" class="connestion-line-container">
             <line class="connestion-line" *ngFor="let line of lines" 
@@ -126,7 +125,7 @@
                   [attr.connectedFrom]="line.connectedFrom"
                   [attr.connectedTo]="line.connectedTo"
                   [attr.id]="line.id"
-                  (dblclick)="openBusDialog(line)"/>
+                  (dblclick)="openConnectionDialog(line)"/>
             <line class="connestion-line-overlay" *ngFor="let line of lines" 
                   [attr.x1]="line.positionFromX" 
                   [attr.y1]="line.positionFromY"
@@ -135,7 +134,7 @@
                   [attr.connectedFrom]="line.connectedFrom"
                   [attr.connectedTo]="line.connectedTo"
                   [attr.id]="line.id"
-                  (dblclick)="openBusDialog(line)"/>     
+                  (dblclick)="openConnectionDialog(line)"/>     
         </svg>
           
 
@@ -177,6 +176,8 @@
 
         <ecu-dialog *ngIf="showDialog && dialogData" [dialogData]="dialogData" (closeDialog)="onCloseDialog()"></ecu-dialog>
         <bus-dialog *ngIf="showBusDialog && dialogData" [dialogData]="dialogData" (closeDialog)="onCloseBusDialog()"></bus-dialog>
+        <create-hardware-dialog *ngIf="showCreateHardwareDialog" [createHardwareData]="dialogData" (closeDialog)="onCloseCreateHardwareDialog()"></create-hardware-dialog>
+      
  
     </div>
     
