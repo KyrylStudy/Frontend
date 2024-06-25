@@ -35,19 +35,7 @@ export class BusDialogComponent {
         console.log(this.dialogData.ecus[i])
       }
     }
-   /* if(connectedFromEcu){
-      connectedFromEcu.connectedTo = ''
-      this.updateEcu(connectedFromEcu, connectedFromEcuId);
-    }
-    if(connectedToEcu){
-      connectedToEcu.connectedTo = ''
-      this.updateEcu(connectedToEcu, connectedToEcuId);
-    }*/
-    /*for(let i = 0; i < this.dialogData.lines.length; i++){
-      if(this.dialogData.lines[i].id === this.dialogData.selectedBus.id){
-        this.dialogData.lines[i].delete
-      }
-    }*/
+
     this.dialogData.lines = this.dialogData.lines.filter((item: { id: any; }) => item.id !== this.dialogData.selectedBus.id);
     //console.log(this.dialogData.lines)
     this.deleteBus(this.dialogData.selectedBus.id);

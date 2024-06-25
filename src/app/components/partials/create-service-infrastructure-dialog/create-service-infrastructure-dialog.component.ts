@@ -36,11 +36,32 @@ export class CreateServiceInfrastructureDialogComponent {
             positionY: 229,
             connectedTo: '9'};
            
-             this.ecuService.createService(newService, this.createServiceDialogData.dialogData.selectedEcu.id).subscribe(data =>{
-              this.createServiceDialogData.dialogData.getAllServices();
-               console.log(data)
-             }
-             );
+             this.ecuService.createService(newService, this.createServiceDialogData.dialogData.selectedEcu.id).subscribe({
+              next: (data) => {
+                this.createServiceDialogData.dialogData.getAllServices();
+
+                var that = this;
+                setTimeout(function(){
+                  that.createServiceDialogData.dataForDataStreamDetails.selectedOption = null;
+                  that.createServiceDialogData.dataForDataStreamDetails.selectedService = null;
+                  that.createServiceDialogData.dataForDataStreamDetails.options = that.createServiceDialogData.dialogData.servicesMap.get(that.createServiceDialogData.dialogData.selectedEcu.id);
+                }, 300)
+              },
+              error: (error) => {
+                // Handle the error here if needed
+
+              }
+            });
+
+            
+
+
+             /*var that = this;
+        setTimeout(function(){
+          that.serviceDetilsData.dataForDataStreamDetails.selectedOption = null;
+          that.serviceDetilsData.dataForDataStreamDetails.selectedService = null;
+          that.serviceDetilsData.dataForDataStreamDetails.options = that.serviceDetilsData.dialogData.servicesMap.get(that.serviceDetilsData.dialogData.selectedEcu.id);
+        }, 300)*/
            
              this.closeDialog.emit(true);
       }else {

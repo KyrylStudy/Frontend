@@ -3,10 +3,10 @@
         <div class="dialog-content">-->
 <div class="dropdown-container" tabindex="0" (blur)="showDropdown = false">
     <div class="dropdown-display" (click)="toggleDropdownCreate()">
-        {{ serviceData.selectedService?.name || 'Select Service' }} 
+        {{ selectedOption?.name || 'Select Service' }} 
     </div>
     <div class="dropdown-menu" *ngIf="showDropdown">
-        <div class="dropdown-item" *ngFor="let option of options" (click)="selectOption(option)">
+        <div class="dropdown-item" *ngFor="let option of options" (click)="selectOption(option)"> 
             {{ option.name }}
         </div>
     </div>
@@ -59,7 +59,7 @@
                                 (cdkDragEnded)="onDragEnded($event, item)"
                                 (cdkDragMoved)="rewriteLine(item)"
                                 class="draggable-item"
-                                (dblclick)="serviceData.openServiceDetailsDialog(item)"
+                                (dblclick)="serviceData.openServiceDetailsDialog(item)" 
                                 (click)="onEcuClick(item, $event)"
                                 [attr.serviceId]="item.id" 
                                 [id]="item.id" 

@@ -309,9 +309,17 @@ creatingLine = false;
     this.getAllArchitectures();
 
     this.getAllServices();
+    //this.getAllDataStreams(1);
     //this.getAllDataStreams(1)
 
   }
+
+ /* dataStreams: any[] = [];
+  private getAllDataStreams(architectureId: number){
+    this.lineCreationService.getAllDataStreams(architectureId).subscribe(data => {
+      this.dataStreams = data;
+    });
+  }*/
 
   private getAllBus(architectureId: number){
     this.lineCreationService.getAllBus(architectureId).subscribe(data => {
@@ -320,10 +328,28 @@ creatingLine = false;
   }
 
   private getAllEcus(id: number) {
-     this.ecuService.getAll(id).subscribe(data => {
+     this.ecuService.getAll(id).subscribe(/*data => {
       this.ecus = data;
+
       
-    });
+
+      getAllServices
+      
+    }*/
+      {
+        next: (data) => {
+          this.ecus = data;
+          this.getAllServices();
+        },
+        error: (error) => {
+          // Handle the error here if needed
+
+        }
+      }
+   
+   
+   
+    );
   }
 
   architectures: Architecture[] | null = null;
@@ -341,12 +367,12 @@ creatingLine = false;
   getAllServices(): void {
     // Assuming ecus array is already populated, otherwise, you need to fetch it first
     if (this.ecus.length > 0) {
-      const serviceObservables: Observable<Service[]>[] = this.ecus.map(ecu => this.ecuService.getAllServicesByEcuId(ecu.id));
-
+      const serviceObservables: Observable<Service[]>[] = this.ecus.map(ecu => this.ecuService.getAllServicesByEcuId(ecu.id)); 
+      
       forkJoin(serviceObservables).subscribe(serviceArrays => {
         serviceArrays.forEach((services, index) => {
           const ecuId = this.ecus[index].id;
-          this.servicesCountMap.set(ecuId, services.length);
+          this.servicesCountMap.set(ecuId, services.length); 
           this.servicesMap.set(ecuId, services);
         });
       });
@@ -442,9 +468,10 @@ private graph: { [key: string]: string[] } = {};
 
   //----------------------service--18.06
   //showService: boolean = false;
-  showServiceDialog: boolean = false;
-  selectedService: any = null;
-  showDataStreamDialog: boolean = false;
+
+  //selectedService: any = null;    ------------------!!!!!!!!!!!
+  //showServiceDialog: boolean = false;
+  //showDataStreamDialog: boolean = false;
 
 
  
@@ -593,10 +620,6 @@ async selectArchitecture(option: any): Promise<void> {
 
   await this.getAllEcus(option.id); 
   await this.getAllBus(option.id);
-  var that = this;
- setTimeout(function(){
-   that.getAllServices();
- }, 100) 
 
   this.showDropdownSelectArchitecture = false;
 }

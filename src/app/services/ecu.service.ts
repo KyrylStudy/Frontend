@@ -61,7 +61,7 @@ export class EcuService {
 }
 
 
-  //--------------Software
+  //--------------Software(property)
 
   softwareUrl = "http://localhost:8080/api/ecus"
   getAllSoftwareByEcuId(id: BigInt):Observable<Software[]>{
@@ -74,7 +74,7 @@ export class EcuService {
   }
 
 
-  //--------------Hardware
+  //--------------Hardware(property)
 
   hardwareUrl = "http://localhost:8080/api/ecus"
   getAllHardwareByEcuId(id: BigInt):Observable<Hardware[]>{
@@ -102,6 +102,11 @@ updateServiceUrl = "http://localhost:8080/api/services/"
 updadeService(Service: Service, id: BigInt):Observable<any>{
   return this.httpClient.put(`${this.updateServiceUrl + id  + '/update'}`, Service);
 }
+
+deleteServiceUrl = 'http://localhost:8080/api/services/';
+deleteService(id: BigInt): Observable<any> {
+  return this.httpClient.delete(`${this.deleteServiceUrl + id + '/delete'}`);
+  }
 
 
 

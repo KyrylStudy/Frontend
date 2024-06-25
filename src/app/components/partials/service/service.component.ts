@@ -116,7 +116,7 @@ zoomOut() {
 
 ngOnInit(): void {
  // this.el.nativeElement.querySelector(`[serviceId="${''}"]`);
- 
+ this.dataStreamsTransport.emit(this); 
  this.scrollableEcu.nativeElement.addEventListener('scroll', this.onElementScroll.bind(this));
   this.getDataStreams(this.serviceData.dialogData.dialogData.selectedArchitecture.id);
   this.options = this.serviceData.dialogData.dialogData.servicesMap.get(this.serviceData.dialogData.dialogData.selectedEcu.id);
@@ -131,14 +131,32 @@ ngAfterViewInit(){
 
 
 private getDataStreams(architectureId: number){
-  this.lineCreationService.getAllDataStreams(architectureId).subscribe(data => {
+  
+  this.lineCreationService.getAllDataStreams(architectureId).subscribe({
+      next: (data) => { 
+
+        //debugger 
+        if(this.selectedOption){
+          this.getDataStreamsOfSelectdService(data)
+        }else{
+          this.getAllDataStreams(data)
+        } 
+      },
+      error: (error) => {
+        // Handle the error here if needed
+        console.error('Error geting Data Stream', error);
+      }
+    }
+    
+    
+    /*data => {
     if(this.serviceData.selectedService){
       this.getDataStreamsOfSelectdService(data)
     }else{
       this.getAllDataStreams(data)
     }
 
-  });
+  }*/);
 }
 
 
@@ -151,7 +169,8 @@ dataStreams: DataStream[] = [];
   endEcu: Service | null = null;
   startLinePsition: any;
 
-  onEcuClick(ecu: Service, event: MouseEvent){
+  onEcuClick(ecu: Service, event: MouseEvent){ 
+    this.dataStreamsTransport.emit(this); 
     console.log(this.serviceData.dialogData.dialogData.creatingDatastreamModus)
     if(this.serviceData.dialogData.dialogData.creatingDatastreamModus){
       if (!this.startEcu) {
@@ -309,10 +328,13 @@ toggleDropdownCreate(): void {
 
 options:any = [];
 //selectedService: any = null;
-
+selectedOption: any = null;
 selectOption(option: any): void {
   if(option){
     this.serviceData.selectedService = option;
+    //console.log( this.serviceData.selectedService)
+    //debugger
+    this.selectedOption = option;
     this.dataStreams = [];
     this.getDataStreams(this.serviceData.dialogData.dialogData.selectedArchitecture.id);
   }else{
@@ -362,10 +384,11 @@ getDataStreamsOfSelectdService(allDataStreams: any){
   }
 
 
-  getAllDataStreams(data: any){
+  getAllDataStreams(data: any){ 
     var selectedServiceDataStreams:any = [];
     var connectedServices: any = [];
-   // console.log(this.selectedService)
+    
+    console.log(data)
     for(let i = 0; i < data.length; i++){
       selectedServiceDataStreams.push(data[i]);
         const service1 = this.el.nativeElement.querySelector(`[serviceId="${Number(data[i].connectedTo)}"]`);
@@ -374,24 +397,26 @@ getDataStreamsOfSelectdService(allDataStreams: any){
         connectedServices.push(service2)
     }
     this.dataStreams = selectedServiceDataStreams;
-    for(let i = 0; i < connectedServices.length; i++){
+    for(let i = 0; i < connectedServices.length; i++){ 
       this.rewriteLine(connectedServices[i])
     }
+    //console.log(connectedServices) 
   }
 
-  selectAllServices(){
+  selectAllServices(){ 
     this.serviceData.selectedService = null;
-    this.getDataStreams(this.serviceData.dialogData.dialogData.selectedArchitecture.id);
+    this.selectedOption = null;
+    this.getDataStreams(this.serviceData.dialogData.selectedArchitecture.id);
   }
 
-  selectedDataStream: any;
+  selectedDataStream: any; 
 
   openDataStreamDetails(dataStream: DataStream){//------------------------------add logic!!!
 
     this.selectedDataStream = dataStream;
-    this.serviceData.dialogData.showDataStreamDialog = true;
+    this.serviceData.showDataStreamDialog = true;
     this.serviceData.showService = false;
-    this.dataStreamsTransport.emit(this);
+    this.dataStreamsTransport.emit(this); 
   }
 
   @Output() dataStreamsTransport = new EventEmitter<any>();

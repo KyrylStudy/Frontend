@@ -51,22 +51,22 @@ export class LineCreationService {
 
     //------------------------------------Data---Stream----------
 
-    baseDataStreamUrl = "http://localhost:8080/api/data-stream"
+    baseDataStreamUrl = "http://localhost:8080/api/data-stream/" 
     getAllDataStreams(architectureId: number): Observable<DataStream[]>{
 
-      return this.httpClient.get<DataStream[]>(`${this.baseDataStreamUrl + '/' + 'architecture/' + architectureId}`);
+      return this.httpClient.get<DataStream[]>(`${this.baseDataStreamUrl + 'architecture/' + architectureId}`);
     }
   
     /** PUT: update the hero on the server */
     updateDataStream(DataStream: DataStream, id: BigInt): Observable<any> {
-    return this.httpClient.put(`${this.baseDataStreamUrl + '/' + id + '/' + 'update'}`, DataStream);
+    return this.httpClient.put(`${this.baseDataStreamUrl + id + '/' + 'update'}`, DataStream);
     }
   
     //createDataStreamUrl = 'http://localhost:8080/api/data-stream';
     createDataStream(architectureId: number, NewDataStream: NewDataStream): Observable<any> {
         //var url = this.baseUrl + "/" + Line.id;
         //console.log(EcuPost);
-        return this.httpClient.post<any>(`${this.baseDataStreamUrl + '/' + architectureId}`, NewDataStream);
+        return this.httpClient.post<any>(`${this.baseDataStreamUrl + architectureId}`, NewDataStream);
     }
   
     
