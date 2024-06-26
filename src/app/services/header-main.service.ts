@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { Line } from '../shared/models/line';
-import { NewLine } from '../shared/models/line';
+import { Connection } from '../shared/models/connection-model';
+import { NewConnection } from '../shared/models/connection-model';
 import { HttpClient } from '@angular/common/http';
 import {Architecture} from '../shared/models/architectures'
 import { DataStream } from '../shared/models/data_stream';
@@ -26,18 +26,18 @@ export class LineCreationService {
 
 
 //-----------------------------------------------------Bus------------------
-  getAllBus(architectureId: number): Observable<Line[]>{
+  getAllBus(architectureId: number): Observable<Connection[]>{
 
-    return this.httpClient.get<Line[]>(`${this.baseUrl + 'architecture/' + architectureId}`);
+    return this.httpClient.get<Connection[]>(`${this.baseUrl + 'architecture/' + architectureId}`);
   }
 
   /** PUT: update the hero on the server */
-  updateBus(Line: Line, id: BigInt): Observable<any> {
+  updateBus(Line: Connection, id: BigInt): Observable<any> {
   return this.httpClient.put(`${this.baseUrl + id + '/' + 'update'}`, Line);
   }
 
   //createBusUrl = 'http://localhost:8080/api/bus';
-  createBus(architectureId: number, NewLine: NewLine): Observable<any> {
+  createBus(architectureId: number, NewLine: NewConnection): Observable<any> {
       //var url = this.baseUrl + "/" + Line.id;
       //console.log(EcuPost);
       return this.httpClient.post<any>(`${this.baseUrl + architectureId}`, NewLine);

@@ -17,8 +17,8 @@ export class newService {
     connectedTo!: string;
 }
 
-export class Connection {
+/*export class Connection {
     id!: number;
     ecuId!: number;
     busId!: number;
-}
+}*/

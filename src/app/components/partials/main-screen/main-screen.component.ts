@@ -1,8 +1,8 @@
 import { Component, OnInit, Renderer2, ElementRef } from '@angular/core';
 import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Ecu, EcuPost } from '../../../shared/models/ecu';
-import { Line } from '../../../shared/models/line';
-import { NewLine } from '../../../shared/models/line';
+import { Connection } from '../../../shared/models/connection-model';
+import { NewConnection } from '../../../shared/models/connection-model';
 import { EcuService } from '../../../services/ecu.service';
 //import { HeaderComponent } from '../header/header.component';
 //import { sample_lines } from '../../../../data'; // Import sample_lines from data.ts
@@ -14,7 +14,7 @@ import { NewHardware } from '../../../shared/models/hardware';
 import { ServicesIncideEcuService } from '../../../services/services-incide-ecu.service';
 import { Architecture } from '../../../shared/models/architectures';
 import { newArchitecture } from '../../../shared/models/architectures';
-import { Connection } from '../../../shared/models/service';
+//import { Connection } from '../../../shared/models/service';
 import { Service } from '../../../shared/models/service';
 import { Observable, concatMap, forkJoin, tap } from 'rxjs';
 import { DataStream } from '../../../shared/models/data_stream';
@@ -32,48 +32,35 @@ export class MainScreenComponent implements OnInit{
 
   showCreateHardwareDialog: any = null;
   showBusDialog: boolean = false;
-  showDialog: boolean = false;
   
-  dialogData: any = this;
+  
+  dialogData: any = this; //data for export
 
-  openDialog(ecu: Ecu): void {
-    this.showDialog = true;
+  showHardwareDetailsDialog: boolean = false;
+  isEcuDetailsMod = false;
+
+  openHarwareDetailsDialog(ecu: Ecu): void {
+    this.showHardwareDetailsDialog = true;
     this.isEcuDetailsMod = true;
-    this.getHarwareInfo(ecu);
-   // this.selectedEcu = ecu;
-    console.log("ecu: ", this.selectedEcu)
+    this.selectedEcu = ecu;
+    this.getAllHardwareProperties(ecu.id);
+    //console.log("ecu: ", this.selectedEcu)
   }
 
-  /*openConnectionDialog(bus: Line): void {
-    //this.showBusDialog = true;
-    //this.selectedBus = bus;
-    console.log( this.selectedBus )
-
-    for(let i = 0; i < this.ecus.length; i++){
-      if(this.ecus[i].id.toString() === bus.connectedFrom || this.ecus[i].id.toString() === bus.connectedTo ){
-        if(this.ecus[i].type == "BUS" || this.ecus[i].type == "CAN"){
-          this.openDialog(this.ecus[i]);
-        }
-      }
-    }
-   
-  }*/
-
-  selectedBus: Line | null = null;
-  openConnectionDialog(connection: Line): void {
-    this.selectedBus = connection;
-    this.showBusDialog = !this.showBusDialog;
-   /* this.getAllSoftwareByEcuId(ecu.id);
-    console.log(this.software)
-    this.getAllHardwareByEcuId(ecu.id);
-    console.log(this.hardware)
-    this.isSidebarOpen = true;*/
-  }
-
-  onCloseDialog(): void {
-    this.showDialog = false;
+  closeHarwareDetailsDialog(): void {
+    this.showHardwareDetailsDialog = false;
     this.isEcuDetailsMod = false;
   }
+
+
+
+  selectedBus: Connection | null = null;
+  openConnectionDialog(connection: Connection): void {
+    this.selectedBus = connection;
+    this.showBusDialog = !this.showBusDialog;
+  }
+
+
   onCloseBusDialog(): void {
     this.showBusDialog = false;
   }
@@ -83,7 +70,7 @@ export class MainScreenComponent implements OnInit{
   }
 
  //--------01.04.--------------
- lines: Line[] = [];
+ lines: Connection[] = [];
  
  //------------------ 
 
@@ -97,7 +84,7 @@ export class MainScreenComponent implements OnInit{
   isSidebarOpen = false;
   servisecOfSelectedEcu: Ecu | null = null;;
   selectedEcu: Ecu | null = null;
-  isEcuDetailsMod = false;
+
 
   dataFromHeader: any;
 
@@ -200,14 +187,7 @@ export class MainScreenComponent implements OnInit{
 
 //-----------------software----------hardware----------
 
-  getHarwareInfo(ecu: Ecu): void {
-    this.selectedEcu = ecu;
-    this.getAllSoftwareByEcuId(ecu.id);
-    //console.log(this.software)
-    this.getAllHardwareByEcuId(ecu.id);
-    //console.log(this.hardware)
-   // this.isSidebarOpen = true;
-  }
+
 
   /*closeSidebar(): void {
     this.isSidebarOpen = false;
@@ -224,13 +204,13 @@ hardwareValue: string = '';
  software:Software[] = [];
  hardware:Software[] = [];
 
-  private getAllSoftwareByEcuId(id: BigInt){
+  /*private getAllSoftwareByEcuId(id: BigInt){
     this.ecuService.getAllSoftwareByEcuId(id).subscribe(data => {
       this.software = data;
     });
-  }
+  }*/
 
-  private getAllHardwareByEcuId(id: BigInt){
+  private getAllHardwareProperties(id: BigInt){
     this.ecuService.getAllHardwareByEcuId(id).subscribe(data => {
       this.hardware = data;
     });
@@ -411,7 +391,7 @@ toggleView(){
 private graph: { [key: string]: string[] } = {};
 
 
-  public initializeGraph(lines: Line[]): void {
+  public initializeGraph(lines: Connection[]): void {
     this.graph = {};
 
     lines.forEach(line => {
@@ -568,7 +548,7 @@ options = [
 selectedOption: any = null;
 
 
-   private updateBus(Line: Line, id: BigInt){
+   private updateBus(Line: Connection, id: BigInt){
     //console.log(Line)
     this.lineCreationService.updateBus(Line, id).subscribe();
    }
@@ -757,7 +737,7 @@ onEcuClick(ecu: Ecu, event: MouseEvent){
 
 
 
-          const newLine: NewLine = {
+          const newLine: NewConnection = {
           name: 'Bus ' + (this.lines.length + 1), type: 'Bus',
           description: 'default description',
           positionFromX:  (this.startEcu.positionX - 2 + positionOfConnection*numberOfConnections).toString(),
@@ -821,7 +801,7 @@ onEcuClick(ecu: Ecu, event: MouseEvent){
 
 
 
-          const newLine: NewLine = {
+          const newLine: NewConnection = {
           name: 'Bus ' + (this.lines.length + 1), type: 'Bus',
           description: 'default description', 
           positionFromX: (this.startEcu.positionX + (this.ECUwidth/2)).toString(),

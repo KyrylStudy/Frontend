@@ -1,4 +1,4 @@
-export class Line {
+export class Connection {
     id!: BigInt; 
     name!: string;
     type!: string;
@@ -13,7 +13,7 @@ export class Line {
 }
 
 
-export class NewLine {
+export class NewConnection {
     name!: string;
     type!: string;
     description!: string;

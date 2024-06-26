@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Ecu } from '../shared/models/ecu';
 import { EcuPost } from '../shared/models/ecu';
 //import { sample_ecu } from '../../data';
-import { Line } from '../shared/models/line';
+//import { Connection } from '../shared/models/connection-model';
 //import { sample_lines } from '../../data';
 import { HttpClient } from '@angular/common/http';
 import { Software } from '../shared/models/software';

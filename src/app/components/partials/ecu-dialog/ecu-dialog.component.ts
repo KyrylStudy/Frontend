@@ -4,7 +4,7 @@ import { Component, EventEmitter, Output, Input, Renderer2/*, OnInit*/ } from '@
 import { EcuService } from '../../../services/ecu.service';
 import { LineCreationService } from '../../../services/header-main.service';
 import { Service } from '../../../shared/models/service';
-import { NewLine } from '../../../shared/models/line';
+import { NewConnection } from '../../../shared/models/connection-model';
 import { DataStream } from '../../../shared/models/data_stream';
 
 
@@ -84,8 +84,8 @@ export class DialogComponent /*implements OnInit*/{
 
 
   openDialog(): void {
-    this.showService = !this.showService;
-    this.dialogData.isEcuDetailsMod = !this.dialogData.isEcuDetailsMod;
+    this.showService = true;
+    this.dialogData.isEcuDetailsMod = false;
     //console.log(this.dialogData.selectedEcu)
     this.dialogData.getAllServices(this.dialogData.selectedEcu.id);
     this.dialogData.initializeGraph(this.dialogData.lines);
@@ -138,8 +138,8 @@ export class DialogComponent /*implements OnInit*/{
   }
 
   goBack(){
-    this.showService = !this.showService;
-    this.dialogData.isEcuDetailsMod = !this.dialogData.isEcuDetailsMod;
+    this.showService = false;
+    this.dialogData.isEcuDetailsMod = true;
   }
 
   dataForServiceDialog = this;

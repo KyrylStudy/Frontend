@@ -71,50 +71,8 @@
             <button class="zoomButton" (click)="zoomIn()">+</button>
             <button class="zoomButton" (click)="zoomOut()">-</button>
         </div>
-        <!--<div class="drag-boundary" [style.zoom]="zoomLevel" *ngIf="viewSwitch">
-
-            <svg id="svg-container" class="connestion-line-container" >
-                <line class="connestion-line" *ngFor="let line of lines" 
-                      [attr.x1]="line.positionFromX" 
-                      [attr.y1]="line.positionFromY"
-                      [attr.x2]="line.positionToX" 
-                      [attr.y2]="line.positionToY"
-                      [attr.connectedFrom]="line.connectedFrom"
-                      [attr.connectedTo]="line.connectedTo"
-                      [attr.id]="line.id"
-                      (dblclick)="openBusDialog(line)"/>
-                <line class="connestion-line-overlay" *ngFor="let line of lines" 
-                      [attr.x1]="line.positionFromX" 
-                      [attr.y1]="line.positionFromY"
-                      [attr.x2]="line.positionToX" 
-                      [attr.y2]="line.positionToY"
-                      [attr.connectedFrom]="line.connectedFrom"
-                      [attr.connectedTo]="line.connectedTo"
-                      [attr.id]="line.id"
-                      (dblclick)="openBusDialog(line)"/>     
-            </svg>
-              
-
-            <div *ngFor="let item of ecus" 
-            cdkDrag
-            cdkDragBoundary=".drag-boundary"
-            [style.transform]="'translateX(' + item.positionX + 'px) translateY(' + item.positionY + 'px)'"
-            (cdkDragEnded)="onDragEnded($event, item)"
-            (cdkDragMoved)="rewriteLine(item)"
-            class="draggable-item"
-            (dblclick)="openDialog(item)"
-            (click)="onEcuClick(item, $event)"
-            [attr.ecuId]="item.id" >
-            <ng-container *ngIf="item.type == 'ECU'">
-                <div class="ecu">
-                    <div class="label-draggable-item">{{ item.label + "|" + item.id}}</div>
-                    <div class="content-draggable-item">{{ servicesCountMap.get(item.id) || 0 }} Services</div> 
-                </div>
-            </ng-container>
-            </div>
-    </div>-->
-
-    <div class="drag-boundary" [style.zoom]="zoomLevel">
+       
+        <div class="drag-boundary" [style.zoom]="zoomLevel">
 
         <svg id="svg-container" class="connestion-line-container">
             <line class="connestion-line" *ngFor="let line of lines" 
@@ -145,7 +103,7 @@
         (cdkDragEnded)="onDragEnded($event, item)"
         (cdkDragMoved)="rewriteLine(item)"
         class="draggable-item"
-        (dblclick)="openDialog(item)"
+        (dblclick)="openHarwareDetailsDialog(item)"
         (click)="onEcuClick(item, $event)"
         [attr.ecuId]="item.id" >
         <ng-container *ngIf="item.type == 'ECU'">
@@ -174,7 +132,7 @@
    </div>
 </div>
 
-        <ecu-dialog *ngIf="showDialog" [dialogData]="dialogData" (closeDialog)="onCloseDialog()"></ecu-dialog>
+        <ecu-dialog *ngIf="showHardwareDetailsDialog" [dialogData]="dialogData" (closeDialog)="closeHarwareDetailsDialog()"></ecu-dialog>
         <bus-dialog *ngIf="showBusDialog" [dialogData]="dialogData" (closeDialog)="onCloseBusDialog()"></bus-dialog>
         <create-hardware-dialog *ngIf="showCreateHardwareDialog" [createHardwareData]="dialogData" (closeDialog)="onCloseCreateHardwareDialog()"></create-hardware-dialog>
       
