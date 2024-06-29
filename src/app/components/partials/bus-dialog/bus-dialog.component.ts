@@ -2,7 +2,7 @@ import { Component, EventEmitter, Output, Input } from '@angular/core';
 import { LineCreationService } from '../../../services/header-main.service';
 //import { Connection } from '../../../shared/models/connection-model';
 import { EcuService } from '../../../services/ecu.service';
-import { Ecu } from '../../../shared/models/ecu';
+import { Hardware } from '../../../shared/models/hardware';
 
 @Component({
   selector: 'bus-dialog',
@@ -20,9 +20,9 @@ export class BusDialogComponent {
 
   delete(): void {
     var connectedFromEcuId = this.dialogData.selectedBus.connectedFrom;
-    var connectedFromEcu: Ecu | null = null;
+    var connectedFromEcu: Hardware | null = null;
     var connectedToEcuId = this.dialogData.selectedBus.connectedTo;
-    var connectedToEcu: Ecu | null = null;
+    var connectedToEcu: Hardware | null = null;
     for(let i = 0; i < this.dialogData.ecus.length; i++){
       if(this.dialogData.ecus[i].id == connectedFromEcuId){
         //connectedFromEcu = this.dialogData.ecus[i];
@@ -55,7 +55,7 @@ export class BusDialogComponent {
     }
   }
 
-  private updateEcu(Ecu: Ecu, id: BigInt){
+  private updateEcu(Ecu: Hardware, id: BigInt){
     this.ecuService.updateEcu(Ecu, id).subscribe();
    }
 }

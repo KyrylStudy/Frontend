@@ -33,7 +33,7 @@
                     cdkDragBoundary=".drag-boundary"
                     [style.transform]="'translateX(' + item.positionX + 'px) translateY(' + item.positionY + 'px)'"
                     (cdkDragEnded)="onDragEnded($event, item)"
-                    (cdkDragMoved)="rewriteLine(item)"
+                    (cdkDragMoved)="rewriteLine(item)" 
                     class="draggable-item"
                     (dblclick)="serviceData.openServiceDetailsDialog(item)"
                     (click)="onEcuClick(item, $event)"

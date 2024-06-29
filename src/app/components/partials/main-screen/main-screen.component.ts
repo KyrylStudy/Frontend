@@ -1,6 +1,6 @@
 import { Component, OnInit, Renderer2, ElementRef } from '@angular/core';
 import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Ecu, EcuPost } from '../../../shared/models/ecu';
+import { Hardware, NewHardware } from '../../../shared/models/hardware';
 import { Connection } from '../../../shared/models/connection-model';
 import { NewConnection } from '../../../shared/models/connection-model';
 import { EcuService } from '../../../services/ecu.service';
@@ -9,9 +9,8 @@ import { EcuService } from '../../../services/ecu.service';
 import { LineCreationService } from '../../../services/header-main.service';
 import { Software } from '../../../shared/models/software';
 import { NewSoftware } from '../../../shared/models/software';
-import { Hardware } from '../../../shared/models/hardware';
-import { NewHardware } from '../../../shared/models/hardware';
-import { ServicesIncideEcuService } from '../../../services/services-incide-ecu.service';
+import { HardwareProperty } from '../../../shared/models/hardware_property';
+import { NewHardwareProperty } from '../../../shared/models/hardware_property';
 import { Architecture } from '../../../shared/models/architectures';
 import { newArchitecture } from '../../../shared/models/architectures';
 //import { Connection } from '../../../shared/models/service';
@@ -37,19 +36,19 @@ export class MainScreenComponent implements OnInit{
   dialogData: any = this; //data for export
 
   showHardwareDetailsDialog: boolean = false;
-  isEcuDetailsMod = false;
+  showHardwareDetailsDialogContent = false;
 
-  openHarwareDetailsDialog(ecu: Ecu): void {
+  openHarwareDetailsDialog(ecu: Hardware): void {
     this.showHardwareDetailsDialog = true;
-    this.isEcuDetailsMod = true;
+    this.showHardwareDetailsDialogContent = true;
     this.selectedEcu = ecu;
     this.getAllHardwareProperties(ecu.id);
-    //console.log("ecu: ", this.selectedEcu)
+   // console.log("ecu: ", this.selectedEcu)
   }
 
   closeHarwareDetailsDialog(): void {
     this.showHardwareDetailsDialog = false;
-    this.isEcuDetailsMod = false;
+    this.showHardwareDetailsDialogContent = false;
   }
 
 
@@ -79,11 +78,11 @@ export class MainScreenComponent implements OnInit{
   ECUwidth = 200 + 10;
   ECUheight = 100 + 10;
 
-  ecus:Ecu[] = [];
+  ecus:Hardware[] = [];
 
   isSidebarOpen = false;
-  servisecOfSelectedEcu: Ecu | null = null;;
-  selectedEcu: Ecu | null = null;
+  servisecOfSelectedEcu: Hardware | null = null;;
+  selectedEcu: Hardware | null = null;
 
 
   dataFromHeader: any;
@@ -95,7 +94,7 @@ export class MainScreenComponent implements OnInit{
   }
   
 
-  onDragEnded(event: any, ecu: Ecu): void {
+  onDragEnded(event: any, ecu: Hardware): void {
     const element = event.source.getRootElement();
     const boundingClientRect = element.getBoundingClientRect();
     const parentPosition = this.getElementPosition(element.parentElement);
@@ -116,7 +115,7 @@ export class MainScreenComponent implements OnInit{
     return { top: rect.top + scrollTop, left: rect.left + scrollLeft };
   }
 
-  rewriteLine(ecu: Ecu) {
+  rewriteLine(ecu: Hardware) {
    
     const ecuDragging: any = document.querySelector('.cdk-drag-dragging');
 
@@ -256,7 +255,7 @@ addSoftwareValue(): void {
 addHardwareValue(): void {
   if (this.selectedEcu && this.hardwareKey && this.hardwareValue) {
 
-    const NewHardware: NewHardware = {name: this.hardwareKey, value: this.hardwareValue};
+    const NewHardware: NewHardwareProperty = {name: this.hardwareKey, value: this.hardwareValue};
   
     this.ecuService.createHardware(NewHardware, this.selectedEcu.id).subscribe(data =>{
       this.hardware[this.hardware.length] = data
@@ -553,7 +552,7 @@ selectedOption: any = null;
     this.lineCreationService.updateBus(Line, id).subscribe();
    }
 
-   private updateEcu(Ecu: Ecu, id: BigInt){
+   private updateEcu(Ecu: Hardware, id: BigInt){
     //console.log(Line)
     this.ecuService.updateEcu(Ecu, id).subscribe();
    }
@@ -604,8 +603,8 @@ async selectArchitecture(option: any): Promise<void> {
   this.showDropdownSelectArchitecture = false;
 }
 
-startEcu: Ecu | null = null;
-endEcu: Ecu | null = null;
+startEcu: Hardware | null = null;
+endEcu: Hardware | null = null;
 creatingBusModus: Boolean = false;
 startTargetEcuElementNewBus: any;
 endTargetEcuElementNewBus: any;
@@ -673,7 +672,7 @@ busWidthEnd: any;
   console.log('New line created:', newLine);
 }*/
 
-onEcuClick(ecu: Ecu, event: MouseEvent){
+onEcuClick(ecu: Hardware, event: MouseEvent){
   if(this.creatingBusModus){
     if (!this.startEcu) {
       // First click, select start ECU

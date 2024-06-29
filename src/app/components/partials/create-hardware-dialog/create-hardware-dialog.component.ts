@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { EcuService } from '../../../services/ecu.service';
 import { LineCreationService } from '../../../services/header-main.service';
-import { EcuPost } from '../../../shared/models/ecu';
+import { NewHardware } from '../../../shared/models/hardware';
 import { newArchitecture } from '../../../shared/models/architectures';
 
 @Component({
@@ -67,7 +67,7 @@ export class CreateHardwareDialogComponent {
     if(this.createHardwareData.showCreateHardwareDialog === this.hardware){
       if (this.selectedOption && this.newHardwareName && this.newHardwareDescription) {
         if (this.selectedOption.label === 'ECU'){
-          const newEcu: EcuPost = {
+          const newEcu: NewHardware = {
             label: this.newHardwareName,
              type: this.selectedOption.label,
              description: this.newHardwareDescription,
@@ -84,7 +84,7 @@ export class CreateHardwareDialogComponent {
              this.closeDialog.emit(true);
         }else if(this.selectedOption.label === 'BUS'){
   
-          const newEcu: EcuPost = {
+          const newEcu: NewHardware = {
             label: this.newHardwareName,
              type: this.selectedOption.label,
              description: this.newHardwareDescription,
@@ -102,7 +102,7 @@ export class CreateHardwareDialogComponent {
   
         } else if(this.selectedOption.label === 'CAN'){
     
-          const newEcu: EcuPost = {
+          const newEcu: NewHardware = {
             label: this.newHardwareName,
              type: this.selectedOption.label,
              description: this.newHardwareDescription,

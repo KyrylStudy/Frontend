@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { Ecu } from '../shared/models/ecu';
-import { EcuPost } from '../shared/models/ecu';
+import { Hardware } from '../shared/models/hardware';
+import { NewHardware } from '../shared/models/hardware';
 //import { sample_ecu } from '../../data';
 //import { Connection } from '../shared/models/connection-model';
 //import { sample_lines } from '../../data';
 import { HttpClient } from '@angular/common/http';
 import { Software } from '../shared/models/software';
 import { NewSoftware } from '../shared/models/software';
-import { Hardware } from '../shared/models/hardware';
-import { NewHardware } from '../shared/models/hardware';
+import { HardwareProperty } from '../shared/models/hardware_property';
+import { NewHardwareProperty } from '../shared/models/hardware_property';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Architecture } from '../shared/models/architectures';
 import { newArchitecture } from '../shared/models/architectures';
@@ -26,17 +26,17 @@ export class EcuService {
 
   //---------------ECU
   baseUrl = "http://localhost:8080/api/ecus/architecture"
-  getAll(id: number):Observable<Ecu[]>{
-    return this.httpClient.get<Ecu[]>(`${this.baseUrl + '/' + id }`);
+  getAll(id: number):Observable<Hardware[]>{
+    return this.httpClient.get<Hardware[]>(`${this.baseUrl + '/' + id }`);
   }
 
   updateEcuUrl = "http://localhost:8080/api/ecus";
-  updateEcu(Ecu: Ecu, id: BigInt): Observable<any> {
+  updateEcu(Ecu: Hardware, id: BigInt): Observable<any> {
     return this.httpClient.put(`${this.updateEcuUrl + '/' + id + '/' + 'update'}`, Ecu);
   }
 
   creareEcuUrl = 'http://localhost:8080/api/ecus';
-  createEcu(EcuPost: EcuPost, id: number): Observable<any> {
+  createEcu(EcuPost: NewHardware, id: number): Observable<any> {
       console.log(EcuPost);
       return this.httpClient.post<any>(`${this.creareEcuUrl + '/' + id + '/' + 'ecu'}`, EcuPost);
   }
@@ -77,11 +77,11 @@ export class EcuService {
   //--------------Hardware(property)
 
   hardwareUrl = "http://localhost:8080/api/ecus"
-  getAllHardwareByEcuId(id: BigInt):Observable<Hardware[]>{
-    return this.httpClient.get<Hardware[]>(`${this.hardwareUrl + '/' + id + '/hardwares' }`);
+  getAllHardwareByEcuId(id: BigInt):Observable<HardwareProperty[]>{
+    return this.httpClient.get<HardwareProperty[]>(`${this.hardwareUrl + '/' + id + '/hardwares' }`);
   }
 
-  createHardware(NewHardware: NewHardware, id: BigInt): Observable<any> {
+  createHardware(NewHardware: NewHardwareProperty, id: BigInt): Observable<any> {
     console.log(NewHardware);
     return this.httpClient.post<any>(`${this.hardwareUrl + '/' + id + '/hardware'}`, NewHardware);
 }

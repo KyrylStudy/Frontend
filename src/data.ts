@@ -1,4 +1,4 @@
-import {Ecu} from './app/shared/models/ecu'
+import {Hardware} from './app/shared/models/hardware'
 //import {Connection} from './app/shared/models/architectures'
 import { sample_service } from './data-for-services'
 

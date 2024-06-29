@@ -48,15 +48,18 @@ export class DialogComponent /*implements OnInit*/{
     this.lineCreationService.getAllDataStreams(this.dialogData.selectArchitecture.id).subscribe(data => {
       dataStreams = data;
     });
-    for(let i = 0; i < servicesOfSelectedEcu.length; i++){
-      for(let j = 0; j < dataStreams.length; j++){
-        if(servicesOfSelectedEcu[i].id.toString() == dataStreams[j].connectedFrom){
-          this.lineCreationService.deleteDataStream(dataStreams[j].id);
-        }else if(servicesOfSelectedEcu[i].id.toString() == dataStreams[j].connectedTo){
-          this.lineCreationService.deleteDataStream(dataStreams[j].id);
+    if(servicesOfSelectedEcu){
+      for(let i = 0; i < servicesOfSelectedEcu.length; i++){
+        for(let j = 0; j < dataStreams.length; j++){
+          if(servicesOfSelectedEcu[i].id.toString() == dataStreams[j].connectedFrom){
+            this.lineCreationService.deleteDataStream(dataStreams[j].id);
+          }else if(servicesOfSelectedEcu[i].id.toString() == dataStreams[j].connectedTo){
+            this.lineCreationService.deleteDataStream(dataStreams[j].id);
+          }
         }
       }
     }
+    
 
     this.closeDialog.emit(true);
   }
@@ -85,7 +88,7 @@ export class DialogComponent /*implements OnInit*/{
 
   openDialog(): void {
     this.showService = true;
-    this.dialogData.isEcuDetailsMod = false;
+    this.dialogData.showHardwareDetailsDialogContent = false;
     //console.log(this.dialogData.selectedEcu)
     this.dialogData.getAllServices(this.dialogData.selectedEcu.id);
     this.dialogData.initializeGraph(this.dialogData.lines);
@@ -139,7 +142,7 @@ export class DialogComponent /*implements OnInit*/{
 
   goBack(){
     this.showService = false;
-    this.dialogData.isEcuDetailsMod = true;
+    this.dialogData.showHardwareDetailsDialogContent = true;
   }
 
   dataForServiceDialog = this;

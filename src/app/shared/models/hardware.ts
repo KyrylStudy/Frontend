@@ -1,10 +1,18 @@
 export class Hardware {
-    id!: number;
-    name!: string;
-    value!: string;
+    id!: BigInt;
+    label!: string;
+    type!: string;
+    description!: string;
+    positionX!: number;
+    positionY!: number;
+    connectedTo!: number;
 }
 
 export class NewHardware {
-    name!: string;
-    value!: string;
+    label!: string;
+    type!: string;
+    description!: string;
+    positionX!: number;
+    positionY!: number;
+    connectedTo!: number;
 }
