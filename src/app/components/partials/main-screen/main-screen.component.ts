@@ -69,7 +69,7 @@ export class MainScreenComponent implements OnInit{
   }
 
  //--------01.04.--------------
- lines: Connection[] = [];
+ connections: Connection[] = [];
  
  //------------------ 
 
@@ -127,9 +127,9 @@ export class MainScreenComponent implements OnInit{
           
           var numberOfConnections = 0;
          
-            for(let i = 0; i < this.lines.length; i++){
-              if(this.lines[i].connectedFrom == ecu.id.toString()
-                || this.lines[i].connectedTo == ecu.id.toString()){
+            for(let i = 0; i < this.connections.length; i++){
+              if(this.connections[i].connectedFrom == ecu.id.toString()
+                || this.connections[i].connectedTo == ecu.id.toString()){
                   numberOfConnections++;
               }
             }
@@ -152,16 +152,16 @@ export class MainScreenComponent implements OnInit{
 //console.log(ecuRect.top)
 
     if(ecu.type == 'BUS' || ecu.type == 'CAN'){
-      for(let i = 0; i < this.lines.length; i++){
-        if(this.lines[i].connectedFrom == ecu.id.toString()
-          || this.lines[i].connectedTo == ecu.id.toString()){
-            if(this.lines[i].connectedTo == ecu.id.toString()){
-              this.lines[i].positionToX = (ecuRect.left + positionOfConnection*numberOfConnections).toString();
-              this.lines[i].positionToY = (ecuRect.top - (96 + (96 - 96*this.zoomLevel)) /*- ecuRect.height*this.zoomLevel*/).toString();
+      for(let i = 0; i < this.connections.length; i++){
+        if(this.connections[i].connectedFrom == ecu.id.toString()
+          || this.connections[i].connectedTo == ecu.id.toString()){
+            if(this.connections[i].connectedTo == ecu.id.toString()){
+              this.connections[i].positionToX = (ecuRect.left + positionOfConnection*numberOfConnections).toString();
+              this.connections[i].positionToY = (ecuRect.top - (96 + (96 - 96*this.zoomLevel)) /*- ecuRect.height*this.zoomLevel*/).toString();
               //console.log(this.lines[i].positionToX = (ecuRect.left + positionOfConnection*numberOfConnections).toString())
             }else {
-              this.lines[i].positionFromX = (ecuRect.left + positionOfConnection*numberOfConnections).toString();
-              this.lines[i].positionFromY = (ecuRect.top - (96 + (96 - 96*this.zoomLevel)) /*- ecuRect.height*this.zoomLevel*/).toString();
+              this.connections[i].positionFromX = (ecuRect.left + positionOfConnection*numberOfConnections).toString();
+              this.connections[i].positionFromY = (ecuRect.top - (96 + (96 - 96*this.zoomLevel)) /*- ecuRect.height*this.zoomLevel*/).toString();
              // console.log(this.lines[i].positionFromX = (ecuRect.left + positionOfConnection*numberOfConnections).toString())
             }
            // console.log('positionToX  ', this.lines[i].positionToX )
@@ -169,13 +169,13 @@ export class MainScreenComponent implements OnInit{
         }
       }//----------------------------------------------------------------------вот єту штуку можно вставить на удаление 
     }else{
-      for(let i = 0; i < this.lines.length; i++){
-        if(this.lines[i].connectedFrom == ecu.id.toString()){
-          this.lines[i].positionFromX = (ecuRect.left + (this.ECUwidth/2)).toString();
-          this.lines[i].positionFromY = (ecuRect.top - ((this.ECUheight/2) / this.zoomLevel)).toString();
-        }else if(this.lines[i].connectedTo == ecu.id.toString()){
-          this.lines[i].positionToX = (ecuRect.left + (this.ECUwidth/2)).toString();
-          this.lines[i].positionToY = (ecuRect.top - ((this.ECUheight/2) / this.zoomLevel)).toString();
+      for(let i = 0; i < this.connections.length; i++){
+        if(this.connections[i].connectedFrom == ecu.id.toString()){
+          this.connections[i].positionFromX = (ecuRect.left + (this.ECUwidth/2)).toString();
+          this.connections[i].positionFromY = (ecuRect.top - ((this.ECUheight/2) / this.zoomLevel)).toString();
+        }else if(this.connections[i].connectedTo == ecu.id.toString()){
+          this.connections[i].positionToX = (ecuRect.left + (this.ECUwidth/2)).toString();
+          this.connections[i].positionToY = (ecuRect.top - ((this.ECUheight/2) / this.zoomLevel)).toString();
         }
       }
     }
@@ -224,7 +224,7 @@ hardwareValue: string = '';
       this.zoomLevel += 0.1; // Increase zoom level 
 
       //console.log(this.servicesMap) 
-      this.initializeGraph(this.lines);
+      this.initializeGraph(this.connections);
       console.log('can i reach? ', this.canReach('41', '51'));//-----------------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
 
@@ -302,7 +302,7 @@ creatingLine = false;
 
   private getAllBus(architectureId: number){
     this.lineCreationService.getAllBus(architectureId).subscribe(data => {
-      this.lines = data;
+      this.connections = data;
     });
   }
 
@@ -559,9 +559,9 @@ selectedOption: any = null;
 
    saveLines() {
 
-      for(let i = 0; i < this.lines.length; ++i){
+      for(let i = 0; i < this.connections.length; ++i){
         //console.log(this.linesFromMain[i])
-        this.updateBus(this.lines[i], this.lines[i].id);
+        this.updateBus(this.connections[i], this.connections[i].id);
       }
       for(let i = 0; i < this.ecus.length; ++i){
         //console.log(this.linesFromMain[i])
@@ -704,9 +704,9 @@ onEcuClick(ecu: Hardware, event: MouseEvent){
 
           var numberOfConnections = 0;
           if(this.startEcu){
-            for(let i = 0; i < this.lines.length; i++){
-              if(this.lines[i].connectedFrom == this.startEcu.id.toString()
-                || this.lines[i].connectedTo == this.startEcu.id.toString()){
+            for(let i = 0; i < this.connections.length; i++){
+              if(this.connections[i].connectedFrom == this.startEcu.id.toString()
+                || this.connections[i].connectedTo == this.startEcu.id.toString()){
                   numberOfConnections++;
               }
             }
@@ -721,13 +721,13 @@ onEcuClick(ecu: Hardware, event: MouseEvent){
 
           numberOfConnections = 0;
           if(this.startEcu){
-            for(let i = 0; i < this.lines.length; i++){
-              if(this.lines[i].connectedFrom == this.startEcu.id.toString()
-                || this.lines[i].connectedTo == this.startEcu.id.toString()){
-                  if(this.lines[i].connectedFrom == this.startEcu.id.toString()){
-                    this.lines[i].positionFromX = (this.startEcu.positionX + positionOfConnection*numberOfConnections).toString();
+            for(let i = 0; i < this.connections.length; i++){
+              if(this.connections[i].connectedFrom == this.startEcu.id.toString()
+                || this.connections[i].connectedTo == this.startEcu.id.toString()){
+                  if(this.connections[i].connectedFrom == this.startEcu.id.toString()){
+                    this.connections[i].positionFromX = (this.startEcu.positionX + positionOfConnection*numberOfConnections).toString();
                   }else {
-                    this.lines[i].positionToX = (this.startEcu.positionX + positionOfConnection*numberOfConnections).toString();
+                    this.connections[i].positionToX = (this.startEcu.positionX + positionOfConnection*numberOfConnections).toString();
                   }
                   numberOfConnections++;
               }
@@ -737,7 +737,7 @@ onEcuClick(ecu: Hardware, event: MouseEvent){
 
 
           const newLine: NewConnection = {
-          name: 'Bus ' + (this.lines.length + 1), type: 'Bus',
+          name: 'Bus ' + (this.connections.length + 1), type: 'Bus',
           description: 'default description',
           positionFromX:  (this.startEcu.positionX - 2 + positionOfConnection*numberOfConnections).toString(),
           positionFromY: (this.startEcu.positionY - 38).toString(),
@@ -748,7 +748,7 @@ onEcuClick(ecu: Hardware, event: MouseEvent){
           twoWayConnection: false};
 
           this.lineCreationService.createBus(this.selectedArchitecture.id, newLine).subscribe(data =>{
-            this.lines[this.lines.length] = data
+            this.connections[this.connections.length] = data
             //console.log(this.lines)
             //this.setValueToShare(this);
           });
@@ -764,9 +764,9 @@ onEcuClick(ecu: Hardware, event: MouseEvent){
           
           var numberOfConnections = 0;
           if(this.endEcu){
-            for(let i = 0; i < this.lines.length; i++){
-              if(this.lines[i].connectedFrom == this.endEcu.id.toString()
-                || this.lines[i].connectedTo == this.endEcu.id.toString()){
+            for(let i = 0; i < this.connections.length; i++){
+              if(this.connections[i].connectedFrom == this.endEcu.id.toString()
+                || this.connections[i].connectedTo == this.endEcu.id.toString()){
                   numberOfConnections++;
               }
             }
@@ -784,13 +784,13 @@ onEcuClick(ecu: Hardware, event: MouseEvent){
 
           numberOfConnections = 0;
           if(this.endEcu){
-            for(let i = 0; i < this.lines.length; i++){
-              if(this.lines[i].connectedFrom == this.endEcu.id.toString()
-                || this.lines[i].connectedTo == this.endEcu.id.toString()){
-                  if(this.lines[i].connectedTo == this.endEcu.id.toString()){
-                    this.lines[i].positionToX = (this.endEcu.positionX + positionOfConnection*numberOfConnections).toString();
+            for(let i = 0; i < this.connections.length; i++){
+              if(this.connections[i].connectedFrom == this.endEcu.id.toString()
+                || this.connections[i].connectedTo == this.endEcu.id.toString()){
+                  if(this.connections[i].connectedTo == this.endEcu.id.toString()){
+                    this.connections[i].positionToX = (this.endEcu.positionX + positionOfConnection*numberOfConnections).toString();
                   }else {
-                    this.lines[i].positionFromX = (this.endEcu.positionX + positionOfConnection*numberOfConnections).toString();
+                    this.connections[i].positionFromX = (this.endEcu.positionX + positionOfConnection*numberOfConnections).toString();
                   }
                  // console.log('positionToX  ', this.lines[i].positionToX )
                   numberOfConnections++;
@@ -801,7 +801,7 @@ onEcuClick(ecu: Hardware, event: MouseEvent){
 
 
           const newLine: NewConnection = {
-          name: 'Bus ' + (this.lines.length + 1), type: 'Bus',
+          name: 'Bus ' + (this.connections.length + 1), type: 'Bus',
           description: 'default description', 
           positionFromX: (this.startEcu.positionX + (this.ECUwidth/2)).toString(),
           positionFromY: this.startEcu.positionY.toString(), 
@@ -812,7 +812,7 @@ onEcuClick(ecu: Hardware, event: MouseEvent){
           twoWayConnection: false};
 
           this.lineCreationService.createBus(this.selectedArchitecture.id, newLine).subscribe(data =>{
-            this.lines[this.lines.length] = data
+            this.connections[this.connections.length] = data
             //console.log(this.lines)
             //this.setValueToShare(this);
           });

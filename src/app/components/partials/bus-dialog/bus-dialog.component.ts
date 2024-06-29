@@ -36,8 +36,8 @@ export class BusDialogComponent {
       }
     }
 
-    this.dialogData.lines = this.dialogData.lines.filter((item: { id: any; }) => item.id !== this.dialogData.selectedBus.id);
-    //console.log(this.dialogData.lines)
+    this.dialogData.connections = this.dialogData.connections.filter((item: { id: any; }) => item.id !== this.dialogData.selectedBus.id);
+    //console.log(this.dialogData.connections)
     this.deleteBus(this.dialogData.selectedBus.id);
     this.closeDialog.emit(true);
   }
@@ -47,11 +47,11 @@ export class BusDialogComponent {
   private deleteBus(id: BigInt){
     this.lineCreationService.deleteBus(id).subscribe();
 
-    let indexToRemove = this.dialogData.lines.findIndex((obj: { id: BigInt; }) => obj.id === id);
+    let indexToRemove = this.dialogData.connections.findIndex((obj: { id: BigInt; }) => obj.id === id);
 
     // Удаляем объект, если он найден
     if (indexToRemove > -1) {
-      this.dialogData.lines.splice(indexToRemove, 1);
+      this.dialogData.connections.splice(indexToRemove, 1);
     }
   }
 

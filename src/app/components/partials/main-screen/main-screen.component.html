@@ -75,7 +75,7 @@
         <div class="drag-boundary" [style.zoom]="zoomLevel">
 
         <svg id="svg-container" class="connestion-line-container">
-            <line class="connestion-line" *ngFor="let line of lines" 
+            <line class="connestion-line" *ngFor="let line of connections" 
                   [attr.x1]="line.positionFromX" 
                   [attr.y1]="line.positionFromY"
                   [attr.x2]="line.positionToX" 
@@ -84,7 +84,7 @@
                   [attr.connectedTo]="line.connectedTo"
                   [attr.id]="line.id"
                   (dblclick)="openConnectionDialog(line)"/>
-            <line class="connestion-line-overlay" *ngFor="let line of lines" 
+            <line class="connestion-line-overlay" *ngFor="let line of connections" 
                   [attr.x1]="line.positionFromX" 
                   [attr.y1]="line.positionFromY"
                   [attr.x2]="line.positionToX" 
