@@ -39,16 +39,16 @@
             <div>
                 <h4 class="ecu-properties-header">Properties:</h4>
                 <ul>
-                    <li *ngFor="let detail of dialogData.hardware">
+                    <li *ngFor="let detail of hardwareProperties"> 
                         <span class="property-name">{{ detail.name }}:</span>
                         <span class="property-value">{{ detail.value }}</span>
                     </li>
                 </ul>
             </div> 
             <div class="input-sidebar">
-                <input class="input-field" type="text" placeholder="Property" [(ngModel)]="dialogData.hardwareKey">
-                <input class="input-field" type="text" placeholder="Description" [(ngModel)]="dialogData.hardwareValue">
-                <button class="add-property-button" (dblclick)="showHardware()" (click)="dialogData.addHardwareValue()">Add Property</button>
+                <input class="input-field" type="text" placeholder="Property" [(ngModel)]="hardwareKey">
+                <input class="input-field" type="text" placeholder="Description" [(ngModel)]="hardwareValue">
+                <button class="add-property-button" (click)="addHardwareValue()">Add Property</button>
             </div>
             <button class="dialog-delete-button" (click)="delete()">Delete</button> <!-- Move close button here -->
         </div>

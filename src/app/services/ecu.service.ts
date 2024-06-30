@@ -83,7 +83,9 @@ export class EcuService {
 
   //--------------Software(property)
 
-  softwareUrl = "http://localhost:8080/api/ecus"
+
+
+  /*softwareUrl = "http://localhost:8080/api/ecus"
   getAllSoftwareByEcuId(id: BigInt):Observable<Software[]>{
     return this.httpClient.get<Software[]>(`${this.softwareUrl + '/' + id + '/softwares' }`);
   }
@@ -92,41 +94,84 @@ export class EcuService {
       console.log(NewSoftware);
       return this.httpClient.post<any>(`${this.softwareUrl + '/' + id + '/software'}`, NewSoftware);
   }
+*/
 
-
-  //--------------Hardware(property)
-
-  hardwareUrl = "http://localhost:8080/api/ecus"
-  getAllHardwareByEcuId(id: BigInt):Observable<HardwareProperty[]>{
-    return this.httpClient.get<HardwareProperty[]>(`${this.hardwareUrl + '/' + id + '/hardwares' }`);
-  }
-
-  createHardwareProperty(NewHardware: NewHardwareProperty, id: BigInt): Observable<any> {
-    console.log(NewHardware);
-    return this.httpClient.post<any>(`${this.hardwareUrl + '/' + id + '/hardware'}`, NewHardware);
-}
-
+  
 //---------------------Service
 
-serviceUrl = "http://localhost:8080/api/services/ecu/"
+//private servicesSubject = new BehaviorSubject<Service[]>([]);
+//services$ = this.servicesSubject.asObservable();
+
+serviceUrl = "http://localhost:8080/api/services/"
+
 getAllServicesByEcuId(ecu_id: BigInt):Observable<Service[]>{
-  return this.httpClient.get<Service[]>(`${this.serviceUrl + ecu_id }`);
+  return this.httpClient.get<Service[]>(`${this.serviceUrl + 'ecu/' + ecu_id }`);
 }
 
-creareServiceUrl = 'http://localhost:8080/api/services/';
+/*loadAllServices(ecuId: BigInt): void{
+  this.httpClient.get<Service[]>(`${this.serviceUrl + 'ecu/' + ecuId }`).pipe(
+    tap(services => this.servicesSubject.next(services))
+  ).subscribe();
+}*/
+
+//creareServiceUrl = 'http://localhost:8080/api/services/';
 createService(newService: newService, ecu_id: BigInt): Observable<any> {
-    return this.httpClient.post<any>(`${this.creareServiceUrl + ecu_id}`, newService);
+    return this.httpClient.post<any>(`${this.serviceUrl + ecu_id}`, newService);
 }
 
-updateServiceUrl = "http://localhost:8080/api/services/"
+//updateServiceUrl = "http://localhost:8080/api/services/"
 updadeService(Service: Service, id: BigInt):Observable<any>{
-  return this.httpClient.put(`${this.updateServiceUrl + id  + '/update'}`, Service);
+  return this.httpClient.put(`${this.serviceUrl + id  + '/update'}`, Service);
 }
 
-deleteServiceUrl = 'http://localhost:8080/api/services/';
+//deleteServiceUrl = 'http://localhost:8080/api/services/';
 deleteService(id: BigInt): Observable<any> {
-  return this.httpClient.delete(`${this.deleteServiceUrl + id + '/delete'}`);
-  }
+  return this.httpClient.delete(`${this.serviceUrl + id + '/delete'}`);
+}
+
+/*hardwares: Hardware[] | null = null;
+subscribeOnHardwares(){
+  this.ecuService.hardwares$.subscribe(
+      {
+        next: data => {
+          this.hardwares = data;
+        },
+        error: error => {
+          console.error(error);
+        }
+      }
+  );
+}
+
+
+servicesCountMap: Map<BigInt, number> = new Map();
+servicesMap: Map<BigInt, Service[]> = new Map();
+
+private allServicesInArchitectureSubject = new BehaviorSubject<Map<BigInt, Service[]> >(new Map());
+allServicesInArchitecture$ = this.allServicesInArchitectureSubject.asObservable();
+
+
+  getAllServices(): void {
+    // Assuming ecus array is already populated, otherwise, you need to fetch it first
+    if (this.ecus.length > 0) {
+      //const serviceObservables: Observable<Service[]>[] = this.ecus.map(ecu => this.ecuService.getAllServicesByEcuId(ecu.id)); 
+      const serviceObservables = this.ecus.map(ecu => this.ecuService.getAllServicesByEcuId(ecu.id).subscribe(
+        data => {
+          this.servicesMap.set(ecu.id, data);
+          this.servicesCountMap.set(ecu.id, data.length); 
+        }
+      )); 
+      
+      /*forkJoin(serviceObservables).subscribe(serviceArrays => {
+        serviceArrays.forEach((services, index) => {
+          const ecuId = this.ecus[index].id;
+          this.servicesCountMap.set(ecuId, services.length); 
+          this.servicesMap.set(ecuId, services);
+        });
+      });*/
+    //}
+  //}
+
 
 
 

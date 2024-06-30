@@ -19,6 +19,8 @@ import { Observable, concatMap, forkJoin, tap } from 'rxjs';
 import { DataStream } from '../../../shared/models/data_stream';
 import { MainInternalServiceService } from '../../../services/main-internal-service.service';
 import { ArchitectureService } from '../../../services/architecture.service';
+import { HardwarePropertyService } from '../../../services/hardware-property.service';
+import { ServiceService } from '../../../services/service.service';
 
 
 
@@ -46,7 +48,8 @@ export class MainScreenComponent implements OnInit{
     this.showHardwareDetailsDialog = true;
     this.showHardwareDetailsDialogContent = true;
     
-    this.getAllHardwareProperties(hardware.id);
+    this.hardwarePropertyService.loadAllHardwareProperties(hardware.id)
+    //this.getAllHardwareProperties(hardware.id);
    // console.log("ecu: ", this.selectedEcu)
   }
 
@@ -92,7 +95,8 @@ export class MainScreenComponent implements OnInit{
 
   dataFromHeader: any;
 
-  constructor(private architectureService:ArchitectureService, private mainInternalService:MainInternalServiceService, private ecuService:EcuService, private lineCreationService: LineCreationService, private renderer: Renderer2,
+  constructor(private serviceService:ServiceService, private hardwarePropertyService:HardwarePropertyService, private architectureService:ArchitectureService,
+     private mainInternalService:MainInternalServiceService, private ecuService:EcuService, private lineCreationService: LineCreationService, private renderer: Renderer2,
     private elementRef: ElementRef) { 
 
 
@@ -198,10 +202,9 @@ export class MainScreenComponent implements OnInit{
   }*/
 
   // Variables to hold software and hardware input values
-softwareKey: string = '';
-softwareValue: string = '';
-hardwareKey: string = '';
-hardwareValue: string = '';
+/*softwareKey: string = '';
+softwareValue: string = '';*/
+
 
 
  //software: Software | null = null;
@@ -214,11 +217,7 @@ hardwareValue: string = '';
     });
   }*/
 
-  private getAllHardwareProperties(id: BigInt){
-    this.ecuService.getAllHardwareByEcuId(id).subscribe(data => {
-      this.hardware = data;
-    });
-  }
+
 
   //--------------------------------------------------
 
@@ -228,9 +227,10 @@ hardwareValue: string = '';
     if(this.zoomLevel < 1.1){
       this.zoomLevel += 0.1; // Increase zoom level 
 
+      console.log(this.servicesCountMap)
       //console.log(this.servicesMap) 
-      this.initializeGraph(this.connections);
-      console.log('can i reach? ', this.canReach('41', '51'));//-----------------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      //this.initializeGraph(this.connections);
+      //console.log('can i reach? ', this.canReach('41', '51'));//-----------------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
 
   }
@@ -257,19 +257,7 @@ hardwareValue: string = '';
   }
 }*/
 
-addHardwareValue(): void {
-  if (this.selectedEcu && this.hardwareKey && this.hardwareValue) {
 
-    const NewHardware: NewHardwareProperty = {name: this.hardwareKey, value: this.hardwareValue};
-  
-    this.ecuService.createHardwareProperty(NewHardware, this.selectedEcu.id).subscribe(data =>{
-      this.hardware[this.hardware.length] = data
-    });
-
-    this.hardwareKey = '';
-    this.hardwareValue = '';
-  }
-}
 
 //-----------------------24.03-------------------------------------------------------
 
@@ -339,6 +327,42 @@ subscribeOnSelectedArchitecture(){
   );
 }
 
+hardwareProperties: HardwareProperty[] | null = null;
+subscribeOnHardwareProperties(){
+  this.hardwarePropertyService.hardwareProreries$.subscribe(
+      {
+        next: data => {
+          this.hardwareProperties = data;
+        },
+        error: error => {
+          console.error(error);
+        }
+      }
+  );
+}
+
+servicesCountMap: Map<BigInt, number> = new Map();
+//servicesMap: Map<BigInt, Service[]> = new Map();
+subscribeOnServicesCount(){
+  this.serviceService.allServicesInArchitectureCountMap$.subscribe(
+      {
+        next: data => {
+          console.log("map data", data)
+          this.servicesCountMap = data;
+        },
+        error: error => {
+          console.error(error);
+        }
+      }
+  );
+}
+
+/*private getAllHardwareProperties(id: BigInt){
+  this.ecuService.getAllHardwareByEcuId(id).subscribe(data => {
+    this.hardware = data;
+  });
+}*/
+
   ngOnInit(): void{
 
     this.subscribeOnArchitectures();
@@ -351,11 +375,16 @@ subscribeOnSelectedArchitecture(){
     this.subscribeOnHardwares();
     //this.ecuService.loadAllHardwares(this.selectedArchitecture);
 
+    this.subscribeOnHardwareProperties();
+
+    this.subscribeOnServicesCount();
+    this.serviceService.getAllServices();
+
     //-------------------------------------------------
     this.getAllBus(1);
     //this.getAllArchitectures();
 
-    this.getAllServices();
+    //this.getAllServices();
   }
 //----------------------------------------------------------------------------------------------
   private getAllBus(architectureId: number){
@@ -366,22 +395,28 @@ subscribeOnSelectedArchitecture(){
 
 
 
-  servicesCountMap: Map<BigInt, number> = new Map();
+/*  servicesCountMap: Map<BigInt, number> = new Map();
   servicesMap: Map<BigInt, Service[]> = new Map();
   getAllServices(): void {
     // Assuming ecus array is already populated, otherwise, you need to fetch it first
     if (this.ecus.length > 0) {
-      const serviceObservables: Observable<Service[]>[] = this.ecus.map(ecu => this.ecuService.getAllServicesByEcuId(ecu.id)); 
+      //const serviceObservables: Observable<Service[]>[] = this.ecus.map(ecu => this.ecuService.getAllServicesByEcuId(ecu.id)); 
+      const serviceObservables = this.ecus.map(ecu => this.ecuService.getAllServicesByEcuId(ecu.id).subscribe(
+        data => {
+          this.servicesMap.set(ecu.id, data);
+          this.servicesCountMap.set(ecu.id, data.length); 
+        }
+      )); 
       
-      forkJoin(serviceObservables).subscribe(serviceArrays => {
+      /*forkJoin(serviceObservables).subscribe(serviceArrays => {
         serviceArrays.forEach((services, index) => {
           const ecuId = this.ecus[index].id;
           this.servicesCountMap.set(ecuId, services.length); 
           this.servicesMap.set(ecuId, services);
         });
-      });
-    }
-  }
+      });*/
+   // }
+ // }
 
 
 //------------------------28.05

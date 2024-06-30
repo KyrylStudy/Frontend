@@ -10,7 +10,7 @@ import { MainScreenComponent } from './components/partials/main-screen/main-scre
 import { HomeComponent } from './components/pages/home/home.component';
 //-------------
 import { FormsModule } from '@angular/forms'; // Import FormsModule
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, provideHttpClient, withFetch } from '@angular/common/http';
 import { DialogComponent } from './components/partials/ecu-dialog/ecu-dialog.component';
 import { BusDialogComponent } from './components/partials/bus-dialog/bus-dialog.component';
 import { ServiceComponent } from './components/partials/service/service.component';
@@ -44,7 +44,8 @@ import { DataStreamDialogComponent } from './components/partials/data-stream-dia
     HttpClientModule
   ],
   providers: [
-    provideClientHydration()
+    provideClientHydration(),
+    provideHttpClient(withFetch())
   ],
   bootstrap: [AppComponent]
 })

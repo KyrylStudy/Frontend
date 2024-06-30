@@ -8,6 +8,8 @@ import { NewConnection } from '../../../shared/models/connection-model';
 import { DataStream } from '../../../shared/models/data_stream';
 import { Hardware } from '../../../shared/models/hardware';
 import { Observable, forkJoin } from 'rxjs';
+import { HardwarePropertyService } from '../../../services/hardware-property.service';
+import { HardwareProperty, NewHardwareProperty } from '../../../shared/models/hardware_property';
 
 
 @Component({
@@ -17,19 +19,15 @@ import { Observable, forkJoin } from 'rxjs';
 })
 export class DialogComponent /*implements OnInit*/{
 
+  constructor(private hardwarePropertyService:HardwarePropertyService, private ecuService:EcuService,private lineCreationService: LineCreationService, private renderer: Renderer2) { 
+  }
+
   selectedEcu: Hardware | null = null;
   ngOnInit(): void{
 
-    this.ecuService.selectedHardware$.subscribe(
-      {
-        next: data => {
-          this.selectedEcu = data;
-        },
-        error: error => {
-          console.error(error);
-        }
-      }
-  );
+    this.subscribeOnHardwareProperties();
+
+    this.subscribeOnSelectedHardware();
 
     this.subscribeOnHardwares();
    // this.getAllHardwares(this.dialogData.selectedArchitecture.id);
@@ -103,10 +101,22 @@ export class DialogComponent /*implements OnInit*/{
     this.lineCreationService.deleteBus(id).subscribe();
   }
 
-  constructor(private ecuService:EcuService,private lineCreationService: LineCreationService, private renderer: Renderer2) { 
-  }
 
-  
+
+subscribeOnSelectedHardware(){
+  this.ecuService.selectedHardware$.subscribe(
+    {
+      next: data => {
+        this.selectedEcu = data;
+      },
+      error: error => {
+        console.error(error);
+      }
+    }
+);
+}
+
+
 subscribeOnHardwares(){
   this.ecuService.hardwares$.subscribe(
       {
@@ -120,6 +130,42 @@ subscribeOnHardwares(){
       }
   );
 }
+
+hardwareKey: string = '';
+hardwareValue: string = '';
+
+addHardwareValue(): void {
+  if (this.selectedEcu && this.hardwareKey && this.hardwareValue) {
+
+    const newHardwareProperty: NewHardwareProperty = {name: this.hardwareKey, value: this.hardwareValue};
+  
+    /*this.ecuService.createHardwareProperty(NewHardware, this.selectedEcu.id).subscribe(data =>{
+      this.hardware[this.hardware.length] = data
+    });*/
+
+    this.hardwarePropertyService.createHardwareProperty(newHardwareProperty, this.selectedEcu.id);
+
+    this.hardwareKey = '';
+    this.hardwareValue = '';
+  }
+}
+
+hardwareProperties: HardwareProperty[] | null = null;
+subscribeOnHardwareProperties(){
+  this.hardwarePropertyService.hardwareProreries$.subscribe(
+      {
+        next: data => {
+          this.hardwareProperties = data;
+        },
+        error: error => {
+         // this.errorMessage = 'Failed to load users';
+          console.error(error);
+        }
+      }
+  );
+}
+
+
 
 
 
