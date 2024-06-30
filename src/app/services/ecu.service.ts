@@ -28,10 +28,22 @@ export class EcuService {
 
 
   //---------------ECU (Hardware)
-  private hardwaresSubject = new BehaviorSubject<any[]>([]);
+  private selectedHardwareSubject = new BehaviorSubject<Hardware | null>(null);
+  selectedHardware$ = this.selectedHardwareSubject.asObservable();
+
+  setSelectedHardware(selectedHardware: Hardware | null): void {
+    this.selectedHardwareSubject.next(selectedHardware);
+  }
+
+  getSelectedHardware(): Observable<Hardware | null> {
+    return this.selectedHardware$;
+  }
+
+
+  private hardwaresSubject = new BehaviorSubject<Hardware[]>([]);
   hardwares$ = this.hardwaresSubject.asObservable();
 
-  baseHardwareUrl = "http://localhost:8080/api/ecus/"
+  baseHardwareUrl = "http://localhost:8080/api/ecus/";
 
   loadAllHardwares(architectureId: number): void{
     this.httpClient.get<Hardware[]>(`${this.baseHardwareUrl  + 'architecture/' + architectureId }`).pipe(
@@ -41,7 +53,13 @@ export class EcuService {
 
   updateHardware(Hardware: Hardware, id: BigInt): void {
     this.httpClient.put<Hardware>(`${this.baseHardwareUrl + id + '/update'}`, Hardware).pipe(
-      tap(() => this.loadAllHardwares(1))  // Обновить список после изменения
+      tap(() => {
+        this.getSelectedArchitecture().subscribe(data => {
+          this.selectedArchitecture = data;
+        })
+        if(this.selectedArchitecture)
+        this.loadAllHardwares(this.selectedArchitecture.id)
+      })  // Обновить список после изменения
     ).subscribe();
   }
 
@@ -54,22 +72,53 @@ export class EcuService {
 
     deleteHardware(id: BigInt): void {
       this.httpClient.delete<Hardware>(`${this.baseHardwareUrl + id + '/delete'}`).pipe(
-        tap(() => this.loadAllHardwares(1))  // Обновить список после удаления
+        tap(() => {
+          this.getSelectedArchitecture().subscribe(data => {
+            this.selectedArchitecture = data;
+          })
+          if(this.selectedArchitecture)
+          this.loadAllHardwares(this.selectedArchitecture.id)
+        })  // Обновить список после удаления
       ).subscribe();
     }
 
   //---------------Architecture
+  selectedArchitecture: Architecture | null = null;
 
-  getAllArchitecturesUrl = "http://localhost:8080/api/architecture"
-  getAllArchitectures():Observable<Architecture[]>{
-    return this.httpClient.get<Architecture[]>(`${this.getAllArchitecturesUrl}`);
+  private selectedArchitectureSubject = new BehaviorSubject<Architecture | null>(null);
+  selectedArchitecture$ = this.selectedArchitectureSubject.asObservable();
+
+  setSelectedArchitecture(selectedArchitecture: Architecture | null): void {
+    this.selectedArchitectureSubject.next(selectedArchitecture);
   }
 
-  createArchitecturesUrl = "http://localhost:8080/api/architecture"
-  createArchitecture(newArchitecture: newArchitecture): Observable<any> {
-    console.log(newArchitecture);
-    return this.httpClient.post<any>(`${this.createArchitecturesUrl}`, newArchitecture);
-}
+  getSelectedArchitecture(): Observable<Architecture | null> {
+    return this.selectedArchitecture$;
+  }
+
+
+  private architecturesSubject = new BehaviorSubject<Architecture[]>([]);
+  architectures$ = this.architecturesSubject.asObservable();
+
+  baseArchitectureUrl = "http://localhost:8080/api/architecture"
+
+    loadAllArchitectures(): void{
+      this.httpClient.get<Architecture[]>(`${this.baseArchitectureUrl}`).pipe(
+        tap(architectures => this.architecturesSubject.next(architectures))
+      ).subscribe();
+    }
+
+    loadArchitecture(id: BigInt): void{
+      this.httpClient.get<Architecture>(`${this.baseArchitectureUrl + '/' + id}`).pipe(
+        tap(selectedArchitecture => this.selectedArchitectureSubject.next(selectedArchitecture))
+      ).subscribe();
+  }
+
+  createArchitecture(newArchitecture: newArchitecture): void {
+    this.httpClient.post<Architecture>(`${this.baseArchitectureUrl}`, newArchitecture).pipe(
+      tap(() => this.loadAllArchitectures())  // Обновить список после добавления
+    ).subscribe(); 
+  }
 
 
   //--------------Software(property)

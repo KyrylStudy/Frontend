@@ -7,10 +7,10 @@
 
         <div class="dropdown-container" tabindex="0" (blur)="showDropdown = false">
             <div class="dropdown-display" (click)="toggleDropdownCreate()">
-                {{ selectedOption?.label || 'Create' }}
+                {{ selectedOptionDropdownCreate?.label || 'Create' }}
             </div>
             <div class="dropdown-menu" *ngIf="showDropdown">
-                <div class="dropdown-item" *ngFor="let option of options" (click)="selectOption(option)">
+                <div class="dropdown-item" *ngFor="let option of optionsDropdownCreate" (click)="selectOption(option)">
                     {{ option.label }}
                 </div>
             </div>
@@ -24,7 +24,7 @@
         <!-- Architecture dropdown Field -->
         <div class="dropdown-container" tabindex="0" (blur)="showDropdownSelectArchitecture = false">
             <div class="dropdown-display" (click)="toggleDropdownSelectArchitecture()">
-                {{ selectedArchitecture?.label || 'Select Architecture' }}
+                {{ selectedArchitecture?.name || 'Select Architecture' }}
             </div>
             <div class="dropdown-menu" *ngIf="showDropdownSelectArchitecture">
                 <div class="dropdown-item" *ngFor="let option of architectures" (click)="selectArchitecture(option)">

@@ -74,9 +74,9 @@ export class CreateHardwareDialogComponent {
   hardware: any = 'new Hardware';
   architecture: any = 'new Architecture';
 
-  createNewHardware(newHardware: NewHardware, architectureId:number): void {
+ /* createNewHardware(newHardware: NewHardware, architectureId:number): void {
     this.ecuService.createHardware(newHardware, architectureId);
-  }
+  }*/
 
   save(){
     if(this.createHardwareData.showCreateHardwareDialog === this.hardware){
@@ -89,7 +89,8 @@ export class CreateHardwareDialogComponent {
             positionY: 229,
             connectedTo: this.createHardwareData.ecus.length};
            
-            this.createNewHardware(newEcu, this.createHardwareData.selectedArchitecture.id);
+           // this.createNewHardware(newEcu, this.createHardwareData.selectedArchitecture.id);
+            this.ecuService.createHardware(newEcu, this.createHardwareData.selectedArchitecture.id);
             
            
             this.closeDialog.emit(true);
@@ -107,11 +108,12 @@ export class CreateHardwareDialogComponent {
             description: this.newArchitectureDescription,
             };
       
-            this.ecuService.createArchitecture(newArchitecture).subscribe(data =>{
+           /* this.ecuService.createArchitecture(newArchitecture).subscribe(data =>{
               this.createHardwareData.architectures?.push(data)
               console.log(this.createHardwareData.architectures)
             }
-            );
+            );*/
+            this.ecuService.createArchitecture(newArchitecture)
         }
         this.closeDialog.emit(true);
       }else {

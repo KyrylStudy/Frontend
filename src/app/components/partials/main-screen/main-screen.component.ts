@@ -39,12 +39,13 @@ export class MainScreenComponent implements OnInit{
   showHardwareDetailsDialog: boolean = false;
   showHardwareDetailsDialogContent = false;
 
-  openHarwareDetailsDialog(ecu: Hardware): void {
+  openHarwareDetailsDialog(hardware: Hardware): void {
     this.saveLines();
+    this.ecuService.setSelectedHardware(hardware);
     this.showHardwareDetailsDialog = true;
     this.showHardwareDetailsDialogContent = true;
-    this.selectedEcu = ecu;
-    this.getAllHardwareProperties(ecu.id);
+    
+    this.getAllHardwareProperties(hardware.id);
    // console.log("ecu: ", this.selectedEcu)
   }
 
@@ -243,7 +244,7 @@ hardwareValue: string = '';
 
 
 
-addSoftwareValue(): void {
+/*addSoftwareValue(): void {
   if (this.selectedEcu && this.softwareKey && this.softwareValue) {
     const NewSoftware: NewSoftware = {name: this.softwareKey, value: this.softwareValue};
   
@@ -253,7 +254,7 @@ addSoftwareValue(): void {
     this.softwareKey = '';
     this.softwareValue = '';
   }
-}
+}*/
 
 addHardwareValue(): void {
   if (this.selectedEcu && this.hardwareKey && this.hardwareValue) {
@@ -271,16 +272,28 @@ addHardwareValue(): void {
 
 //-----------------------24.03-------------------------------------------------------
 
-showListOfServices(): void {
+/*showListOfServices(): void {
   this.servisecOfSelectedEcu = this.selectedEcu;
   this.selectedEcu = null;
   console.log(this.servisecOfSelectedEcu)
   console.log(this.selectedEcu)
-}
+}*/
 
 //----------------------01.04.--------------------------------------------------------02.04
 creatingLine = false;
 
+subscribeOnSelectedHardware(){
+  this.ecuService.selectedHardware$.subscribe(
+      {
+        next: data => {
+          this.selectedEcu = data;
+        },
+        error: error => {
+          console.error(error);
+        }
+      }
+  );
+}
 
 subscribeOnHardwares(){
   this.ecuService.hardwares$.subscribe(
@@ -295,35 +308,62 @@ subscribeOnHardwares(){
   );
 }
 
+architectures: Architecture[] | null = null;
+subscribeOnArchitectures(){
+  this.ecuService.architectures$.subscribe(
+      {
+        next: data => {
+          this.architectures = data;
+        },
+        error: error => {
+          console.error(error);
+        }
+      }
+  );
+}
+
+subscribeOnSelectedArchitecture(){
+  this.ecuService.selectedArchitecture$.subscribe(
+      {
+        next: data => {
+          this.selectedArchitecture = data;
+          if (this.selectedArchitecture) {
+            this.ecuService.loadAllHardwares(this.selectedArchitecture.id);
+          }
+        },
+        error: error => {
+          console.error(error);
+        }
+      }
+  );
+}
+
   ngOnInit(): void{
 
+    this.subscribeOnArchitectures();
+    this.ecuService.loadAllArchitectures();
 
+    this.subscribeOnSelectedArchitecture();
+    this.ecuService.loadArchitecture(BigInt(1));
+
+    this.subscribeOnSelectedHardware();
     this.subscribeOnHardwares();
-    this.ecuService.loadAllHardwares(1);
-
+    //this.ecuService.loadAllHardwares(this.selectedArchitecture);
 
     //-------------------------------------------------
     this.getAllBus(1);
-    this.getAllArchitectures();
+    //this.getAllArchitectures();
 
     this.getAllServices();
   }
-
+//----------------------------------------------------------------------------------------------
   private getAllBus(architectureId: number){
     this.lineCreationService.getAllBus(architectureId).subscribe(data => {
       this.connections = data;
     });
   }
 
-  architectures: Architecture[] | null = null;
-  private getAllArchitectures(){
-    this.ecuService.getAllArchitectures().subscribe(data => {
-      this.architectures = data;
-      
-    });
-    if(this.architectures)
-    this.selectedArchitecture = this.architectures[0];
-  }
+
 
   servicesCountMap: Map<BigInt, number> = new Map();
   servicesMap: Map<BigInt, Service[]> = new Map();
@@ -341,12 +381,6 @@ subscribeOnHardwares(){
       });
     }
   }
-
- /* private getAllDataStreams(architectureId: number){
-    this.lineCreationService.getAllDataStreams(architectureId).subscribe(data => {
-      this.dataStream = data;
-    });
-  }*/
 
 
 //------------------------28.05
@@ -523,12 +557,12 @@ private graph: { [key: string]: string[] } = {};
 
 //----------------------------------------------------------------------------HEADER---START-----
 
-options = [
+optionsDropdownCreate = [
   { id: 1, label: 'new Hardware' },
   { id: 3, label: 'new Connection' },
   { id: 4, label: 'new Architecture' },
 ];
-selectedOption: any = null;
+selectedOptionDropdownCreate: any = null;
 
 
    private updateBus(Line: Connection, id: BigInt){
@@ -556,18 +590,18 @@ selectedOption: any = null;
 
 showDropdown = false; 
 toggleDropdownCreate(): void {
-    this.showDropdown = !this.showDropdown;
+    this.showDropdown = true;
 }
 
 
 showDropdownSelectArchitecture = false; 
 toggleDropdownSelectArchitecture(): void {
-    this.showDropdownSelectArchitecture = !this.showDropdownSelectArchitecture;
+    this.showDropdownSelectArchitecture = true;
 }
 
-selectedArchitecture: any | null = null;
-selectArchitecture(option: any): void {
-  this.selectedArchitecture = option;
+selectedArchitecture: Architecture | null = null;
+selectArchitecture(option: Architecture): void {
+  this.ecuService.setSelectedArchitecture(option);
 
   const svgContainer = document.getElementById('svg-container');
 
@@ -575,9 +609,9 @@ selectArchitecture(option: any): void {
       return;
   }
 
-  const lines = svgContainer.querySelectorAll('line');
-    lines.forEach(line => {
-      svgContainer.removeChild(line); // Remove each line element
+  const connections = svgContainer.querySelectorAll('line');
+  connections.forEach(connection => {
+      svgContainer.removeChild(connection); // Remove each line element
     });
 
   //this.getAllHardwares(option.id); 
@@ -593,67 +627,6 @@ startTargetEcuElementNewBus: any;
 endTargetEcuElementNewBus: any;
 busWidthStart: any;
 busWidthEnd: any;
-
-/*createNewConnction(firstHardware: Ecu, secondHardware: Ecu, widthOfHardware: any){
-           
-          
-  var numberOfConnections = 0;
-  if(firstHardware){
-    for(let i = 0; i < this.lines.length; i++){
-      if(this.lines[i].connectedFrom == firstHardware.id.toString()
-        || this.lines[i].connectedTo == firstHardware.id.toString()){
-          numberOfConnections++;
-      }
-    }
-  }
-
-  //console.log('numberOfConnections  ', numberOfConnections)
-
-  var positionOfConnection = 0;
-  if(numberOfConnections >= 1){
-     positionOfConnection = Number(widthOfHardware.offsetWidth)/(numberOfConnections);
-  }else{
-    positionOfConnection = 0
-  }
-  //console.log('positionOfConnection  ', positionOfConnection)
-
-  numberOfConnections = 0;
-  if(this.startEcu){
-    for(let i = 0; i < this.lines.length; i++){
-      if(this.lines[i].connectedFrom == this.startEcu.id.toString()
-        || this.lines[i].connectedTo == this.startEcu.id.toString()){
-          if(this.lines[i].connectedFrom == this.startEcu.id.toString()){
-            this.lines[i].positionFromX = (this.startEcu.positionX + positionOfConnection*numberOfConnections).toString();
-          }else {
-            this.lines[i].positionToX = (this.startEcu.positionX + positionOfConnection*numberOfConnections).toString();
-          }
-          //console.log('positionFromX  ', this.lines[i].positionFromX )
-          numberOfConnections++;
-      }
-    }
-  }
-
-
-
-  const newLine: NewLine = {
-  name: 'Bus ' + (this.lines.length + 1), type: 'Bus',
-  description: 'default description',
-  positionFromX:  (firstHardware.positionX - 2 + positionOfConnection*numberOfConnections).toString(),
-  positionFromY: (firstHardware.positionY - 38).toString(),
-  positionToX:(secondHardware.positionX + (this.ECUwidth/2)).toString(),
-  positionToY: (secondHardware.positionY).toString(),
-  connectedFrom: firstHardware.id.toString(),
-  connectedTo: secondHardware.id.toString(),
-  twoWayConnection: false};
-
-  this.lineCreationService.createBus(this.selectedArchitecture.id, newLine).subscribe(data =>{
-    this.lines[this.lines.length] = data
-    //console.log(this.lines)
-    //this.setValueToShare(this);
-  });
-
-  console.log('New line created:', newLine);
-}*/
 
 onEcuClick(ecu: Hardware, event: MouseEvent){
   if(this.creatingBusModus){
@@ -730,6 +703,7 @@ onEcuClick(ecu: Hardware, event: MouseEvent){
           connectedTo: this.endEcu.id.toString(),
           twoWayConnection: false};
 
+          if(this.selectedArchitecture)
           this.lineCreationService.createBus(this.selectedArchitecture.id, newLine).subscribe(data =>{
             this.connections[this.connections.length] = data
             //console.log(this.lines)
@@ -794,6 +768,7 @@ onEcuClick(ecu: Hardware, event: MouseEvent){
           connectedTo: this.endEcu.id.toString(), 
           twoWayConnection: false};
 
+          if(this.selectedArchitecture)
           this.lineCreationService.createBus(this.selectedArchitecture.id, newLine).subscribe(data =>{
             this.connections[this.connections.length] = data
             //console.log(this.lines)
@@ -806,24 +781,7 @@ onEcuClick(ecu: Hardware, event: MouseEvent){
         }else{
           console.log("ECU has to be connected with BUS or CAN")
         }
-        
-        /*else{
-          const newLine: NewLine = {name: 'Bus ' + (this.lines.length + 1), type: 'Bus',
-          description: 'default description', positionFromX: (this.startEcu.positionX + (this.ECUwidth/2)).toString(),
-          positionFromY: this.startEcu.positionY.toString(), positionToX: (this.endEcu.positionX + (this.ECUwidth/2)).toString(),
-          positionToY: this.endEcu.positionY.toString(), connectedFrom: this.startEcu.id.toString(),
-          connectedTo: this.endEcu.id.toString(), twoWayConnection: false};
-
-          this.lineCreationService.createBus(this.selectedArchitecture.id, newLine).subscribe(data =>{
-            this.lines[this.lines.length] = data
-            console.log(this.lines)
-            //this.setValueToShare(this);
-          });
-  
-        //  console.log('New line created:', newLine);
-        }*/
-
-        // Add new line to service
+      
        
 
       } else {
@@ -862,9 +820,9 @@ selectOption(option: any): void {
     this.creatingBusModus = true;
   } else if (option.label === 'new Architecture'){
     this.showCreateHardwareDialog = option.label;
-    this.selectedOption = option;   
+    this.selectedOptionDropdownCreate = option;   
   } else {
-    this.selectedOption = option;
+    this.selectedOptionDropdownCreate = option;
   }
   this.showDropdown = false; 
 
