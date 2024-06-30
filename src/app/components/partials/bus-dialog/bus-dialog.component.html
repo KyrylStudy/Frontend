@@ -1,11 +1,11 @@
 <div class="dialog-container">
     <div class="dialog-content">
         <button class="dialog-close-button" (click)="close()">Close</button> <!-- Move close button here -->
-        <div *ngIf="dialogData.selectedBus">
-            <h3>{{ dialogData.selectedBus.name }}</h3>
-            <h4>Description: {{ dialogData.selectedBus.description}}</h4>
-            <h4>Connected from: {{ dialogData.selectedBus.connectedFrom }}</h4>
-            <h4>Connected to: {{ dialogData.selectedBus.connectedTo }}</h4>
+        <div *ngIf="dialogData.selectedConnection">
+            <h3>{{ dialogData.selectedConnection.name }}</h3>
+            <h4>Description: {{ dialogData.selectedConnection.description}}</h4>
+            <h4>Connected from: {{ dialogData.selectedConnection.connectedFrom }}</h4>
+            <h4>Connected to: {{ dialogData.selectedConnection.connectedTo }}</h4>
             <button class="dialog-delete-button" (click)="delete()">Delete</button> <!-- Move close button here -->
         </div>
     </div>

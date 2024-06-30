@@ -12,9 +12,20 @@ import { newArchitecture } from '../../../shared/models/architectures';
 export class CreateHardwareDialogComponent {
 
   constructor(private ecuService:EcuService, private lineCreationService: LineCreationService) { 
-
-
   }
+
+  ngOnInit(): void {
+    /*this.ecuService.hardwares$.subscribe({
+      next: data => {
+        this.users = data;
+      },
+      error: error => {
+        this.errorMessage = 'Failed to load users';
+        console.error(error);
+      }
+    });*/
+  }
+
 
   @Input() createHardwareData: any | null = null;
   @Output() closeDialog = new EventEmitter<boolean>();
@@ -63,61 +74,26 @@ export class CreateHardwareDialogComponent {
   hardware: any = 'new Hardware';
   architecture: any = 'new Architecture';
 
+  createNewHardware(newHardware: NewHardware, architectureId:number): void {
+    this.ecuService.createHardware(newHardware, architectureId);
+  }
+
   save(){
     if(this.createHardwareData.showCreateHardwareDialog === this.hardware){
       if (this.selectedOption && this.newHardwareName && this.newHardwareDescription) {
-        if (this.selectedOption.label === 'ECU'){
           const newEcu: NewHardware = {
             label: this.newHardwareName,
-             type: this.selectedOption.label,
-             description: this.newHardwareDescription,
-              positionX: 228,
-               positionY: 229,
-                connectedTo: this.createHardwareData.ecus.length};
+            type: this.selectedOption.label,
+            description: this.newHardwareDescription,
+            positionX: 228,
+            positionY: 229,
+            connectedTo: this.createHardwareData.ecus.length};
            
-             this.ecuService.createEcu(newEcu, this.createHardwareData.selectedArchitecture.id).subscribe(data =>{
-               this.createHardwareData.ecus[this.createHardwareData.ecus.length] = data
-               console.log(this.createHardwareData.ecus)
-             }
-             );
+            this.createNewHardware(newEcu, this.createHardwareData.selectedArchitecture.id);
+            
            
-             this.closeDialog.emit(true);
-        }else if(this.selectedOption.label === 'BUS'){
-  
-          const newEcu: NewHardware = {
-            label: this.newHardwareName,
-             type: this.selectedOption.label,
-             description: this.newHardwareDescription,
-              positionX: 228,
-               positionY: 229,
-                connectedTo: this.createHardwareData.ecus.length};
-           
-             this.ecuService.createEcu(newEcu, this.createHardwareData.selectedArchitecture.id).subscribe(data =>{
-               this.createHardwareData.ecus[this.createHardwareData.ecus.length] = data
-               console.log(this.createHardwareData.ecus)
-             }
-             );
-           
-             this.closeDialog.emit(true);
-  
-        } else if(this.selectedOption.label === 'CAN'){
-    
-          const newEcu: NewHardware = {
-            label: this.newHardwareName,
-             type: this.selectedOption.label,
-             description: this.newHardwareDescription,
-              positionX: 228,
-               positionY: 229,
-                connectedTo: this.createHardwareData.ecus.length};
-           
-             this.ecuService.createEcu(newEcu, this.createHardwareData.selectedArchitecture.id).subscribe(data =>{
-               this.createHardwareData.ecus[this.createHardwareData.ecus.length] = data
-               console.log(this.createHardwareData.ecus)
-             }
-             );
-           
-             this.closeDialog.emit(true);
-        }
+            this.closeDialog.emit(true);
+      
           
       }else {
         console.log("All required feelds have to be filled!")
@@ -134,7 +110,6 @@ export class CreateHardwareDialogComponent {
             this.ecuService.createArchitecture(newArchitecture).subscribe(data =>{
               this.createHardwareData.architectures?.push(data)
               console.log(this.createHardwareData.architectures)
-              //this.setValueToShare(this);
             }
             );
         }

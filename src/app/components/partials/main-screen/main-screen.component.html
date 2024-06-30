@@ -75,24 +75,24 @@
         <div class="drag-boundary" [style.zoom]="zoomLevel">
 
         <svg id="svg-container" class="connestion-line-container">
-            <line class="connestion-line" *ngFor="let line of connections" 
-                  [attr.x1]="line.positionFromX" 
-                  [attr.y1]="line.positionFromY"
-                  [attr.x2]="line.positionToX" 
-                  [attr.y2]="line.positionToY"
-                  [attr.connectedFrom]="line.connectedFrom"
-                  [attr.connectedTo]="line.connectedTo"
-                  [attr.id]="line.id"
-                  (dblclick)="openConnectionDialog(line)"/>
-            <line class="connestion-line-overlay" *ngFor="let line of connections" 
-                  [attr.x1]="line.positionFromX" 
-                  [attr.y1]="line.positionFromY"
-                  [attr.x2]="line.positionToX" 
-                  [attr.y2]="line.positionToY"
-                  [attr.connectedFrom]="line.connectedFrom"
-                  [attr.connectedTo]="line.connectedTo"
-                  [attr.id]="line.id"
-                  (dblclick)="openConnectionDialog(line)"/>     
+            <line class="connestion-line" *ngFor="let connection of connections" 
+                  [attr.x1]="connection.positionFromX" 
+                  [attr.y1]="connection.positionFromY"
+                  [attr.x2]="connection.positionToX" 
+                  [attr.y2]="connection.positionToY"
+                  [attr.connectedFrom]="connection.connectedFrom"
+                  [attr.connectedTo]="connection.connectedTo"
+                  [attr.id]="connection.id"
+                  (dblclick)="openConnectionDialog(connection)"/>
+            <line class="connestion-line-overlay" *ngFor="let connection of connections" 
+                  [attr.x1]="connection.positionFromX" 
+                  [attr.y1]="connection.positionFromY"
+                  [attr.x2]="connection.positionToX" 
+                  [attr.y2]="connection.positionToY"
+                  [attr.connectedFrom]="connection.connectedFrom"
+                  [attr.connectedTo]="connection.connectedTo"
+                  [attr.id]="connection.id"
+                  (dblclick)="openConnectionDialog(connection)"/>     
         </svg>
           
 

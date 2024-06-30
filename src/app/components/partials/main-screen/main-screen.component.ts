@@ -17,6 +17,7 @@ import { newArchitecture } from '../../../shared/models/architectures';
 import { Service } from '../../../shared/models/service';
 import { Observable, concatMap, forkJoin, tap } from 'rxjs';
 import { DataStream } from '../../../shared/models/data_stream';
+import { MainInternalServiceService } from '../../../services/main-internal-service.service';
 
 
 
@@ -39,6 +40,7 @@ export class MainScreenComponent implements OnInit{
   showHardwareDetailsDialogContent = false;
 
   openHarwareDetailsDialog(ecu: Hardware): void {
+    this.saveLines();
     this.showHardwareDetailsDialog = true;
     this.showHardwareDetailsDialogContent = true;
     this.selectedEcu = ecu;
@@ -53,10 +55,11 @@ export class MainScreenComponent implements OnInit{
 
 
 
-  selectedBus: Connection | null = null;
+  selectedConnection: Connection | null = null;
   openConnectionDialog(connection: Connection): void {
-    this.selectedBus = connection;
-    this.showBusDialog = !this.showBusDialog;
+    this.saveLines();
+    this.selectedConnection = connection;
+    this.showBusDialog = true;
   }
 
 
@@ -87,7 +90,7 @@ export class MainScreenComponent implements OnInit{
 
   dataFromHeader: any;
 
-  constructor(private ecuService:EcuService, private lineCreationService: LineCreationService, private renderer: Renderer2,
+  constructor(private mainInternalService:MainInternalServiceService, private ecuService:EcuService, private lineCreationService: LineCreationService, private renderer: Renderer2,
     private elementRef: ElementRef) { 
 
 
@@ -257,7 +260,7 @@ addHardwareValue(): void {
 
     const NewHardware: NewHardwareProperty = {name: this.hardwareKey, value: this.hardwareValue};
   
-    this.ecuService.createHardware(NewHardware, this.selectedEcu.id).subscribe(data =>{
+    this.ecuService.createHardwareProperty(NewHardware, this.selectedEcu.id).subscribe(data =>{
       this.hardware[this.hardware.length] = data
     });
 
@@ -279,56 +282,37 @@ showListOfServices(): void {
 creatingLine = false;
 
 
-
+subscribeOnHardwares(){
+  this.ecuService.hardwares$.subscribe(
+      {
+        next: data => {
+          this.ecus = data;
+        },
+        error: error => {
+          console.error(error);
+        }
+      }
+  );
+}
 
   ngOnInit(): void{
 
+
+    this.subscribeOnHardwares();
+    this.ecuService.loadAllHardwares(1);
+
+
+    //-------------------------------------------------
     this.getAllBus(1);
-    this.getAllEcus(1);  
     this.getAllArchitectures();
 
     this.getAllServices();
-    //this.getAllDataStreams(1);
-    //this.getAllDataStreams(1)
-
   }
-
- /* dataStreams: any[] = [];
-  private getAllDataStreams(architectureId: number){
-    this.lineCreationService.getAllDataStreams(architectureId).subscribe(data => {
-      this.dataStreams = data;
-    });
-  }*/
 
   private getAllBus(architectureId: number){
     this.lineCreationService.getAllBus(architectureId).subscribe(data => {
       this.connections = data;
     });
-  }
-
-  private getAllEcus(id: number) {
-     this.ecuService.getAll(id).subscribe(/*data => {
-      this.ecus = data;
-
-      
-
-      getAllServices
-      
-    }*/
-      {
-        next: (data) => {
-          this.ecus = data;
-          this.getAllServices();
-        },
-        error: (error) => {
-          // Handle the error here if needed
-
-        }
-      }
-   
-   
-   
-    );
   }
 
   architectures: Architecture[] | null = null;
@@ -552,10 +536,9 @@ selectedOption: any = null;
     this.lineCreationService.updateBus(Line, id).subscribe();
    }
 
-   private updateEcu(Ecu: Hardware, id: BigInt){
-    //console.log(Line)
-    this.ecuService.updateEcu(Ecu, id).subscribe();
-   }
+    updateEcu(Ecu: Hardware, id: BigInt): void {
+    this.ecuService.updateHardware(Ecu, id);
+  }
 
    saveLines() {
 
@@ -583,7 +566,7 @@ toggleDropdownSelectArchitecture(): void {
 }
 
 selectedArchitecture: any | null = null;
-async selectArchitecture(option: any): Promise<void> {
+selectArchitecture(option: any): void {
   this.selectedArchitecture = option;
 
   const svgContainer = document.getElementById('svg-container');
@@ -597,8 +580,8 @@ async selectArchitecture(option: any): Promise<void> {
       svgContainer.removeChild(line); // Remove each line element
     });
 
-  await this.getAllEcus(option.id); 
-  await this.getAllBus(option.id);
+  //this.getAllHardwares(option.id); 
+  this.getAllBus(option.id);
 
   this.showDropdownSelectArchitecture = false;
 }

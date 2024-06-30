@@ -9,7 +9,7 @@ import { Software } from '../shared/models/software';
 import { NewSoftware } from '../shared/models/software';
 import { HardwareProperty } from '../shared/models/hardware_property';
 import { NewHardwareProperty } from '../shared/models/hardware_property';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Architecture } from '../shared/models/architectures';
 import { newArchitecture } from '../shared/models/architectures';
 import { Service } from '../shared/models/service';
@@ -22,30 +22,41 @@ import { newService } from '../shared/models/service';
 export class EcuService {
 
  
-  constructor(private httpClient: HttpClient/*, private mainScreenComponent: MainScreenComponent*/) { }
+  constructor(private httpClient: HttpClient) { }
 
-  //---------------ECU
-  baseUrl = "http://localhost:8080/api/ecus/architecture"
-  getAll(id: number):Observable<Hardware[]>{
-    return this.httpClient.get<Hardware[]>(`${this.baseUrl + '/' + id }`);
+
+
+
+  //---------------ECU (Hardware)
+  private hardwaresSubject = new BehaviorSubject<any[]>([]);
+  hardwares$ = this.hardwaresSubject.asObservable();
+
+  baseHardwareUrl = "http://localhost:8080/api/ecus/"
+
+  loadAllHardwares(architectureId: number): void{
+    this.httpClient.get<Hardware[]>(`${this.baseHardwareUrl  + 'architecture/' + architectureId }`).pipe(
+      tap(hardwares => this.hardwaresSubject.next(hardwares))
+    ).subscribe();
   }
 
-  updateEcuUrl = "http://localhost:8080/api/ecus";
-  updateEcu(Ecu: Hardware, id: BigInt): Observable<any> {
-    return this.httpClient.put(`${this.updateEcuUrl + '/' + id + '/' + 'update'}`, Ecu);
+  updateHardware(Hardware: Hardware, id: BigInt): void {
+    this.httpClient.put<Hardware>(`${this.baseHardwareUrl + id + '/update'}`, Hardware).pipe(
+      tap(() => this.loadAllHardwares(1))  // Обновить список после изменения
+    ).subscribe();
   }
 
-  creareEcuUrl = 'http://localhost:8080/api/ecus';
-  createEcu(EcuPost: NewHardware, id: number): Observable<any> {
-      console.log(EcuPost);
-      return this.httpClient.post<any>(`${this.creareEcuUrl + '/' + id + '/' + 'ecu'}`, EcuPost);
+  createHardware(NewHardware: NewHardware, architectureId: number): void {
+    this.httpClient.post<Hardware>(`${this.baseHardwareUrl + architectureId + '/ecu'}`, NewHardware).pipe(
+      tap(() => this.loadAllHardwares(architectureId))  // Обновить список после добавления
+    ).subscribe(); 
   }
 
-  deleteEcuUrl = 'http://localhost:8080/api/ecus/';
-  deleteEcu(id: BigInt): Observable<any> {
-    return this.httpClient.delete(`${this.deleteEcuUrl + id + '/delete'}`);
+
+    deleteHardware(id: BigInt): void {
+      this.httpClient.delete<Hardware>(`${this.baseHardwareUrl + id + '/delete'}`).pipe(
+        tap(() => this.loadAllHardwares(1))  // Обновить список после удаления
+      ).subscribe();
     }
-
 
   //---------------Architecture
 
@@ -81,7 +92,7 @@ export class EcuService {
     return this.httpClient.get<HardwareProperty[]>(`${this.hardwareUrl + '/' + id + '/hardwares' }`);
   }
 
-  createHardware(NewHardware: NewHardwareProperty, id: BigInt): Observable<any> {
+  createHardwareProperty(NewHardware: NewHardwareProperty, id: BigInt): Observable<any> {
     console.log(NewHardware);
     return this.httpClient.post<any>(`${this.hardwareUrl + '/' + id + '/hardware'}`, NewHardware);
 }

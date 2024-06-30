@@ -6,6 +6,8 @@ import { LineCreationService } from '../../../services/header-main.service';
 import { Service } from '../../../shared/models/service';
 import { NewConnection } from '../../../shared/models/connection-model';
 import { DataStream } from '../../../shared/models/data_stream';
+import { Hardware } from '../../../shared/models/hardware';
+import { Observable, forkJoin } from 'rxjs';
 
 
 @Component({
@@ -25,27 +27,27 @@ export class DialogComponent /*implements OnInit*/{
 
   delete(): void {
    var busIdDeleteArray: any[] = [];
-    for(let i = 0; i < this.dialogData.lines.length; i++){
-      if(this.dialogData.lines[i].connectedFrom == this.dialogData.selectedEcu.id.toString()){
-        busIdDeleteArray.push(this.dialogData.lines[i].id);
-        this.deleteBus(this.dialogData.lines[i].id)
-      }else if(this.dialogData.lines[i].connectedTo == this.dialogData.selectedEcu.id.toString()){        
-        busIdDeleteArray.push(this.dialogData.lines[i].id);
-        this.deleteBus(this.dialogData.lines[i].id)
+    for(let i = 0; i < this.dialogData.connections.length; i++){
+      if(this.dialogData.connections[i].connectedFrom == this.dialogData.selectedEcu.id.toString()){
+        busIdDeleteArray.push(this.dialogData.connections[i].id);
+        this.deleteBus(this.dialogData.connections[i].id)
+      }else if(this.dialogData.connections[i].connectedTo == this.dialogData.selectedEcu.id.toString()){        
+        busIdDeleteArray.push(this.dialogData.connections[i].id);
+        this.deleteBus(this.dialogData.connections[i].id)
         
       }
     }
     this.deleteEcu(this.dialogData.selectedEcu.id)
 
     for(let i = 0; i < busIdDeleteArray.length; i++){
-      this.dialogData.lines = this.dialogData.lines.filter((item: { id: any; }) => item.id != busIdDeleteArray[i]);
+      this.dialogData.connections = this.dialogData.connections.filter((item: { id: any; }) => item.id != busIdDeleteArray[i]);
     }
-    this.dialogData.ecus = this.dialogData.ecus.filter((item: { id: any; }) => item.id !== this.dialogData.selectedEcu.id);
+    //this.dialogData.ecus = this.dialogData.ecus.filter((item: { id: any; }) => item.id !== this.dialogData.selectedEcu.id);
 
-
+//покащо не работает
     var servicesOfSelectedEcu = this.dialogData.servicesMap.get(this.dialogData.selectedEcu.id);
     var dataStreams: DataStream[] = [];
-    this.lineCreationService.getAllDataStreams(this.dialogData.selectArchitecture.id).subscribe(data => {
+    this.lineCreationService.getAllDataStreams(this.dialogData.selectedArchitecture.id).subscribe(data => {
       dataStreams = data;
     });
     if(servicesOfSelectedEcu){
@@ -64,22 +66,77 @@ export class DialogComponent /*implements OnInit*/{
     this.closeDialog.emit(true);
   }
 
-  private deleteEcu(id: BigInt){
+  /*private deleteEcu(id: BigInt){
     this.ecuService.deleteEcu(id).subscribe();
-  }
+  }*/
 
+    private deleteEcu(id: BigInt): void {
+      this.ecuService.deleteHardware(id);
+    }
+
+  
   private deleteBus(id: BigInt){
     this.lineCreationService.deleteBus(id).subscribe();
   }
 
   constructor(private ecuService:EcuService,private lineCreationService: LineCreationService, private renderer: Renderer2) { 
-
-
   }
 
-  /*ngOnInit(): void{
-    //this.get()
+  
+subscribeOnHardwares(){
+  this.ecuService.hardwares$.subscribe(
+      {
+        next: data => {
+          this.hardwares = data;
+        },
+        error: error => {
+         // this.errorMessage = 'Failed to load users';
+          console.error(error);
+        }
+      }
+  );
+}
+
+  ngOnInit(): void{
+    this.subscribeOnHardwares();
+   // this.getAllHardwares(this.dialogData.selectedArchitecture.id);
     
+  }
+
+  showHardware(){
+    console.log(this.hardwares)
+    //console.log(this.servicesMap)
+  }
+
+  hardwares: Hardware[] = [];
+  /*private getAllHardwares(id: number) {
+    this.ecuService.loadAllHardwares(id).subscribe(
+     {
+       next: (data) => {
+         this.hardwares = data;
+         this.getAllServices();
+       },
+       error: (error) => {
+         // Handle the error here if needed
+       }
+     }
+   );
+  }
+
+  servicesMap: Map<BigInt, Service[]> = new Map();
+  getAllServices(): void {
+    // Assuming ecus array is already populated, otherwise, you need to fetch it first
+    if (this.hardwares.length > 0) {
+      const serviceObservables: Observable<Service[]>[] = this.hardwares.map(hardware => this.ecuService.getAllServicesByEcuId(hardware.id)); 
+      
+      forkJoin(serviceObservables).subscribe(serviceArrays => {
+        serviceArrays.forEach((services, index) => {
+          const hardwareId = this.hardwares[index].id;
+          //this.servicesCountMap.set(ecuId, services.length); 
+          this.servicesMap.set(hardwareId, services);
+        });
+      });
+    }
   }*/
 
   //------------------------19.05
@@ -91,7 +148,7 @@ export class DialogComponent /*implements OnInit*/{
     this.dialogData.showHardwareDetailsDialogContent = false;
     //console.log(this.dialogData.selectedEcu)
     this.dialogData.getAllServices(this.dialogData.selectedEcu.id);
-    this.dialogData.initializeGraph(this.dialogData.lines);
+    this.dialogData.initializeGraph(this.dialogData.connections);
     /*for(let i = 0; i < this.dialogData.ecus.length; i++){
       if(this.dialogData.canReach(this.dialogData.selectedEcu.id.toString(), this.dialogData.ecus[i].id.toString())){
 
@@ -140,7 +197,7 @@ export class DialogComponent /*implements OnInit*/{
     this.showCreateDialog = !this.showCreateDialog;
   }
 
-  goBack(){
+  goBack(){ 
     this.showService = false;
     this.dialogData.showHardwareDetailsDialogContent = true;
   }

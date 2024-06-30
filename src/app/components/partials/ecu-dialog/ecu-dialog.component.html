@@ -48,7 +48,7 @@
             <div class="input-sidebar">
                 <input class="input-field" type="text" placeholder="Property" [(ngModel)]="dialogData.hardwareKey">
                 <input class="input-field" type="text" placeholder="Description" [(ngModel)]="dialogData.hardwareValue">
-                <button class="add-property-button" (click)="dialogData.addHardwareValue()">Add Property</button>
+                <button class="add-property-button" (dblclick)="showHardware()" (click)="dialogData.addHardwareValue()">Add Property</button>
             </div>
             <button class="dialog-delete-button" (click)="delete()">Delete</button> <!-- Move close button here -->
         </div>

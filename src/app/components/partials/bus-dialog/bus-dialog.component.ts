@@ -19,9 +19,9 @@ export class BusDialogComponent {
   }
 
   delete(): void {
-    var connectedFromEcuId = this.dialogData.selectedBus.connectedFrom;
+    var connectedFromEcuId = this.dialogData.selectedConnection.connectedFrom;
     var connectedFromEcu: Hardware | null = null;
-    var connectedToEcuId = this.dialogData.selectedBus.connectedTo;
+    var connectedToEcuId = this.dialogData.selectedConnection.connectedTo;
     var connectedToEcu: Hardware | null = null;
     for(let i = 0; i < this.dialogData.ecus.length; i++){
       if(this.dialogData.ecus[i].id == connectedFromEcuId){
@@ -36,9 +36,9 @@ export class BusDialogComponent {
       }
     }
 
-    this.dialogData.connections = this.dialogData.connections.filter((item: { id: any; }) => item.id !== this.dialogData.selectedBus.id);
+    this.dialogData.connections = this.dialogData.connections.filter((item: { id: any; }) => item.id !== this.dialogData.selectedConnection.id);
     //console.log(this.dialogData.connections)
-    this.deleteBus(this.dialogData.selectedBus.id);
+    this.deleteBus(this.dialogData.selectedConnection.id);
     this.closeDialog.emit(true);
   }
 
@@ -55,8 +55,5 @@ export class BusDialogComponent {
     }
   }
 
-  private updateEcu(Ecu: Hardware, id: BigInt){
-    this.ecuService.updateEcu(Ecu, id).subscribe();
-   }
 }
 
