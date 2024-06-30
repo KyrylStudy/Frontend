@@ -5,7 +5,7 @@ export class Architecture {
     description!: String;
 }
 
-export class newArchitecture {
+export class NewArchitecture {
     name!: String;
     type!: String;
     description!: String;

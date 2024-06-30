@@ -7,8 +7,8 @@
         <button class="dialog-close-button" (click)="close()">Close</button> <!-- Move close button here -->
         <div *ngIf="dialogData.showHardwareDetailsDialogContent">
             <div class="horisontal-container">
-                <h3>{{ dialogData.selectedEcu.label }}</h3>
-                <div *ngIf="dialogData.selectedEcu.type == 'ECU'">
+                <h3>{{ selectedEcu?.label }}</h3>
+                <div *ngIf="selectedEcu?.type == 'ECU'">
                     <button class="show-services-button" (click)="openDialog()">To Services</button>
                 </div>
             </div>
@@ -33,7 +33,7 @@
             </div>-->
             <div>
                 <h4 class="ecu-properties-header">Description:</h4>
-                <p class="ecu-description">{{ dialogData.selectedEcu.description }}</p>
+                <p class="ecu-description">{{ selectedEcu?.description }}</p>
             </div>
            
             <div>

@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Hardware } from '../shared/models/hardware';
 import { NewHardware } from '../shared/models/hardware';
-//import { sample_ecu } from '../../data';
-//import { Connection } from '../shared/models/connection-model';
-//import { sample_lines } from '../../data';
 import { HttpClient } from '@angular/common/http';
 import { Software } from '../shared/models/software';
 import { NewSoftware } from '../shared/models/software';
@@ -11,9 +8,10 @@ import { HardwareProperty } from '../shared/models/hardware_property';
 import { NewHardwareProperty } from '../shared/models/hardware_property';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Architecture } from '../shared/models/architectures';
-import { newArchitecture } from '../shared/models/architectures';
+import { NewArchitecture } from '../shared/models/architectures';
 import { Service } from '../shared/models/service';
 import { newService } from '../shared/models/service';
+import { ArchitectureService } from './architecture.service';
 
 
 @Injectable({
@@ -22,11 +20,11 @@ import { newService } from '../shared/models/service';
 export class EcuService {
 
  
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient, private architectureService:ArchitectureService,) { }
 
 
 
-
+  selectedArchitecture: Architecture | null = null;
   //---------------ECU (Hardware)
   private selectedHardwareSubject = new BehaviorSubject<Hardware | null>(null);
   selectedHardware$ = this.selectedHardwareSubject.asObservable();
@@ -54,7 +52,7 @@ export class EcuService {
   updateHardware(Hardware: Hardware, id: BigInt): void {
     this.httpClient.put<Hardware>(`${this.baseHardwareUrl + id + '/update'}`, Hardware).pipe(
       tap(() => {
-        this.getSelectedArchitecture().subscribe(data => {
+        this.architectureService.getSelectedArchitecture().subscribe(data => {
           this.selectedArchitecture = data;
         })
         if(this.selectedArchitecture)
@@ -73,7 +71,7 @@ export class EcuService {
     deleteHardware(id: BigInt): void {
       this.httpClient.delete<Hardware>(`${this.baseHardwareUrl + id + '/delete'}`).pipe(
         tap(() => {
-          this.getSelectedArchitecture().subscribe(data => {
+          this.architectureService.getSelectedArchitecture().subscribe(data => {
             this.selectedArchitecture = data;
           })
           if(this.selectedArchitecture)
@@ -81,44 +79,6 @@ export class EcuService {
         })  // Обновить список после удаления
       ).subscribe();
     }
-
-  //---------------Architecture
-  selectedArchitecture: Architecture | null = null;
-
-  private selectedArchitectureSubject = new BehaviorSubject<Architecture | null>(null);
-  selectedArchitecture$ = this.selectedArchitectureSubject.asObservable();
-
-  setSelectedArchitecture(selectedArchitecture: Architecture | null): void {
-    this.selectedArchitectureSubject.next(selectedArchitecture);
-  }
-
-  getSelectedArchitecture(): Observable<Architecture | null> {
-    return this.selectedArchitecture$;
-  }
-
-
-  private architecturesSubject = new BehaviorSubject<Architecture[]>([]);
-  architectures$ = this.architecturesSubject.asObservable();
-
-  baseArchitectureUrl = "http://localhost:8080/api/architecture"
-
-    loadAllArchitectures(): void{
-      this.httpClient.get<Architecture[]>(`${this.baseArchitectureUrl}`).pipe(
-        tap(architectures => this.architecturesSubject.next(architectures))
-      ).subscribe();
-    }
-
-    loadArchitecture(id: BigInt): void{
-      this.httpClient.get<Architecture>(`${this.baseArchitectureUrl + '/' + id}`).pipe(
-        tap(selectedArchitecture => this.selectedArchitectureSubject.next(selectedArchitecture))
-      ).subscribe();
-  }
-
-  createArchitecture(newArchitecture: newArchitecture): void {
-    this.httpClient.post<Architecture>(`${this.baseArchitectureUrl}`, newArchitecture).pipe(
-      tap(() => this.loadAllArchitectures())  // Обновить список после добавления
-    ).subscribe(); 
-  }
 
 
   //--------------Software(property)
@@ -154,7 +114,7 @@ getAllServicesByEcuId(ecu_id: BigInt):Observable<Service[]>{
 }
 
 creareServiceUrl = 'http://localhost:8080/api/services/';
-createService(newService: newService, ecu_id: number): Observable<any> {
+createService(newService: newService, ecu_id: BigInt): Observable<any> {
     return this.httpClient.post<any>(`${this.creareServiceUrl + ecu_id}`, newService);
 }
 

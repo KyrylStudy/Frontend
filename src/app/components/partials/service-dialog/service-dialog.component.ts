@@ -64,7 +64,8 @@ export class ServiceDialogComponent {
         setTimeout(function(){
           that.serviceDetilsData.dataForDataStreamDetails.selectedOption = null;
           that.serviceDetilsData.dataForDataStreamDetails.selectedService = null;
-          that.serviceDetilsData.dataForDataStreamDetails.options = that.serviceDetilsData.dialogData.servicesMap.get(that.serviceDetilsData.dialogData.selectedEcu.id);
+          that.serviceDetilsData.dataForDataStreamDetails.options = 
+          that.serviceDetilsData.dialogData.servicesMap.get(that.serviceDetilsData.dialogData.selectedEcu.id);//добавить сервис есу
         }, 300)
       },
       error: (error) => {

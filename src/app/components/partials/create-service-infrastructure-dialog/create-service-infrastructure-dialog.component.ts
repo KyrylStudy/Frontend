@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { EcuService } from '../../../services/ecu.service';
 import { newService } from '../../../shared/models/service';
+import { Hardware } from '../../../shared/models/hardware';
 
 
 @Component({
@@ -10,9 +11,22 @@ import { newService } from '../../../shared/models/service';
 })
 export class CreateServiceInfrastructureDialogComponent {
 
-  constructor(private ecuService:EcuService, /*private lineCreationService: LineCreationService*/) { 
+  constructor(private ecuService:EcuService, /*private lineCreationService: LineCreationService*/) { }
 
+  selectedEcu: Hardware | null = null;
+  ngOnInit(): void{
 
+      this.ecuService.selectedHardware$.subscribe(
+          {
+            next: data => {
+              this.selectedEcu = data;
+            },
+            error: error => {
+              console.error(error);
+            }
+          }
+      );
+    
   }
 
   @Input() createServiceDialogData: any | null = null;
@@ -24,6 +38,7 @@ export class CreateServiceInfrastructureDialogComponent {
 
   newServiceName: any = null;
   newServiceDescription: any = null;
+  
   save(){
 
       if (this.newServiceName && this.newServiceDescription) {
@@ -36,33 +51,39 @@ export class CreateServiceInfrastructureDialogComponent {
             positionY: 229,
             connectedTo: '9'};
            
-             this.ecuService.createService(newService, this.createServiceDialogData.dialogData.selectedEcu.id).subscribe({
-              next: (data) => {
-                this.createServiceDialogData.dialogData.getAllServices();
-
-                var that = this;
-                setTimeout(function(){
-                  that.createServiceDialogData.dataForDataStreamDetails.selectedOption = null;
-                  that.createServiceDialogData.dataForDataStreamDetails.selectedService = null;
-                  that.createServiceDialogData.dataForDataStreamDetails.options = that.createServiceDialogData.dialogData.servicesMap.get(that.createServiceDialogData.dialogData.selectedEcu.id);
-                }, 300)
-              },
-              error: (error) => {
-                // Handle the error here if needed
-
-              }
-            });
-
-            
-
-
-             /*var that = this;
-        setTimeout(function(){
-          that.serviceDetilsData.dataForDataStreamDetails.selectedOption = null;
-          that.serviceDetilsData.dataForDataStreamDetails.selectedService = null;
-          that.serviceDetilsData.dataForDataStreamDetails.options = that.serviceDetilsData.dialogData.servicesMap.get(that.serviceDetilsData.dialogData.selectedEcu.id);
-        }, 300)*/
-           
+            if(this.selectedEcu){
+              this.ecuService.createService(newService, this.selectedEcu.id).subscribe({
+                next: (data) => {
+                  //this.createServiceDialogData.dialogData.getAllServices();
+  
+                  //var that = this;
+                  //setTimeout(function(){
+                    this.createServiceDialogData.dataForDataStreamDetails.selectedOption = null;
+                    this.createServiceDialogData.dataForDataStreamDetails.selectedService = null;
+                    if(this.selectedEcu){
+                      
+                      //let jjjjj = this.ecuService.getAllServicesByEcuId(this.selectedEcu.id)
+                     // this.createServiceDialogData.dataForDataStreamDetails.options =
+                       this.ecuService.getAllServicesByEcuId(this.selectedEcu.id).subscribe(
+                        {
+                          next: data => {
+                            this.createServiceDialogData.dataForDataStreamDetails.options = data;
+                          },
+                          error: error => {
+                            console.error(error);
+                          }
+                        }
+                       )
+                    }
+//that.createServiceDialogData.dialogData.servicesMap.get(that.selectedEcu.id);
+                 // }, 300)
+                },
+                error: (error) => {
+                  // Handle the error here if needed
+  
+                }
+              });
+            }         
              this.closeDialog.emit(true);
       }else {
             console.log("All required feelds have to be filled!")

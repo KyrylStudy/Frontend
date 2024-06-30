@@ -12,12 +12,13 @@ import { NewSoftware } from '../../../shared/models/software';
 import { HardwareProperty } from '../../../shared/models/hardware_property';
 import { NewHardwareProperty } from '../../../shared/models/hardware_property';
 import { Architecture } from '../../../shared/models/architectures';
-import { newArchitecture } from '../../../shared/models/architectures';
+import { NewArchitecture } from '../../../shared/models/architectures';
 //import { Connection } from '../../../shared/models/service';
 import { Service } from '../../../shared/models/service';
 import { Observable, concatMap, forkJoin, tap } from 'rxjs';
 import { DataStream } from '../../../shared/models/data_stream';
 import { MainInternalServiceService } from '../../../services/main-internal-service.service';
+import { ArchitectureService } from '../../../services/architecture.service';
 
 
 
@@ -91,7 +92,7 @@ export class MainScreenComponent implements OnInit{
 
   dataFromHeader: any;
 
-  constructor(private mainInternalService:MainInternalServiceService, private ecuService:EcuService, private lineCreationService: LineCreationService, private renderer: Renderer2,
+  constructor(private architectureService:ArchitectureService, private mainInternalService:MainInternalServiceService, private ecuService:EcuService, private lineCreationService: LineCreationService, private renderer: Renderer2,
     private elementRef: ElementRef) { 
 
 
@@ -310,7 +311,7 @@ subscribeOnHardwares(){
 
 architectures: Architecture[] | null = null;
 subscribeOnArchitectures(){
-  this.ecuService.architectures$.subscribe(
+  this.architectureService.architectures$.subscribe(
       {
         next: data => {
           this.architectures = data;
@@ -323,7 +324,7 @@ subscribeOnArchitectures(){
 }
 
 subscribeOnSelectedArchitecture(){
-  this.ecuService.selectedArchitecture$.subscribe(
+  this.architectureService.selectedArchitecture$.subscribe(
       {
         next: data => {
           this.selectedArchitecture = data;
@@ -341,10 +342,10 @@ subscribeOnSelectedArchitecture(){
   ngOnInit(): void{
 
     this.subscribeOnArchitectures();
-    this.ecuService.loadAllArchitectures();
+    this.architectureService.loadAllArchitectures();
 
     this.subscribeOnSelectedArchitecture();
-    this.ecuService.loadArchitecture(BigInt(1));
+    this.architectureService.loadArchitecture(BigInt(1));
 
     this.subscribeOnSelectedHardware();
     this.subscribeOnHardwares();
@@ -601,7 +602,7 @@ toggleDropdownSelectArchitecture(): void {
 
 selectedArchitecture: Architecture | null = null;
 selectArchitecture(option: Architecture): void {
-  this.ecuService.setSelectedArchitecture(option);
+  this.architectureService.setSelectedArchitecture(option);
 
   const svgContainer = document.getElementById('svg-container');
 

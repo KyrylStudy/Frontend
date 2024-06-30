@@ -25,10 +25,10 @@
         <div class="ecu">
             
 
-            <h4 class="ecu-name">{{ serviceData.dialogData.selectedEcu.label + "|" + serviceData.dialogData.selectedEcu.id }}</h4>
+            <h4 class="ecu-name">{{ selectedEcu?.label + "|" + selectedEcu?.id }}</h4>
             <div class="drag-boundary" [style.zoom]="zoomLevel">
 
-                <div *ngFor="let item of serviceData.dialogData.servicesMap.get(serviceData.dialogData.selectedEcu.id)"
+                <div *ngFor="let item of serviceData.dialogData.servicesMap.get(this.selectedEcu?.id)"
                     cdkDrag
                     cdkDragBoundary=".drag-boundary"
                     [style.transform]="'translateX(' + item.positionX + 'px) translateY(' + item.positionY + 'px)'"
@@ -48,7 +48,7 @@
             <div *ngFor="let item1 of serviceData.dialogData.ecus"><!-- </ng-container>-->
                 <!--<div *ngIf="item1.id !== serviceData.selectedEcu.id"> </ng-container>-->
                 
-                    <div *ngIf="serviceData.dialogData.canReach(serviceData.dialogData.selectedEcu.id.toString(), item1.id.toString()) && item1.type =='ECU'">
+                    <div *ngIf="serviceData.dialogData.canReach(selectedEcu?.id?.toString(), item1.id.toString()) && item1.type =='ECU'">
                     <div class="ecu1">
                         <h4 class="ecu-name">{{ item1.label + "|" + item1.id }}</h4>
                         <div class="drag-boundary" [style.zoom]="zoomLevel">

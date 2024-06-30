@@ -4,6 +4,7 @@ import { NewDataStream } from '../../../shared/models/data_stream';
 import { EcuService } from '../../../services/ecu.service';
 import { DataStream } from '../../../shared/models/data_stream';
 import { LineCreationService } from '../../../services/header-main.service';
+import { Hardware } from '../../../shared/models/hardware';
 
 @Component({
   selector: 'app-service',
@@ -114,12 +115,32 @@ zoomOut() {
   }
 }
 
+selectedEcu: Hardware | null = null;
+subscribeOnSelectedHardware(){
+  this.ecuService.selectedHardware$.subscribe(
+      {
+        next: data => {
+          this.selectedEcu = data;
+        },
+        error: error => {
+          console.error(error);
+        }
+      }
+  );
+}
+
+/*checHardwaresOnConnection(firstHardwareId:string, secondHardwareId:string,){
+  this.serviceData.dialogData.canReach(firstHardwareId, secondHardwareId);
+}*/
+
 ngOnInit(): void {
+ 
+  this.subscribeOnSelectedHardware();
  // this.el.nativeElement.querySelector(`[serviceId="${''}"]`);
  this.dataStreamsTransport.emit(this); 
  this.scrollableEcu.nativeElement.addEventListener('scroll', this.onElementScroll.bind(this));
   this.getDataStreams(this.serviceData.dialogData.dialogData.selectedArchitecture.id);
-  this.options = this.serviceData.dialogData.dialogData.servicesMap.get(this.serviceData.dialogData.dialogData.selectedEcu.id);
+  this.options = this.serviceData.dialogData.dialogData.servicesMap.get(this.selectedEcu?.id);
 }
 
 /*scrollableEcu:any;
@@ -262,7 +283,7 @@ dataStreams: DataStream[] = [];
         let adjustFromY = true;
         let adjustToY = true;
       
-        for (let service of this.serviceData.dialogData.dialogData.servicesMap.get(this.serviceData.dialogData.dialogData.selectedEcu.id)) {
+        for (let service of this.serviceData.dialogData.dialogData.servicesMap.get(this.selectedEcu?.id)) {
           if (dataStream.connectedFrom == service.id) {
             adjustFromY = false;
           }

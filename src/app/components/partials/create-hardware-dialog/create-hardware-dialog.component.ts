@@ -2,7 +2,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { EcuService } from '../../../services/ecu.service';
 import { LineCreationService } from '../../../services/header-main.service';
 import { NewHardware } from '../../../shared/models/hardware';
-import { newArchitecture } from '../../../shared/models/architectures';
+import { NewArchitecture } from '../../../shared/models/architectures';
+import { ArchitectureService } from '../../../services/architecture.service';
 
 @Component({
   selector: 'create-hardware-dialog',
@@ -11,7 +12,7 @@ import { newArchitecture } from '../../../shared/models/architectures';
 })
 export class CreateHardwareDialogComponent {
 
-  constructor(private ecuService:EcuService, private lineCreationService: LineCreationService) { 
+  constructor(private architectureService:ArchitectureService, private ecuService:EcuService, private lineCreationService: LineCreationService) { 
   }
 
   ngOnInit(): void {
@@ -102,7 +103,7 @@ export class CreateHardwareDialogComponent {
     }else if(this.createHardwareData.showCreateHardwareDialog === this.architecture){
       if (this.newArchitectureName && this.newArchitectureDescription) {
         if(this.createHardwareData.architectures){
-          const newArchitecture: newArchitecture = {
+          const newArchitecture: NewArchitecture = {
             name: this.newArchitectureName,
             type: 'Architecture',
             description: this.newArchitectureDescription,
@@ -113,7 +114,7 @@ export class CreateHardwareDialogComponent {
               console.log(this.createHardwareData.architectures)
             }
             );*/
-            this.ecuService.createArchitecture(newArchitecture)
+            this.architectureService.createArchitecture(newArchitecture)
         }
         this.closeDialog.emit(true);
       }else {
