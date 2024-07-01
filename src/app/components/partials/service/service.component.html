@@ -6,7 +6,7 @@
         {{ selectedOption?.name || 'Select Service' }} 
     </div>
     <div class="dropdown-menu" *ngIf="showDropdown">
-        <div class="dropdown-item" *ngFor="let option of options" (click)="selectOption(option)"> 
+        <div class="dropdown-item" *ngFor="let option of services" (click)="selectOption(option)"> 
             {{ option.name }}
         </div>
     </div>

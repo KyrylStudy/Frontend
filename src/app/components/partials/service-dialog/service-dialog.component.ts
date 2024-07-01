@@ -1,6 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { EcuService } from '../../../services/ecu.service';
 import { LineCreationService } from '../../../services/header-main.service';
+import { ServiceService } from '../../../services/service.service';
+import { Service } from '../../../shared/models/service';
+
 @Component({
   selector: 'app-service-dialog',
   templateUrl: './service-dialog.component.html',
@@ -8,11 +11,28 @@ import { LineCreationService } from '../../../services/header-main.service';
 })
 export class ServiceDialogComponent {
 
-  constructor(private ecuService:EcuService , private lineCreationService: LineCreationService/*, private renderer: Renderer2,
+  constructor(private serviceService:ServiceService, private ecuService:EcuService , private lineCreationService: LineCreationService/*, private renderer: Renderer2,
     private elementRef: ElementRef*/) { 
 
-
   }
+
+  servicesMap: Map<BigInt, Service[]> = new Map();
+subscribeOnServices(){
+  this.serviceService.allServicesInArchitectureMap$.subscribe(
+      {
+        next: data => {
+          this.servicesMap = data;
+        },
+        error: error => {
+          console.error(error);
+        }
+      }
+  );
+}
+
+ngOnInit(): void{
+  this.subscribeOnServices();
+}
 
   @Input() serviceDetilsData: any | null = null;
 
@@ -24,7 +44,7 @@ export class ServiceDialogComponent {
   delete(){ 
     //debugger
     var dataStreamsIdDeleteArray: any[] = [];
-    var dataStreams = this.serviceDetilsData.dataForDataStreamDetails.dataStreams;
+    var dataStreams = this.serviceDetilsData.dataForDataStreamDetails.dataStreams; 
     var selectedService = this.serviceDetilsData.selectedService;
     for(let i = 0; i < dataStreams.length; i++){ 
       
@@ -52,12 +72,12 @@ export class ServiceDialogComponent {
   }
 
   private deleteService(id: BigInt){
-    this.ecuService.deleteService(id).subscribe({
+    /*this.ecuService.deleteService(id).subscribe({
       next: (data) => {
         // Assuming the deletion was successful if this callback is called
         console.log('Service deleted successfully', data);
         // Fetch the updated list of services
-        this.serviceDetilsData.dialogData.getAllServices();
+        this.serviceService.getAllServices();
 
         //обновить опции в дропдауне сервисов 
         var that = this;
@@ -72,7 +92,9 @@ export class ServiceDialogComponent {
         // Handle the error here if needed
         console.error('Error deleting service', error);
       }
-    });
+    });*/
+    this.serviceDetilsData.dialogData.servicesMap.get(this.serviceDetilsData.dialogData.selectedEcu.id); 
+    this.serviceService.deleteService(id);
   }
 
   private deleteDataStream(id: BigInt){

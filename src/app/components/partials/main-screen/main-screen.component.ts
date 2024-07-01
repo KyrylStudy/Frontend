@@ -89,7 +89,7 @@ export class MainScreenComponent implements OnInit{
   ecus:Hardware[] = [];
 
   isSidebarOpen = false;
-  servisecOfSelectedEcu: Hardware | null = null;;
+  servisecOfSelectedEcu: Hardware | null = null;
   selectedEcu: Hardware | null = null;
 
 
@@ -341,13 +341,26 @@ subscribeOnHardwareProperties(){
   );
 }
 
+servicesMap: Map<BigInt, Service[]> = new Map();
+subscribeOnServices(){
+  this.serviceService.allServicesInArchitectureMap$.subscribe(
+      {
+        next: data => {
+          this.servicesMap = data;
+        },
+        error: error => {
+          console.error(error);
+        }
+      }
+  );
+}
+
 servicesCountMap: Map<BigInt, number> = new Map();
 //servicesMap: Map<BigInt, Service[]> = new Map();
 subscribeOnServicesCount(){
   this.serviceService.allServicesInArchitectureCountMap$.subscribe(
       {
         next: data => {
-          console.log("map data", data)
           this.servicesCountMap = data;
         },
         error: error => {
@@ -378,6 +391,7 @@ subscribeOnServicesCount(){
     this.subscribeOnHardwareProperties();
 
     this.subscribeOnServicesCount();
+    this.subscribeOnServices();
     this.serviceService.getAllServices();
 
     //-------------------------------------------------
@@ -638,6 +652,9 @@ toggleDropdownSelectArchitecture(): void {
 selectedArchitecture: Architecture | null = null;
 selectArchitecture(option: Architecture): void {
   this.architectureService.setSelectedArchitecture(option);
+  this.serviceService.getAllServices();//сервисы все равно не подгружаются
+  //if(this.selectedArchitecture)
+  //this.architectureService.loadArchitecture(BigInt(this.selectedArchitecture.id));
 
   const svgContainer = document.getElementById('svg-container');
 

@@ -5,6 +5,7 @@ import { EcuService } from '../../../services/ecu.service';
 import { DataStream } from '../../../shared/models/data_stream';
 import { LineCreationService } from '../../../services/header-main.service';
 import { Hardware } from '../../../shared/models/hardware';
+import { ServiceService } from '../../../services/service.service';
 
 @Component({
   selector: 'app-service',
@@ -27,7 +28,7 @@ export class ServiceComponent {
     this.showServiceDialog = !this.showServiceDialog;
   }
 
-  constructor(private renderer: Renderer2, private el: ElementRef, private ecuService: EcuService, private lineCreationService: LineCreationService) { 
+  constructor(private serviceService:ServiceService, private renderer: Renderer2, private el: ElementRef, private ecuService: EcuService, private lineCreationService: LineCreationService) { 
 
     }
 
@@ -133,14 +134,49 @@ subscribeOnSelectedHardware(){
   this.serviceData.dialogData.canReach(firstHardwareId, secondHardwareId);
 }*/
 
+servicesMap: Map<BigInt, Service[]> = new Map();
+subscribeOnServices(){
+  this.serviceService.allServicesInArchitectureMap$.subscribe(
+      {
+        next: data => {
+          this.servicesMap = data;
+        },
+        error: error => {
+          console.error(error);
+        }
+      }
+  );
+}
+
+services: Service[] = [];
+subscribeOnServicesOfSelectedEcu(){
+  this.serviceService.services$.subscribe(
+      {
+        next: data => {
+          this.services = data;
+        },
+        error: error => {
+          console.error(error);
+        }
+      }
+  );
+}
+
 ngOnInit(): void {
+
+  this.subscribeOnServices();
+
+  this.subscribeOnServicesOfSelectedEcu();
+  if(this.selectedEcu)
+  this.serviceService.loadAllServices(this.selectedEcu.id)
  
   this.subscribeOnSelectedHardware();
  // this.el.nativeElement.querySelector(`[serviceId="${''}"]`);
  this.dataStreamsTransport.emit(this); 
  this.scrollableEcu.nativeElement.addEventListener('scroll', this.onElementScroll.bind(this));
   this.getDataStreams(this.serviceData.dialogData.dialogData.selectedArchitecture.id);
-  this.options = this.serviceData.dialogData.dialogData.servicesMap.get(this.selectedEcu?.id);
+ // this.options = this.serviceData.dialogData.dialogData.servicesMap.get(this.selectedEcu?.id);
+ this.options = this.serviceData.dialogData.dialogData.servicesMap.get(this.selectedEcu?.id);
 }
 
 /*scrollableEcu:any;

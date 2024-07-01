@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { EcuService } from '../../../services/ecu.service';
 import { newService } from '../../../shared/models/service';
 import { Hardware } from '../../../shared/models/hardware';
+import { ServiceService } from '../../../services/service.service';
 
 
 @Component({
@@ -11,7 +12,7 @@ import { Hardware } from '../../../shared/models/hardware';
 })
 export class CreateServiceInfrastructureDialogComponent {
 
-  constructor(private ecuService:EcuService, /*private lineCreationService: LineCreationService*/) { }
+  constructor(private serviceService:ServiceService, private ecuService:EcuService, /*private lineCreationService: LineCreationService*/) { }
 
   selectedEcu: Hardware | null = null;
   ngOnInit(): void{
@@ -51,7 +52,9 @@ export class CreateServiceInfrastructureDialogComponent {
             positionY: 229,
             connectedTo: '9'};
            
-            if(this.selectedEcu){
+            if(this.selectedEcu)
+            this.serviceService.createService(newService, this.selectedEcu.id)
+            /*if(this.selectedEcu){
               this.ecuService.createService(newService, this.selectedEcu.id).subscribe({
                 next: (data) => {
                   //this.createServiceDialogData.dialogData.getAllServices();
@@ -60,6 +63,7 @@ export class CreateServiceInfrastructureDialogComponent {
                   //setTimeout(function(){
                     this.createServiceDialogData.dataForDataStreamDetails.selectedOption = null;
                     this.createServiceDialogData.dataForDataStreamDetails.selectedService = null;
+                    debugger
                     if(this.selectedEcu){
                       
                       //let jjjjj = this.ecuService.getAllServicesByEcuId(this.selectedEcu.id)
@@ -75,7 +79,7 @@ export class CreateServiceInfrastructureDialogComponent {
                         }
                        )
                     }
-//that.createServiceDialogData.dialogData.servicesMap.get(that.selectedEcu.id);
+                    //that.createServiceDialogData.dialogData.servicesMap.get(that.selectedEcu.id);
                  // }, 300)
                 },
                 error: (error) => {
@@ -83,7 +87,7 @@ export class CreateServiceInfrastructureDialogComponent {
   
                 }
               });
-            }         
+            } */        
              this.closeDialog.emit(true);
       }else {
             console.log("All required feelds have to be filled!")

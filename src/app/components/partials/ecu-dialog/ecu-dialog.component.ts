@@ -10,6 +10,7 @@ import { Hardware } from '../../../shared/models/hardware';
 import { Observable, forkJoin } from 'rxjs';
 import { HardwarePropertyService } from '../../../services/hardware-property.service';
 import { HardwareProperty, NewHardwareProperty } from '../../../shared/models/hardware_property';
+import { ServiceService } from '../../../services/service.service';
 
 
 @Component({
@@ -19,7 +20,7 @@ import { HardwareProperty, NewHardwareProperty } from '../../../shared/models/ha
 })
 export class DialogComponent /*implements OnInit*/{
 
-  constructor(private hardwarePropertyService:HardwarePropertyService, private ecuService:EcuService,private lineCreationService: LineCreationService, private renderer: Renderer2) { 
+  constructor(private serviceService:ServiceService,  private hardwarePropertyService:HardwarePropertyService, private ecuService:EcuService,private lineCreationService: LineCreationService, private renderer: Renderer2) { 
   }
 
   selectedEcu: Hardware | null = null;
@@ -184,7 +185,7 @@ subscribeOnHardwareProperties(){
     this.showService = true;
     this.dialogData.showHardwareDetailsDialogContent = false;
     //console.log(this.dialogData.selectedEcu)
-    this.dialogData.getAllServices(this.dialogData.selectedEcu.id);
+    this.serviceService.loadAllServices(this.dialogData.selectedEcu.id); 
     this.dialogData.initializeGraph(this.dialogData.connections);
     /*for(let i = 0; i < this.dialogData.ecus.length; i++){
       if(this.dialogData.canReach(this.dialogData.selectedEcu.id.toString(), this.dialogData.ecus[i].id.toString())){

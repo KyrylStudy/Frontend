@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { Service } from '../shared/models/service';
+import { Service, newService } from '../shared/models/service';
 import { EcuService } from './ecu.service';
 import { Hardware } from '../shared/models/hardware';
 
@@ -14,7 +14,6 @@ export class ServiceService {
 
   hardwares: Hardware[] | null = null;
   subscribeOnHardwares(){
-    console.log("srgrdhrthrt", this.hardwares)
     this.ecuService.hardwares$.subscribe(
         {
           next: data => {
@@ -27,14 +26,18 @@ export class ServiceService {
     );
   }
 
+  
 
   
-  ngOnInit(): void{
+
+  
+  
+  /*ngOnInit(): void{
     this.subscribeOnHardwares();
     //this.ecuService.loadAllHardwares(1);
     //console.log("srgrdhrthrt", this.hardwares)
 
-  }
+  }*/
 
 
   //---------------------Service
@@ -59,14 +62,39 @@ loadAllServices(ecuId: BigInt): void{
     return this.httpClient.post<any>(`${this.serviceUrl + ecu_id}`, newService);
 }*/
 
+createService(newService: newService, ecuId: BigInt): void {
+  this.httpClient.post<newService>(`${this.serviceUrl + ecuId}`, newService).pipe(
+    tap(() => {
+      this.loadAllServices(ecuId);
+      this.getAllServices()
+    })  // Обновить список после добавления
+  ).subscribe(); 
+}
+
 //updateServiceUrl = "http://localhost:8080/api/services/"
 updadeService(Service: Service, id: BigInt):Observable<any>{
   return this.httpClient.put(`${this.serviceUrl + id  + '/update'}`, Service);
 }
 
 //deleteServiceUrl = 'http://localhost:8080/api/services/';
-deleteService(id: BigInt): Observable<any> {
+/*deleteService(id: BigInt): Observable<any> {
   return this.httpClient.delete(`${this.serviceUrl + id + '/delete'}`);
+}*/
+
+selectedHardware: Hardware | null = null;
+deleteService(id: BigInt): void {
+  this.httpClient.delete<Service>(`${this.serviceUrl + id + '/delete'}`).pipe(
+    tap(() => {
+      this.ecuService.getSelectedHardware().subscribe(data => {
+        this.selectedHardware = data;
+      })
+      
+      if(this.selectedHardware){
+        this.loadAllServices(this.selectedHardware.id);
+      }
+      this.getAllServices()
+    })  // Обновить список после удаления
+  ).subscribe();
 }
 
 
@@ -80,12 +108,12 @@ private allServicesInArchitectureCountMapSubject = new BehaviorSubject<Map<BigIn
 allServicesInArchitectureCountMap$ = this.allServicesInArchitectureCountMapSubject.asObservable();
 
 private allServicesInArchitectureMapSubject = new BehaviorSubject<Map<BigInt, Service[]> >(new Map());
-allServicesInArchitectureMao$ = this.allServicesInArchitectureMapSubject.asObservable();
+allServicesInArchitectureMap$ = this.allServicesInArchitectureMapSubject.asObservable(); 
 
 
   getAllServices(): void {
     this.subscribeOnHardwares();
-    console.log(this.hardwares)
+    //console.log(this.hardwares)
     // Assuming ecus array is already populated, otherwise, you need to fetch it first
     if (this.hardwares?.length) {
 
