@@ -19,7 +19,7 @@ export class ServiceService /*implements OnInit, AfterViewInit*/{
           next: data => {
             this.hardwares = data;
           },
-          error: error => {
+          error: error => { 
             console.error(error);
           }
         }
@@ -44,7 +44,22 @@ export class ServiceService /*implements OnInit, AfterViewInit*/{
   }*/
 
 
+    //--------secected-service
+
+    private selectedServiceSubject = new BehaviorSubject<Service | null>(null);
+    selectedService$ = this.selectedServiceSubject.asObservable();
+  
+    setSelectedService(selectedService: Service | null): void {
+      this.selectedServiceSubject.next(selectedService);
+    }
+  
+    getSelectedService(): Observable<Service | null> {
+      return this.selectedService$;
+    }
+
+
   //---------------------Service
+ 
 
 private servicesSubject = new BehaviorSubject<Service[]>([]);
 services$ = this.servicesSubject.asObservable();
@@ -61,10 +76,6 @@ loadAllServices(ecuId: BigInt): void{
   ).subscribe();
 }
 
-//creareServiceUrl = 'http://localhost:8080/api/services/';
-/*createService(newService: newService, ecu_id: BigInt): Observable<any> {
-    return this.httpClient.post<any>(`${this.serviceUrl + ecu_id}`, newService);
-}*/
 
 createService(newService: newService, ecuId: BigInt): void {
   this.httpClient.post<newService>(`${this.serviceUrl + ecuId}`, newService).pipe(
@@ -74,11 +85,6 @@ createService(newService: newService, ecuId: BigInt): void {
     })  // Обновить список после добавления
   ).subscribe(); 
 }
-
-//updateServiceUrl = "http://localhost:8080/api/services/"
-/*updadeService(Service: Service, id: BigInt):Observable<any>{
-  return this.httpClient.put(`${this.serviceUrl + id  + '/update'}`, Service);
-}*/
 
 updadeService(Service: Service, id: BigInt): void {
   this.httpClient.put<Service>(`${this.serviceUrl + id + '/update'}`, Service).pipe(
@@ -91,11 +97,6 @@ updadeService(Service: Service, id: BigInt): void {
     })  // Обновить список после изменения
   ).subscribe();
 }
-
-//deleteServiceUrl = 'http://localhost:8080/api/services/';
-/*deleteService(id: BigInt): Observable<any> {
-  return this.httpClient.delete(`${this.serviceUrl + id + '/delete'}`);
-}*/
 
 selectedHardware: Hardware | null = null;
 deleteService(id: BigInt): void {
@@ -130,9 +131,7 @@ allServicesInArchitectureMap$ = this.allServicesInArchitectureMapSubject.asObser
 
   getAllServices(hardwares: Hardware[]): void {
     this.subscribeOnHardwares();
-    //console.log(this.hardwares)
-    // Assuming ecus array is already populated, otherwise, you need to fetch it first
-    //debugger
+
     if (hardwares.length) {
 
       const serviceObservables = hardwares.map(hardware => this.getAllServicesByEcuId(hardware.id).subscribe(
@@ -147,29 +146,5 @@ allServicesInArchitectureMap$ = this.allServicesInArchitectureMapSubject.asObser
       
     }
   }
-  /*  getAllServices(): void {
-      this.subscribeOnHardwares();
-      // Assuming ecus array is already populated, otherwise, you need to fetch it first
-      if (this.hardwares.length > 0) {
-        const serviceObservables: Observable<Service[]>[] = this.hardwares.map(ecu => this.ecuService.getAllServicesByEcuId(ecu.id)); 
-        //const serviceObservables = this.ecus.map(ecu => this.ecuService.getAllServicesByEcuId(ecu.id).subscribe(
-        //  data => {
-        //    this.servicesMap.set(ecu.id, data);
-        //    this.servicesCountMap.set(ecu.id, data.length); 
-        //  }
-        //)); 
-        
-        forkJoin(serviceObservables).subscribe(serviceArrays => {
-          serviceArrays.forEach((services, index) => {
-            const ecuId = this.hardwares[index].id;
-            this.servicesCountMap.set(ecuId, services.length); 
-            this.allServicesInArchitectureCountMapSubject.next(new Map(this.servicesCountMap));
-            this.servicesMap.set(ecuId, services);
-            this.allServicesInArchitectureMapSubject.next(new Map(this.servicesMap));
-          });
-        });
-      }
-    }*/
-
 
 }

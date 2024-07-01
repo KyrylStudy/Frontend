@@ -1,6 +1,6 @@
 // dialog.component.ts
 
-import { Component, EventEmitter, Output, Input, Renderer2/*, OnInit*/ } from '@angular/core';
+import { Component, EventEmitter, Output, Input, Renderer2, OnInit } from '@angular/core';
 import { EcuService } from '../../../services/ecu.service';
 import { LineCreationService } from '../../../services/header-main.service';
 import { Service } from '../../../shared/models/service';
@@ -18,7 +18,7 @@ import { ServiceService } from '../../../services/service.service';
   templateUrl: './ecu-dialog.component.html',
   styleUrls: ['./ecu-dialog.component.scss']
 })
-export class DialogComponent /*implements OnInit*/{
+export class DialogComponent implements OnInit{
 
   constructor(private serviceService:ServiceService,  private hardwarePropertyService:HardwarePropertyService, private ecuService:EcuService,private lineCreationService: LineCreationService, private renderer: Renderer2) { 
   }
@@ -29,10 +29,24 @@ export class DialogComponent /*implements OnInit*/{
     this.subscribeOnHardwareProperties();
 
     this.subscribeOnSelectedHardware();
-
+ 
     this.subscribeOnHardwares();
-   // this.getAllHardwares(this.dialogData.selectedArchitecture.id);
-    
+
+    this.subscribeOnSelectedService();    
+  }
+
+  selectedService: any | null = null;
+  subscribeOnSelectedService(){
+    this.serviceService.selectedService$.subscribe(
+        {
+          next: data => {
+            this.selectedService = data;
+          },
+          error: error => {
+            console.error(error);
+          }
+        }
+    );
   }
 
 
@@ -43,7 +57,8 @@ export class DialogComponent /*implements OnInit*/{
 
   close(): void {
     this.closeDialog.emit(true);
-    this.dialogData.showServiceDialog = false;
+    this.serviceService.setSelectedService(null)
+   // this.dialogData.showServiceDialog = false;
     this.dialogData.showDataStreamDialog = false;
   }
 
@@ -60,7 +75,7 @@ export class DialogComponent /*implements OnInit*/{
       }
     }
     if(this.selectedEcu)
-    this.deleteEcu(this.selectedEcu.id)
+      this.ecuService.deleteHardware(this.selectedEcu.id);
 
     for(let i = 0; i < busIdDeleteArray.length; i++){
       this.dialogData.connections = this.dialogData.connections.filter((item: { id: any; }) => item.id != busIdDeleteArray[i]);
@@ -89,13 +104,6 @@ export class DialogComponent /*implements OnInit*/{
     this.closeDialog.emit(true);
   }
 
-  /*private deleteEcu(id: BigInt){
-    this.ecuService.deleteEcu(id).subscribe();
-  }*/
-
-    private deleteEcu(id: BigInt): void {
-      this.ecuService.deleteHardware(id);
-    }
 
   
   private deleteBus(id: BigInt){
@@ -125,7 +133,6 @@ subscribeOnHardwares(){
           this.hardwares = data;
         },
         error: error => {
-         // this.errorMessage = 'Failed to load users';
           console.error(error);
         }
       }
@@ -139,10 +146,6 @@ addHardwareValue(): void {
   if (this.selectedEcu && this.hardwareKey && this.hardwareValue) {
 
     const newHardwareProperty: NewHardwareProperty = {name: this.hardwareKey, value: this.hardwareValue};
-  
-    /*this.ecuService.createHardwareProperty(NewHardware, this.selectedEcu.id).subscribe(data =>{
-      this.hardware[this.hardware.length] = data
-    });*/
 
     this.hardwarePropertyService.createHardwareProperty(newHardwareProperty, this.selectedEcu.id);
 
@@ -167,14 +170,6 @@ subscribeOnHardwareProperties(){
 }
 
 
-
-
-
-  showHardware(){
-    console.log(this.hardwares)
-    //console.log(this.servicesMap)
-  }
-
   hardwares: Hardware[] = [];
 
   //------------------------19.05
@@ -184,26 +179,9 @@ subscribeOnHardwareProperties(){
   openDialog(): void {
     this.showService = true;
     this.dialogData.showHardwareDetailsDialogContent = false;
-    //console.log(this.dialogData.selectedEcu)
     this.serviceService.loadAllServices(this.dialogData.selectedEcu.id); 
-    this.dialogData.initializeGraph(this.dialogData.connections);
-    /*for(let i = 0; i < this.dialogData.ecus.length; i++){
-      if(this.dialogData.canReach(this.dialogData.selectedEcu.id.toString(), this.dialogData.ecus[i].id.toString())){
-
-      }
-    }*/
-    
+    this.dialogData.initializeGraph(this.dialogData.connections);  
   }
-
-  onCloseDialog(): void {
-    this.dialogData.showService = false;
-    
-  }
-
- /* private updateService(Service: Service, id: BigInt){
-    //console.log(Line)
-    this.ecuService.updadeService(Service, id).subscribe();
-   }*/
 
   saveServices() {}
  
@@ -232,16 +210,8 @@ subscribeOnHardwareProperties(){
   }
 
   dataForServiceDialog = this;
-  //showServiceDialog:boolean = false;
-  selectedService: any = null;
-  showServiceDialog: boolean = false;
   showDataStreamDialog: boolean = false;
 
-
-
-  /*onCloseServiceDetailsDialog(){
-    this.showServiceDialog = !this.showServiceDialog;
-  }*/
  
     dataForDataStreamDetails:any = null;
     getDataStreamsFromServiceComponent(event: any){
@@ -249,13 +219,5 @@ subscribeOnHardwareProperties(){
       console.log("data from services geted ", this.dataForDataStreamDetails)
 
     }
-
-
-    //--------------------25.06
-
-
-
-  
-  
 
 }

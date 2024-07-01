@@ -16,42 +16,62 @@ export class ServiceDialogComponent {
 
   }
 
-  servicesMap: Map<BigInt, Service[]> = new Map();
-subscribeOnServices(){
-  this.serviceService.allServicesInArchitectureMap$.subscribe(
-      {
-        next: data => {
-          this.servicesMap = data;
-        },
-        error: error => {
-          console.error(error);
+  selectedService: any | null = null;
+  subscribeOnSelectedService(){
+    this.serviceService.selectedService$.subscribe(
+        {
+          next: data => {
+            this.selectedService = data;
+          },
+          error: error => {
+            console.error(error);
+          }
         }
-      }
-  );
-}
+    );
+  }
+
+  servicesMap: Map<BigInt, Service[]> = new Map();
+  subscribeOnServices(){
+    this.serviceService.allServicesInArchitectureMap$.subscribe(
+        {
+          next: data => {
+            this.servicesMap = data;
+          },
+          error: error => {
+            console.error(error);
+          }
+        }
+    );
+  }
+
+
 
 ngOnInit(): void{
+  this.subscribeOnSelectedService();
+
   this.subscribeOnServices();
 }
 
   @Input() serviceDetilsData: any | null = null;
 
-  close(): void {
-    this.serviceDetilsData.showDialog = false;
-    this.serviceDetilsData.showServiceDialog = false;
-  }
+  /*close(): void {
+    debugger
+    this.serviceService.setSelectedService(null)
+    //this.serviceDetilsData.showDialog = false;
+    //this.serviceDetilsData.showServiceDialog = false;
+  }*/
 
   delete(){ 
     //debugger
     var dataStreamsIdDeleteArray: any[] = [];
-    var dataStreams = this.serviceDetilsData.dataForDataStreamDetails.dataStreams; 
-    var selectedService = this.serviceDetilsData.selectedService;
+    var dataStreams = this.serviceDetilsData.dataForDataStreamDetails.dataStreams;  
+    //var selectedService = this.serviceDetilsData.selectedService;
     for(let i = 0; i < dataStreams.length; i++){ 
       
-      if(dataStreams[i].connectedFrom === selectedService.id.toString()){
+      if(dataStreams[i].connectedFrom === this.selectedService.id.toString()){
         dataStreamsIdDeleteArray.push(dataStreams[i].id);
         this.deleteDataStream(dataStreams[i].id);
-      }else if(dataStreams[i].connectedTo === selectedService.id.toString()){        
+      }else if(dataStreams[i].connectedTo === this.selectedService.id.toString()){        
         dataStreamsIdDeleteArray.push(dataStreams[i].id);
         this.deleteDataStream(dataStreams[i].id);
         
@@ -59,14 +79,8 @@ ngOnInit(): void{
     }
     this.deleteService(this.serviceDetilsData.selectedService.id);
 
+    this.serviceService.setSelectedService(null)
 
-    
-
-    /*for(let i = 0; i < dataStreamsIdDeleteArray.length; i++){
-      this.serviceDetilsData.dataForDataStreamDetails.dataStreams = this.serviceDetilsData.dataForDataStreamDetails.dataStreams.filter((item: { id: any; }) => item.id != dataStreamsIdDeleteArray[i]);
-    }
-    this.dialogData.ecus = this.dialogData.ecus.filter((item: { id: any; }) => item.id !== this.dialogData.selectedEcu.id);*/
-    this.serviceDetilsData.showServiceDialog = false;
     this.serviceDetilsData.showService = true;
     
   }

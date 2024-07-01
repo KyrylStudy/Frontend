@@ -54,7 +54,7 @@
         </div>
         <app-service *ngIf="showService" [serviceData]="serviceDialogData" (dataStreamsTransport)="getDataStreamsFromServiceComponent($event)" ></app-service>
         <app-create-service-infrastructure-dialog *ngIf="showCreateDialog" [createServiceDialogData]="serviceDialogData" (closeDialog)="onCloseCreateDialog()"></app-create-service-infrastructure-dialog>
-        <app-service-dialog *ngIf="showServiceDialog" [serviceDetilsData]="serviceDialogData" ></app-service-dialog> 
+        <app-service-dialog *ngIf="selectedService" [serviceDetilsData]="serviceDialogData" ></app-service-dialog> 
         <app-data-stream-dialog *ngIf="showDataStreamDialog" [dataStreamsData]="serviceDialogData"></app-data-stream-dialog>  
     </div> 
 </div>

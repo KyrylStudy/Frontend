@@ -18,26 +18,19 @@ export class ServiceComponent {
   @Input() serviceData: any | null = null;
   @Output() closeDialog = new EventEmitter<boolean>();
   dataForServiceDialog = this;
-  showServiceDialog:boolean = false;
-  selectedService: any;
+  //showServiceDialog:boolean = false;
+
 
   openServiceDetailsDialog(service: Service){
 
-    this.serviceData.selectedService = service;
-    this.serviceData.showServiceDialog = true;
+    this.serviceService.setSelectedService(service)
+    //this.selectedService = service;
+    //this.serviceData.showServiceDialog = true;
     this.serviceData.showService = false;
     //this.dialogData.selectedService = service;   ------------------!!!!!!!!!!!
     //this.dialogData.isEcuDetailsMod = !this.dialogData.isEcuDetailsMod;
   }
 
-  /*openServiceDetailsDialog(service: Service){
-    this.showServiceDialog = !this.showServiceDialog;
-    //this.serviceData.showService = !this.serviceData.showService;
-  }*/
-
-  onCloseServiceDetailsDialog(){
-    this.showServiceDialog = !this.showServiceDialog;
-  }
 
   constructor(private architectureService:ArchitectureService, private serviceService:ServiceService, private renderer: Renderer2, private el: ElementRef, private ecuService: EcuService, private lineCreationService: LineCreationService) { 
 
@@ -45,8 +38,8 @@ export class ServiceComponent {
 
   close(): void {
     this.closeDialog.emit(true);
-    console.log(this.serviceData.dialogData.dialogData)
-    this.serviceData.selectedService = null;
+    //console.log(this.serviceData.dialogData.dialogData)
+    this.selectedService = null;
   }
 
 
@@ -127,19 +120,26 @@ zoomOut() {
   }
 }
 
+selectedService: any | null = null;
+subscribeOnSelectedService(){
+  this.serviceService.selectedService$.subscribe(
+      {
+        next: data => {
+          this.selectedService = data;
+        },
+        error: error => {
+          console.error(error);
+        }
+      }
+  );
+}
+
 selectedArchitecture: any | null = null;
 subscribeOnSelectedArchitecture(){
   this.architectureService.selectedArchitecture$.subscribe(
       {
         next: data => {
           this.selectedArchitecture = data;
-          /*if (data) {;
-           this.ecuService.loadAllHardwares(data.id).subscribe(data => {
-            this.serviceService.getAllServices(data);
-            console.log(data)
-           });
-          }*/
-          
         },
         error: error => {
           console.error(error);
@@ -209,6 +209,8 @@ subscribeOnServicesOfSelectedEcu(){
 }
 
 ngOnInit(): void {
+
+  this.subscribeOnSelectedService();
 
   this.subscribeOnSelectedArchitecture();
 
@@ -439,14 +441,14 @@ options:any = [];
 selectedOption: any = null;
 selectOption(option: any): void {
   if(option){
-    this.serviceData.selectedService = option;
+    this.selectedService = option;
     //console.log( this.serviceData.selectedService) 
     //debugger
     this.selectedOption = option;
     this.dataStreams = [];
     this.getDataStreams(this.selectedArchitecture.id);
   }else{
-    this.serviceData.selectedService = null;
+    this.selectedService = null;
   }
 
 
@@ -474,11 +476,11 @@ getDataStreamsOfSelectdService(allDataStreams: any){
     var connectedServices: any = [];
    // console.log(this.selectedService)
     for(let i = 0; i < allDataStreams.length; i++){
-      if(allDataStreams[i].connectedFrom == this.serviceData.selectedService.id){
+      if(allDataStreams[i].connectedFrom == this.selectedService.id){
         selectedServiceDataStreams.push(allDataStreams[i]);
         const service = this.el.nativeElement.querySelector(`[serviceId="${Number(allDataStreams[i].connectedTo)}"]`);
         connectedServices.push(service)
-      }else if(allDataStreams[i].connectedTo == this.serviceData.selectedService.id){
+      }else if(allDataStreams[i].connectedTo == this.selectedService.id){
         selectedServiceDataStreams.push(allDataStreams[i]);
         const service = this.el.nativeElement.querySelector(`[serviceId="${Number(allDataStreams[i].connectedFrom)}"]`);
         connectedServices.push(service)
@@ -488,7 +490,7 @@ getDataStreamsOfSelectdService(allDataStreams: any){
     for(let i = 0; i < connectedServices.length; i++){
       this.rewriteLine(connectedServices[i])
     }
-    this.rewriteLine(this.serviceData.selectedService)
+    this.rewriteLine(this.selectedService)
   }
 
 
@@ -512,7 +514,7 @@ getDataStreamsOfSelectdService(allDataStreams: any){
   }
 
   selectAllServices(){ 
-    this.serviceData.selectedService = null;
+    this.selectedService = null;
     this.selectedOption = null;
     this.getDataStreams(this.selectedArchitecture.id);
   }
