@@ -43,10 +43,13 @@ export class EcuService {
 
   baseHardwareUrl = "http://localhost:8080/api/ecus/";
 
-  loadAllHardwares(architectureId: number): void{
-    this.httpClient.get<Hardware[]>(`${this.baseHardwareUrl  + 'architecture/' + architectureId }`).pipe(
+  loadAllHardwares(architectureId: number): Observable<Hardware[]>{
+    const hardwares = this.httpClient.get<Hardware[]>(`${this.baseHardwareUrl  + 'architecture/' + architectureId }`);
+    hardwares.pipe(
       tap(hardwares => this.hardwaresSubject.next(hardwares))
-    ).subscribe();
+    ).subscribe(); 
+
+    return hardwares;
   }
 
   updateHardware(Hardware: Hardware, id: BigInt): void {
@@ -104,9 +107,9 @@ export class EcuService {
 
 serviceUrl = "http://localhost:8080/api/services/"
 
-getAllServicesByEcuId(ecu_id: BigInt):Observable<Service[]>{
+/*getAllServicesByEcuId(ecu_id: BigInt):Observable<Service[]>{
   return this.httpClient.get<Service[]>(`${this.serviceUrl + 'ecu/' + ecu_id }`);
-}
+}*/
 
 /*loadAllServices(ecuId: BigInt): void{
   this.httpClient.get<Service[]>(`${this.serviceUrl + 'ecu/' + ecuId }`).pipe(
@@ -115,9 +118,9 @@ getAllServicesByEcuId(ecu_id: BigInt):Observable<Service[]>{
 }*/
 
 //creareServiceUrl = 'http://localhost:8080/api/services/';
-createService(newService: newService, ecu_id: BigInt): Observable<any> {
+/*createService(newService: newService, ecu_id: BigInt): Observable<any> {
     return this.httpClient.post<any>(`${this.serviceUrl + ecu_id}`, newService);
-}
+}*/
 
 //updateServiceUrl = "http://localhost:8080/api/services/"
 updadeService(Service: Service, id: BigInt):Observable<any>{
@@ -125,9 +128,9 @@ updadeService(Service: Service, id: BigInt):Observable<any>{
 }
 
 //deleteServiceUrl = 'http://localhost:8080/api/services/';
-deleteService(id: BigInt): Observable<any> {
+/*deleteService(id: BigInt): Observable<any> {
   return this.httpClient.delete(`${this.serviceUrl + id + '/delete'}`);
-}
+}*/
 
 /*hardwares: Hardware[] | null = null;
 subscribeOnHardwares(){

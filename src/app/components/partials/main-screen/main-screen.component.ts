@@ -311,14 +311,20 @@ subscribeOnArchitectures(){
   );
 }
 
+
+selectedArchitecture: Architecture | null = null;
 subscribeOnSelectedArchitecture(){
   this.architectureService.selectedArchitecture$.subscribe(
       {
         next: data => {
           this.selectedArchitecture = data;
-          if (this.selectedArchitecture) {
-            this.ecuService.loadAllHardwares(this.selectedArchitecture.id);
+          if (data) {;
+           this.ecuService.loadAllHardwares(data.id).subscribe(data => {
+            this.serviceService.getAllServices(data);
+            console.log(data)
+           });
           }
+          
         },
         error: error => {
           console.error(error);
@@ -381,18 +387,22 @@ subscribeOnServicesCount(){
     this.subscribeOnArchitectures();
     this.architectureService.loadAllArchitectures();
 
+    this.subscribeOnSelectedHardware();
+    this.subscribeOnHardwares();
+
     this.subscribeOnSelectedArchitecture();
     this.architectureService.loadArchitecture(BigInt(1));
 
-    this.subscribeOnSelectedHardware();
-    this.subscribeOnHardwares();
-    //this.ecuService.loadAllHardwares(this.selectedArchitecture);
+
+    //if(this.selectedArchitecture)
+    //this.ecuService.loadAllHardwares(this.selectedArchitecture.id);
 
     this.subscribeOnHardwareProperties();
 
     this.subscribeOnServicesCount();
     this.subscribeOnServices();
-    this.serviceService.getAllServices();
+    //this.serviceService.getAllServices(this.ecus);
+    //this.getAllServices();
 
     //-------------------------------------------------
     this.getAllBus(1);
@@ -409,28 +419,28 @@ subscribeOnServicesCount(){
 
 
 
-/*  servicesCountMap: Map<BigInt, number> = new Map();
-  servicesMap: Map<BigInt, Service[]> = new Map();
-  getAllServices(): void {
+  //servicesCountMap: Map<BigInt, number> = new Map();
+ // servicesMap: Map<BigInt, Service[]> = new Map();
+  /*getAllServices(): void {
     // Assuming ecus array is already populated, otherwise, you need to fetch it first
     if (this.ecus.length > 0) {
-      //const serviceObservables: Observable<Service[]>[] = this.ecus.map(ecu => this.ecuService.getAllServicesByEcuId(ecu.id)); 
-      const serviceObservables = this.ecus.map(ecu => this.ecuService.getAllServicesByEcuId(ecu.id).subscribe(
-        data => {
-          this.servicesMap.set(ecu.id, data);
-          this.servicesCountMap.set(ecu.id, data.length); 
-        }
-      )); 
+      const serviceObservables: Observable<Service[]>[] = this.ecus.map(ecu => this.ecuService.getAllServicesByEcuId(ecu.id)); 
+      //const serviceObservables = this.ecus.map(ecu => this.ecuService.getAllServicesByEcuId(ecu.id).subscribe(
+      //  data => {
+      //    this.servicesMap.set(ecu.id, data);
+      //    this.servicesCountMap.set(ecu.id, data.length); 
+      //  }
+      //)); 
       
-      /*forkJoin(serviceObservables).subscribe(serviceArrays => {
+      forkJoin(serviceObservables).subscribe(serviceArrays => {
         serviceArrays.forEach((services, index) => {
           const ecuId = this.ecus[index].id;
           this.servicesCountMap.set(ecuId, services.length); 
           this.servicesMap.set(ecuId, services);
         });
-      });*/
-   // }
- // }
+      });
+    }
+  }*/
 
 
 //------------------------28.05
@@ -649,17 +659,13 @@ toggleDropdownSelectArchitecture(): void {
     this.showDropdownSelectArchitecture = true;
 }
 
-selectedArchitecture: Architecture | null = null;
 selectArchitecture(option: Architecture): void {
   this.architectureService.setSelectedArchitecture(option);
-  this.serviceService.getAllServices();//сервисы все равно не подгружаются
-  //if(this.selectedArchitecture)
-  //this.architectureService.loadArchitecture(BigInt(this.selectedArchitecture.id));
 
   const svgContainer = document.getElementById('svg-container');
 
   if (!svgContainer) {
-      return;
+      return; 
   }
 
   const connections = svgContainer.querySelectorAll('line');
@@ -670,7 +676,9 @@ selectArchitecture(option: Architecture): void {
   //this.getAllHardwares(option.id); 
   this.getAllBus(option.id);
 
-  this.showDropdownSelectArchitecture = false;
+  let that = this;
+  setTimeout(function(){that.showDropdownSelectArchitecture = false;}, 10000)
+  
 }
 
 startEcu: Hardware | null = null;

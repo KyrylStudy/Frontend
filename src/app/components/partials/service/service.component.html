@@ -6,7 +6,7 @@
         {{ selectedOption?.name || 'Select Service' }} 
     </div>
     <div class="dropdown-menu" *ngIf="showDropdown">
-        <div class="dropdown-item" *ngFor="let option of services" (click)="selectOption(option)"> 
+        <div class="dropdown-item" *ngFor="let option of servicesOfSelectedEcu" (click)="selectOption(option)"> 
             {{ option.name }}
         </div>
     </div>
@@ -28,14 +28,14 @@
             <h4 class="ecu-name">{{ selectedEcu?.label + "|" + selectedEcu?.id }}</h4>
             <div class="drag-boundary" [style.zoom]="zoomLevel">
 
-                <div *ngFor="let item of serviceData.dialogData.servicesMap.get(this.selectedEcu?.id)"
+                <div *ngFor="let item of servicesMap.get(selectedEcu.id)"
                     cdkDrag
                     cdkDragBoundary=".drag-boundary"
                     [style.transform]="'translateX(' + item.positionX + 'px) translateY(' + item.positionY + 'px)'"
                     (cdkDragEnded)="onDragEnded($event, item)"
                     (cdkDragMoved)="rewriteLine(item)" 
                     class="draggable-item"
-                    (dblclick)="serviceData.openServiceDetailsDialog(item)"
+                    (dblclick)="openServiceDetailsDialog(item)"
                     (click)="onEcuClick(item, $event)"
                     [attr.serviceId]="item.id" 
                     [id]="item.id"  >
@@ -45,21 +45,21 @@
             </div>
         </div>
         <div class="ecu" id="myElement" #scrollableEcu style="overflow: scroll;">
-            <div *ngFor="let item1 of serviceData.dialogData.ecus"><!-- </ng-container>-->
+            <div *ngFor="let item1 of hardwares"><!-- </ng-container>-->
                 <!--<div *ngIf="item1.id !== serviceData.selectedEcu.id"> </ng-container>-->
                 
-                    <div *ngIf="serviceData.dialogData.canReach(selectedEcu?.id?.toString(), item1.id.toString()) && item1.type =='ECU'">
+                    <div *ngIf="serviceData.dialogData.canReach(selectedEcu.id.toString(), item1.id.toString()) && item1.type =='ECU'">
                     <div class="ecu1">
                         <h4 class="ecu-name">{{ item1.label + "|" + item1.id }}</h4>
                         <div class="drag-boundary" [style.zoom]="zoomLevel">
-                            <div *ngFor="let item of serviceData.dialogData.servicesMap.get(item1.id)"
+                            <div *ngFor="let item of servicesMap.get(item1.id)"
                                 cdkDrag
                                 cdkDragBoundary=".drag-boundary"
                                 [style.transform]="'translateX(' + item.positionX + 'px) translateY(' + item.positionY + 'px)'"
                                 (cdkDragEnded)="onDragEnded($event, item)"
                                 (cdkDragMoved)="rewriteLine(item)"
-                                class="draggable-item"
-                                (dblclick)="serviceData.openServiceDetailsDialog(item)" 
+                                class="draggable-item" 
+                                (dblclick)="openServiceDetailsDialog(item)" 
                                 (click)="onEcuClick(item, $event)"
                                 [attr.serviceId]="item.id" 
                                 [id]="item.id" 

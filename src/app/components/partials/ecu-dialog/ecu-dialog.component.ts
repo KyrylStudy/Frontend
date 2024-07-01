@@ -237,14 +237,7 @@ subscribeOnHardwareProperties(){
   showServiceDialog: boolean = false;
   showDataStreamDialog: boolean = false;
 
-  openServiceDetailsDialog(service: Service){
 
-    this.selectedService = service;
-    this.showServiceDialog = true;
-    this.showService = false;
-    //this.dialogData.selectedService = service;   ------------------!!!!!!!!!!!
-    //this.dialogData.isEcuDetailsMod = !this.dialogData.isEcuDetailsMod;
-  }
 
   /*onCloseServiceDetailsDialog(){
     this.showServiceDialog = !this.showServiceDialog;

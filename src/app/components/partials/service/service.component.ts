@@ -6,6 +6,7 @@ import { DataStream } from '../../../shared/models/data_stream';
 import { LineCreationService } from '../../../services/header-main.service';
 import { Hardware } from '../../../shared/models/hardware';
 import { ServiceService } from '../../../services/service.service';
+import { ArchitectureService } from '../../../services/architecture.service';
 
 @Component({
   selector: 'app-service',
@@ -18,17 +19,27 @@ export class ServiceComponent {
   @Output() closeDialog = new EventEmitter<boolean>();
   dataForServiceDialog = this;
   showServiceDialog:boolean = false;
+  selectedService: any;
 
   openServiceDetailsDialog(service: Service){
+
+    this.serviceData.selectedService = service;
+    this.serviceData.showServiceDialog = true;
+    this.serviceData.showService = false;
+    //this.dialogData.selectedService = service;   ------------------!!!!!!!!!!!
+    //this.dialogData.isEcuDetailsMod = !this.dialogData.isEcuDetailsMod;
+  }
+
+  /*openServiceDetailsDialog(service: Service){
     this.showServiceDialog = !this.showServiceDialog;
     //this.serviceData.showService = !this.serviceData.showService;
-  }
+  }*/
 
   onCloseServiceDetailsDialog(){
     this.showServiceDialog = !this.showServiceDialog;
   }
 
-  constructor(private serviceService:ServiceService, private renderer: Renderer2, private el: ElementRef, private ecuService: EcuService, private lineCreationService: LineCreationService) { 
+  constructor(private architectureService:ArchitectureService, private serviceService:ServiceService, private renderer: Renderer2, private el: ElementRef, private ecuService: EcuService, private lineCreationService: LineCreationService) { 
 
     }
 
@@ -95,7 +106,7 @@ zoomLevel: number = 1; // Initial zoom level
 
 zoomIn() {
   this.zoomLevel += 0.1; // Increase zoom level 
-  this.getDataStreams(this.serviceData.dialogData.dialogData.selectedArchitecture.id);
+  this.getDataStreams(this.selectedArchitecture.id);
   /*console.log(this.serviceData.selectedEcu.id)
   console.log(this.serviceData.servicesMap.get(this.serviceData.selectedEcu.id))
 
@@ -109,14 +120,35 @@ zoomIn() {
 zoomOut() {
   if (this.zoomLevel > 0.1) {
     this.zoomLevel -= 0.1; // Decrease zoom level, ensuring it doesn't go below 0.1
-    this.getDataStreams(this.serviceData.dialogData.dialogData.selectedArchitecture.id);
+    this.getDataStreams(this.selectedArchitecture.id);
     /*for(let i = 0; i < this.serviceData.servicesMap.get(this.serviceData.selectedEcu.id).length; i++){
       this.rewriteLine(this.serviceData.servicesMap.get(this.serviceData.selectedEcu.id)[i]);
     }*/
   }
 }
 
-selectedEcu: Hardware | null = null;
+selectedArchitecture: any | null = null;
+subscribeOnSelectedArchitecture(){
+  this.architectureService.selectedArchitecture$.subscribe(
+      {
+        next: data => {
+          this.selectedArchitecture = data;
+          /*if (data) {;
+           this.ecuService.loadAllHardwares(data.id).subscribe(data => {
+            this.serviceService.getAllServices(data);
+            console.log(data)
+           });
+          }*/
+          
+        },
+        error: error => {
+          console.error(error);
+        }
+      }
+  );
+}
+
+selectedEcu: any | null = null;
 subscribeOnSelectedHardware(){
   this.ecuService.selectedHardware$.subscribe(
       {
@@ -130,11 +162,25 @@ subscribeOnSelectedHardware(){
   );
 }
 
+hardwares: any[] = [];
+subscribeOnHardwares(){
+  this.ecuService.hardwares$.subscribe(
+      {
+        next: data => {
+          this.hardwares = data;
+        },
+        error: error => {
+          console.error(error);
+        }
+      }
+  );
+}
+
 /*checHardwaresOnConnection(firstHardwareId:string, secondHardwareId:string,){
   this.serviceData.dialogData.canReach(firstHardwareId, secondHardwareId);
 }*/
 
-servicesMap: Map<BigInt, Service[]> = new Map();
+servicesMap: any = new Map();
 subscribeOnServices(){
   this.serviceService.allServicesInArchitectureMap$.subscribe(
       {
@@ -148,12 +194,12 @@ subscribeOnServices(){
   );
 }
 
-services: Service[] = [];
+servicesOfSelectedEcu: Service[] = [];
 subscribeOnServicesOfSelectedEcu(){
   this.serviceService.services$.subscribe(
       {
         next: data => {
-          this.services = data;
+          this.servicesOfSelectedEcu = data;
         },
         error: error => {
           console.error(error);
@@ -164,19 +210,20 @@ subscribeOnServicesOfSelectedEcu(){
 
 ngOnInit(): void {
 
+  this.subscribeOnSelectedArchitecture();
+
   this.subscribeOnServices();
 
   this.subscribeOnServicesOfSelectedEcu();
-  if(this.selectedEcu)
-  this.serviceService.loadAllServices(this.selectedEcu.id)
  
   this.subscribeOnSelectedHardware();
- // this.el.nativeElement.querySelector(`[serviceId="${''}"]`);
+  this.subscribeOnHardwares();
+
  this.dataStreamsTransport.emit(this); 
  this.scrollableEcu.nativeElement.addEventListener('scroll', this.onElementScroll.bind(this));
-  this.getDataStreams(this.serviceData.dialogData.dialogData.selectedArchitecture.id);
+  this.getDataStreams(this.selectedArchitecture.id);
  // this.options = this.serviceData.dialogData.dialogData.servicesMap.get(this.selectedEcu?.id);
- this.options = this.serviceData.dialogData.dialogData.servicesMap.get(this.selectedEcu?.id);
+ //this.options = this.serviceData.dialogData.dialogData.servicesMap.get(this.selectedEcu?.id);
 }
 
 /*scrollableEcu:any;
@@ -218,6 +265,9 @@ private getDataStreams(architectureId: number){
 
 
 //------------------------------create new line(data stream)
+ECUwidth = 200 + 10;
+ECUheight = 100 + 10;
+
 dataStreams: DataStream[] = [];
 
   startTargetEcuElementNewBus: any;
@@ -263,17 +313,17 @@ dataStreams: DataStream[] = [];
           type: 'Service',
           description: 'default description',
           positionFromX: (this.startLinePsition.left /*+ (this.serviceData.ECUwidth/2)*/).toString(),
-          positionFromY: (this.startLinePsition.top - ((this.serviceData.dialogData.dialogData.ECUheight/2) / this.serviceData.dialogData.dialogData.zoomLevel)).toString(),
+          positionFromY: (this.startLinePsition.top - ((this.ECUheight/2) / this.zoomLevel)).toString(),
           positionToX: (ecuRect.left /*+ (this.serviceData.ECUwidth/2)*/).toString(),
-          positionToY: (ecuRect.top - ((this.serviceData.dialogData.dialogData.ECUheight/2) / this.serviceData.dialogData.dialogData.zoomLevel)).toString(),
+          positionToY: (ecuRect.top - ((this.ECUheight/2) / this.zoomLevel)).toString(),
           connectedFrom: this.startEcu.id.toString(),
           connectedTo: this.endEcu.id.toString(), twoWayConnection: false};
 
           //this.serviceData.dataStreams[this.serviceData.dataStreams.length] = newDataStream
 
-          this.lineCreationService.createDataStream(this.serviceData.dialogData.dialogData.selectedArchitecture.id, newDataStream).subscribe(data =>{
+          this.lineCreationService.createDataStream(this.selectedArchitecture.id, newDataStream).subscribe(data =>{
             //this.dataStreams[this.dataStreams.length] = data
-            this.getDataStreams(this.serviceData.dialogData.dialogData.selectedArchitecture.id)
+            this.getDataStreams(this.selectedArchitecture.id)
             //console.log(this.lines)
             //this.setValueToShare(this);
           });
@@ -319,11 +369,11 @@ dataStreams: DataStream[] = [];
         let adjustFromY = true;
         let adjustToY = true;
       
-        for (let service of this.serviceData.dialogData.dialogData.servicesMap.get(this.selectedEcu?.id)) {
-          if (dataStream.connectedFrom == service.id) {
+        for (let service of this.servicesOfSelectedEcu) {
+          if (dataStream.connectedFrom == service.id.toString()) {
             adjustFromY = false;
           }
-          if (dataStream.connectedTo == service.id) {
+          if (dataStream.connectedTo == service.id.toString()) {
             adjustToY = false;
           }
         }
@@ -351,12 +401,13 @@ getLinesForServise(service: Service){
 
 saveServices() {
   //debugger
-  console.log(this.serviceData.dialogData.dialogData.ecus);
-  for(let i = 0; i < this.serviceData.dialogData.dialogData.ecus.length; ++i){
-    var servicesOfEcu = this.serviceData.dialogData.dialogData.servicesMap.get(this.serviceData.dialogData.dialogData.ecus[i].id);
+  console.log(this.hardwares);
+  for(let i = 0; i < this.hardwares.length; ++i){
+    var servicesOfEcu = this.servicesMap.get(this.hardwares[i].id);
     console.log("services: ", servicesOfEcu);
     for(let j = 0; j < servicesOfEcu.length; j++){
-        this.updateService(servicesOfEcu[j], servicesOfEcu[j].id);
+        this.serviceService.updadeService(servicesOfEcu[j], servicesOfEcu[j].id)
+        //this.updateService(servicesOfEcu[j], servicesOfEcu[j].id);
     }
   }
 
@@ -389,11 +440,11 @@ selectedOption: any = null;
 selectOption(option: any): void {
   if(option){
     this.serviceData.selectedService = option;
-    //console.log( this.serviceData.selectedService)
+    //console.log( this.serviceData.selectedService) 
     //debugger
     this.selectedOption = option;
     this.dataStreams = [];
-    this.getDataStreams(this.serviceData.dialogData.dialogData.selectedArchitecture.id);
+    this.getDataStreams(this.selectedArchitecture.id);
   }else{
     this.serviceData.selectedService = null;
   }
@@ -463,7 +514,7 @@ getDataStreamsOfSelectdService(allDataStreams: any){
   selectAllServices(){ 
     this.serviceData.selectedService = null;
     this.selectedOption = null;
-    this.getDataStreams(this.serviceData.dialogData.selectedArchitecture.id);
+    this.getDataStreams(this.selectedArchitecture.id);
   }
 
   selectedDataStream: any; 
@@ -484,6 +535,8 @@ getDataStreamsOfSelectdService(allDataStreams: any){
     console.log(this.serviceData.dialogData.dialogData)
     this.serviceData.selectedService = null;
   }*/
+
+
   
 }
 

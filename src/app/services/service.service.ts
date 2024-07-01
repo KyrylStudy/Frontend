@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { AfterViewInit, Injectable, OnInit } from '@angular/core';
+import { BehaviorSubject, Observable, forkJoin, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Service, newService } from '../shared/models/service';
 import { EcuService } from './ecu.service';
@@ -8,11 +8,11 @@ import { Hardware } from '../shared/models/hardware';
 @Injectable({
   providedIn: 'root'
 })
-export class ServiceService {
+export class ServiceService /*implements OnInit, AfterViewInit*/{
 
   constructor(private httpClient: HttpClient, private ecuService:EcuService,) { }
 
-  hardwares: Hardware[] | null = null;
+  hardwares: Hardware[] = [];
   subscribeOnHardwares(){
     this.ecuService.hardwares$.subscribe(
         {
@@ -32,11 +32,15 @@ export class ServiceService {
 
   
   
-  /*ngOnInit(): void{
-    this.subscribeOnHardwares();
+  //ngOnInit(): void{
+    //this.subscribeOnHardwares();
     //this.ecuService.loadAllHardwares(1);
     //console.log("srgrdhrthrt", this.hardwares)
 
+ // }
+
+  /*ngAfterViewInit(): void {
+    this.subscribeOnHardwares();
   }*/
 
 
@@ -66,14 +70,26 @@ createService(newService: newService, ecuId: BigInt): void {
   this.httpClient.post<newService>(`${this.serviceUrl + ecuId}`, newService).pipe(
     tap(() => {
       this.loadAllServices(ecuId);
-      this.getAllServices()
+      this.getAllServices(this.hardwares)
     })  // Обновить список после добавления
   ).subscribe(); 
 }
 
 //updateServiceUrl = "http://localhost:8080/api/services/"
-updadeService(Service: Service, id: BigInt):Observable<any>{
+/*updadeService(Service: Service, id: BigInt):Observable<any>{
   return this.httpClient.put(`${this.serviceUrl + id  + '/update'}`, Service);
+}*/
+
+updadeService(Service: Service, id: BigInt): void {
+  this.httpClient.put<Service>(`${this.serviceUrl + id + '/update'}`, Service).pipe(
+    tap(() => {
+      /*this.architectureService.getSelectedArchitecture().subscribe(data => {
+        this.selectedArchitecture = data;
+      })*/
+       // this.loadAllServices(id);
+        this.getAllServices(this.hardwares)
+    })  // Обновить список после изменения
+  ).subscribe();
 }
 
 //deleteServiceUrl = 'http://localhost:8080/api/services/';
@@ -92,7 +108,7 @@ deleteService(id: BigInt): void {
       if(this.selectedHardware){
         this.loadAllServices(this.selectedHardware.id);
       }
-      this.getAllServices()
+      this.getAllServices(this.hardwares)
     })  // Обновить список после удаления
   ).subscribe();
 }
@@ -111,13 +127,15 @@ private allServicesInArchitectureMapSubject = new BehaviorSubject<Map<BigInt, Se
 allServicesInArchitectureMap$ = this.allServicesInArchitectureMapSubject.asObservable(); 
 
 
-  getAllServices(): void {
+
+  getAllServices(hardwares: Hardware[]): void {
     this.subscribeOnHardwares();
     //console.log(this.hardwares)
     // Assuming ecus array is already populated, otherwise, you need to fetch it first
-    if (this.hardwares?.length) {
+    //debugger
+    if (hardwares.length) {
 
-      const serviceObservables = this.hardwares.map(hardware => this.getAllServicesByEcuId(hardware.id).subscribe(
+      const serviceObservables = hardwares.map(hardware => this.getAllServicesByEcuId(hardware.id).subscribe(
         services => {
           this.servicesMap.set(hardware.id, services);
           this.allServicesInArchitectureMapSubject.next(new Map(this.servicesMap));
@@ -129,4 +147,29 @@ allServicesInArchitectureMap$ = this.allServicesInArchitectureMapSubject.asObser
       
     }
   }
+  /*  getAllServices(): void {
+      this.subscribeOnHardwares();
+      // Assuming ecus array is already populated, otherwise, you need to fetch it first
+      if (this.hardwares.length > 0) {
+        const serviceObservables: Observable<Service[]>[] = this.hardwares.map(ecu => this.ecuService.getAllServicesByEcuId(ecu.id)); 
+        //const serviceObservables = this.ecus.map(ecu => this.ecuService.getAllServicesByEcuId(ecu.id).subscribe(
+        //  data => {
+        //    this.servicesMap.set(ecu.id, data);
+        //    this.servicesCountMap.set(ecu.id, data.length); 
+        //  }
+        //)); 
+        
+        forkJoin(serviceObservables).subscribe(serviceArrays => {
+          serviceArrays.forEach((services, index) => {
+            const ecuId = this.hardwares[index].id;
+            this.servicesCountMap.set(ecuId, services.length); 
+            this.allServicesInArchitectureCountMapSubject.next(new Map(this.servicesCountMap));
+            this.servicesMap.set(ecuId, services);
+            this.allServicesInArchitectureMapSubject.next(new Map(this.servicesMap));
+          });
+        });
+      }
+    }*/
+
+
 }
