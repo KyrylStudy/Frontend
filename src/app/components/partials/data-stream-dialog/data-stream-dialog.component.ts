@@ -30,8 +30,6 @@ export class DataStreamDialogComponent implements OnInit{
     this.subscribeOnSelectedArchitecture()
   }
 
-
-
   close(){
     this.dataStreamsData.showDataStreamDialog = false;
   }
@@ -41,18 +39,14 @@ export class DataStreamDialogComponent implements OnInit{
 
   deleteDataStreamButton(){
    
-    this.deleteDataStream(this.dataStreamsData.selectedDataStream.id);
+    this.deleteDataStream(this.dataStreamsData.selectedDataStream.id); 
   }
 
   private deleteDataStream(id: BigInt){
-    this.lineCreationService.deleteDataStream(id).subscribe({ 
-      next: (data) => {
-        // Assuming the deletion was successful if this callback is called
-        this.lineCreationService.getAllDataStreams(this.selectedArchitecture);
-
+    this.lineCreationService.deleteDataStream(id).subscribe({
+      next: (data) => {      
+        this.dataStreamsData.getDataStreams(this.selectedArchitecture.id);
         this.dataStreamsData.showDataStreamDialog = false;
-        
-        //this.dataStreamsData.showService = true;
       },
       error: (error) => {
         // Handle the error here if needed
