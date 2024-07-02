@@ -3,7 +3,7 @@ import { Service } from '../../../shared/models/service';
 import { NewDataStream } from '../../../shared/models/data_stream';
 import { EcuService } from '../../../services/ecu.service';
 import { DataStream } from '../../../shared/models/data_stream';
-import { LineCreationService } from '../../../services/header-main.service';
+import { LineCreationService } from '../../../services/data-stream.service';
 import { Hardware } from '../../../shared/models/hardware';
 import { ServiceService } from '../../../services/service.service';
 import { ArchitectureService } from '../../../services/architecture.service';

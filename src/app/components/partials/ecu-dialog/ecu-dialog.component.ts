@@ -2,7 +2,7 @@
 
 import { Component, EventEmitter, Output, Input, Renderer2, OnInit } from '@angular/core';
 import { EcuService } from '../../../services/ecu.service';
-import { LineCreationService } from '../../../services/header-main.service';
+import { LineCreationService } from '../../../services/data-stream.service';
 import { Service } from '../../../shared/models/service';
 import { NewConnection } from '../../../shared/models/connection-model';
 import { DataStream } from '../../../shared/models/data_stream';

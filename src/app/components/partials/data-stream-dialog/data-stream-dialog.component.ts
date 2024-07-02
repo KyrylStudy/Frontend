@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { LineCreationService } from '../../../services/header-main.service';
+import { LineCreationService } from '../../../services/data-stream.service';
 import { ArchitectureService } from '../../../services/architecture.service';
 
 @Component({

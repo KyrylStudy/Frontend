@@ -6,7 +6,7 @@ import { NewConnection } from '../../../shared/models/connection-model';
 import { EcuService } from '../../../services/ecu.service';
 //import { HeaderComponent } from '../header/header.component';
 //import { sample_lines } from '../../../../data'; // Import sample_lines from data.ts
-import { LineCreationService } from '../../../services/header-main.service';
+import { LineCreationService } from '../../../services/data-stream.service';
 import { Software } from '../../../shared/models/software';
 import { NewSoftware } from '../../../shared/models/software';
 import { HardwareProperty } from '../../../shared/models/hardware_property';
@@ -42,7 +42,7 @@ export class MainScreenComponent implements OnInit{
   //showHardwareDetailsDialog: boolean = false;
   showHardwareDetailsDialogContent = false;
 
-  openHarwareDetailsDialog(hardware: Hardware): void {
+  openHarwareDetailsDialog(hardware: Hardware): void { 
     this.saveLines();
     this.ecuService.setSelectedHardware(hardware);
     //this.showHardwareDetailsDialog = true;

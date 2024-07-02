@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { EcuService } from '../../../services/ecu.service';
-import { LineCreationService } from '../../../services/header-main.service';
+import { LineCreationService } from '../../../services/data-stream.service';
 import { NewHardware } from '../../../shared/models/hardware';
 import { NewArchitecture } from '../../../shared/models/architectures';
 import { ArchitectureService } from '../../../services/architecture.service';
