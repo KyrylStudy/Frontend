@@ -132,7 +132,7 @@
    </div>
 </div>
 
-        <ecu-dialog *ngIf="showHardwareDetailsDialog" [dialogData]="dialogData" (closeDialog)="closeHarwareDetailsDialog()"></ecu-dialog>
+        <ecu-dialog *ngIf="selectedEcu" [dialogData]="dialogData" (closeDialog)="closeHarwareDetailsDialog()"></ecu-dialog>
         <bus-dialog *ngIf="showBusDialog" [dialogData]="dialogData" (closeDialog)="onCloseBusDialog()"></bus-dialog>
         <create-hardware-dialog *ngIf="showCreateHardwareDialog" [createHardwareData]="dialogData" (closeDialog)="onCloseCreateHardwareDialog()"></create-hardware-dialog>
       

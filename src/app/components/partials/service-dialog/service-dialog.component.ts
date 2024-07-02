@@ -54,12 +54,10 @@ ngOnInit(): void{
 
   @Input() serviceDetilsData: any | null = null;
 
-  /*close(): void {
-    debugger
-    this.serviceService.setSelectedService(null)
-    //this.serviceDetilsData.showDialog = false;
-    //this.serviceDetilsData.showServiceDialog = false;
-  }*/
+
+    close(){ 
+      this.serviceService.setSelectedService(null);
+    }
 
   delete(){ 
     //debugger
@@ -81,13 +79,13 @@ ngOnInit(): void{
 
     this.serviceService.setSelectedService(null)
 
-    this.serviceDetilsData.showService = true;
+   // this.serviceDetilsData.showService = true;
     
   }
 
   private deleteService(id: BigInt){
   
-    this.serviceDetilsData.dialogData.servicesMap.get(this.serviceDetilsData.dialogData.selectedEcu.id); 
+    //this.serviceDetilsData.dialogData.servicesMap.get(this.serviceDetilsData.dialogData.selectedEcu.id); 
     this.serviceService.deleteService(id);
   }
 
@@ -97,7 +95,7 @@ ngOnInit(): void{
         // Assuming the deletion was successful if this callback is called
   
         //console.log("architekture id  ", this.serviceDetilsData.dialogData.selectedArchitecture.id)
-        var architektureId = this.serviceDetilsData.dialogData.selectedArchitecture.id
+        var architektureId = this.serviceDetilsData.selectedArchitecture.id
       
         this.serviceDetilsData.dataForDataStreamDetails.getDataStreams(architektureId);
       },

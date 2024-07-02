@@ -1,14 +1,15 @@
-
-        <!-- <button class="dialog-close-button" (click)="close()">Close</button> Move close button here -->
-        <div class="service-details" >
+<div class="dialog-container">
+    <div class="dialog-content">
+        <button class="dialog-close-button" (click)="close()">Close</button> <!-- Move close button here -->
+        <div class="service-details" > 
         <div class="horisontal-container">
-            <h3>{{ selectedService.name }}</h3>
+            <h3>{{ selectedService.name }}</h3> 
         </div>
         <div>
             <h4 class="ecu-properties-header">Description:</h4>
             <p class="ecu-description">{{ selectedService.description }}</p>
         </div>
-       
+        
         <div>
             <h4 class="ecu-properties-header">Properties:</h4> 
             <ul>
@@ -25,6 +26,13 @@
         </div>
         <button class="dialog-delete-button" (click)="delete()">Delete</button> <!-- Move close button here -->
     </div>
+        </div>
+      
+</div>
+
+
+
+      
 
 
 

@@ -39,13 +39,13 @@ export class MainScreenComponent implements OnInit{
   
   dialogData: any = this; //data for export
 
-  showHardwareDetailsDialog: boolean = false;
+  //showHardwareDetailsDialog: boolean = false;
   showHardwareDetailsDialogContent = false;
 
   openHarwareDetailsDialog(hardware: Hardware): void {
     this.saveLines();
     this.ecuService.setSelectedHardware(hardware);
-    this.showHardwareDetailsDialog = true;
+    //this.showHardwareDetailsDialog = true;
     this.showHardwareDetailsDialogContent = true;
     
     this.hardwarePropertyService.loadAllHardwareProperties(hardware.id)
@@ -54,7 +54,8 @@ export class MainScreenComponent implements OnInit{
   }
 
   closeHarwareDetailsDialog(): void {
-    this.showHardwareDetailsDialog = false;
+    //this.showHardwareDetailsDialog = false;
+    this.ecuService.setSelectedHardware(null)
     this.showHardwareDetailsDialogContent = false;
   }
 
@@ -529,7 +530,7 @@ private graph: { [key: string]: string[] } = {};
   //selectedService: any = null;    ------------------!!!!!!!!!!!
   //showServiceDialog: boolean = false;
   //showDataStreamDialog: boolean = false;
-
+ 
 
  
 

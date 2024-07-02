@@ -15,31 +15,26 @@ import { ArchitectureService } from '../../../services/architecture.service';
 })
 export class ServiceComponent {
 
-  @Input() serviceData: any | null = null;
-  @Output() closeDialog = new EventEmitter<boolean>();
+  @Input() serviceData: any | null = null; 
+  dataFromServicesDashbord: any = this;
+  showDataStreamDialog: boolean = false;
+
   dataForServiceDialog = this;
-  //showServiceDialog:boolean = false;
+  //showServiceDialog:boolean = false; 
 
-
-  openServiceDetailsDialog(service: Service){
-
-    this.serviceService.setSelectedService(service)
-    //this.selectedService = service;
-    //this.serviceData.showServiceDialog = true;
-    this.serviceData.showService = false;
-    //this.dialogData.selectedService = service;   ------------------!!!!!!!!!!!
-    //this.dialogData.isEcuDetailsMod = !this.dialogData.isEcuDetailsMod;
+  goBack(){ 
+    this.serviceData.showService = false; 
+    this.serviceData.dialogData.showHardwareDetailsDialogContent = true; 
   }
 
 
-  constructor(private architectureService:ArchitectureService, private serviceService:ServiceService, private renderer: Renderer2, private el: ElementRef, private ecuService: EcuService, private lineCreationService: LineCreationService) { 
+  openServiceDetailsDialog(service: Service){ 
+    this.serviceService.setSelectedService(service)
+  }
 
-    }
 
-  close(): void {
-    this.closeDialog.emit(true);
-    //console.log(this.serviceData.dialogData.dialogData)
-    this.selectedService = null;
+  constructor(private architectureService:ArchitectureService, private serviceService:ServiceService, private renderer: Renderer2, private el: ElementRef,
+     private ecuService: EcuService, private lineCreationService: LineCreationService) { 
   }
 
 
@@ -48,7 +43,7 @@ export class ServiceComponent {
     const boundingClientRect = element.getBoundingClientRect();
     const parentPosition = this.getElementPosition(element.parentElement);
 
-    const ecuDragging: any = document.querySelector('.cdk-drag-dragging');
+    const ecuDragging: any = document.querySelector('.cdk-drag-dragging'); 
 
     var ecuRect = ecuDragging.getBoundingClientRect();
 
@@ -221,7 +216,7 @@ ngOnInit(): void {
   this.subscribeOnSelectedHardware();
   this.subscribeOnHardwares();
 
- this.dataStreamsTransport.emit(this); 
+// this.dataStreamsTransport.emit(this); 
  this.scrollableEcu.nativeElement.addEventListener('scroll', this.onElementScroll.bind(this));
   this.getDataStreams(this.selectedArchitecture.id);
  // this.options = this.serviceData.dialogData.dialogData.servicesMap.get(this.selectedEcu?.id);
@@ -279,7 +274,7 @@ dataStreams: DataStream[] = [];
   startLinePsition: any;
 
   onEcuClick(ecu: Service, event: MouseEvent){ 
-    this.dataStreamsTransport.emit(this); 
+    //this.dataStreamsTransport.emit(this); 
     console.log(this.serviceData.dialogData.dialogData.creatingDatastreamModus)
     if(this.serviceData.dialogData.dialogData.creatingDatastreamModus){
       if (!this.startEcu) {
@@ -524,12 +519,12 @@ getDataStreamsOfSelectdService(allDataStreams: any){
   openDataStreamDetails(dataStream: DataStream){//------------------------------add logic!!!
 
     this.selectedDataStream = dataStream;
-    this.serviceData.showDataStreamDialog = true;
-    this.serviceData.showService = false;
-    this.dataStreamsTransport.emit(this); 
+    this.showDataStreamDialog = true;
+    //this.serviceData.showService = false;
+    //this.dataStreamsTransport.emit(this); 
   }
 
-  @Output() dataStreamsTransport = new EventEmitter<any>();
+  //@Output() dataStreamsTransport = new EventEmitter<any>();
 
 
   /*close(): void {

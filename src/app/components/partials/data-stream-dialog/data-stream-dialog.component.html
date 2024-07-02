@@ -1,4 +1,4 @@
-<div class="data-stream-container">
+<!--<div class="data-stream-container">
     <div class="data-stream-content">
         <div *ngIf="dataStreamsData.dataForDataStreamDetails.selectedDataStream">
             <h3>{{ dataStreamsData.dataForDataStreamDetails.selectedDataStream.name }}</h3>
@@ -8,4 +8,28 @@
             <button class="dialog-delete-button" (click)="deleteDataStreamButton()">Delete</button>  
         </div>
     </div>
+</div>-->
+
+<div class="dialog-container">
+    <div class="dialog-content">
+        <button class="dialog-close-button" (click)="close()">Close</button> <!-- Move close button here -->
+        <div *ngIf="dataStreamsData.selectedDataStream">
+            <h3>{{ dataStreamsData.selectedDataStream.name }}</h3>
+            <h4>Description: {{ dataStreamsData.selectedDataStream.description}}</h4>
+            <h4>Connected from: {{ dataStreamsData.selectedDataStream.connectedFrom }}</h4>
+            <h4>Connected to: {{ dataStreamsData.selectedDataStream.connectedTo }}</h4>
+            <button class="dialog-delete-button" (click)="deleteDataStreamButton()">Delete</button>  
+        </div>
+    </div>
+      
+      
 </div>
+
+
+
+      
+
+
+
+
+

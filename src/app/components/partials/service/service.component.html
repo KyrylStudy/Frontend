@@ -1,7 +1,11 @@
 <!--<ng-container *ngIf="!showServiceDialog">-->
    <!-- <div class="dialog-container">
         <div class="dialog-content">-->
-<div class="dropdown-container" tabindex="0" (blur)="showDropdown = false">
+<button class="back-button" (click)="goBack()">&lt;</button>
+<button class="create-service-button" (click)="serviceData.openCreateServiceDialog()">Create Service</button> 
+<button class="create-datastream-button" (click)="serviceData.createDatastream()">Create Datastream</button>
+<button class="dialog-save-button" (click)="saveServices()">Save</button>
+<div class="dropdown-container" tabindex="0" (blur)="showDropdown = false"> 
     <div class="dropdown-display" (click)="toggleDropdownCreate()">
         {{ selectedOption?.name || 'Select Service' }} 
     </div>
@@ -94,6 +98,8 @@
         </svg>
     </div>
 </div>
+<app-create-service-infrastructure-dialog *ngIf="serviceData.showCreateDialog" [createServiceDialogData]="serviceData.serviceDialogData" (closeDialog)="serviceData.onCloseCreateDialog()"></app-create-service-infrastructure-dialog>
+<app-data-stream-dialog *ngIf="showDataStreamDialog" [dataStreamsData]="dataFromServicesDashbord"></app-data-stream-dialog>  
 <!--</div>
 </div>-->
 <!--</ng-container>-->

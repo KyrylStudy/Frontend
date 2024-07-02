@@ -146,127 +146,12 @@
   color: white;
 }
 
-.dialog-save-button {
-  position: absolute;
-  top: 5px;
-  right: 100px;
-  margin-right: 10px;
-  padding: 10px 20px;
-  background-color: white;
-  color: #252525;
-  font-size: 1rem;
-  border-radius: 5px;
-  border: 2px solid #009BA0;
-  cursor: pointer;
-  z-index: 10;
-}
 
-.dialog-save-button:hover {
-  background-color: #cef8fa; /* Darker shade for hover */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for a "lift" effect */
-}
-
-.dialog-save-button:active {
-  background-color: #009BA0;
-  color: white;
-}
-
-//-----------------------------------------------------28.05-----
-.create-service-button {
-  position: absolute;
-  top: 5px;
-  left: 62px;
-  margin-right: 10px;
-  padding: 10px 20px;
-  background-color: white;
-  color: #252525;
-  font-size: 1rem;
-  border-radius: 5px;
-  border: 2px solid #009BA0;
-  cursor: pointer;
-  z-index: 9999;
-}
-
-.create-service-button:hover {
-  background-color: #cef8fa; /* Darker shade for hover */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for a "lift" effect */
-}
-
-.create-service-button:active {
-  background-color: #009BA0;
-  color: white;
-}
-
-.create-datastream-button {
-  position: absolute;
-  top: 5px;
-  left: 220px;
-  margin-right: 10px;
-  padding: 10px 20px;
-  background-color: white;
-  color: #252525;
-  font-size: 1rem;
-  border-radius: 5px;
-  border: 2px solid #009BA0;
-  cursor: pointer;
-  z-index: 9999;
-}
-
-.create-datastream-button:hover {
-  background-color: #cef8fa; /* Darker shade for hover */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for a "lift" effect */
-}
-
-.create-datastream-button:active {
-  background-color: #009BA0;
-  color: white;
-}
-
-.back-button {
-  position: absolute;
-  top: 5px;
-  left: 30px;
-  padding: 10px 8px;
-  background-color: white;
-  color: #252525;
-  font-size: 1rem;
-  border-radius: 5px;
-  border: 2px solid #801D1A;
-  cursor: pointer;
-  z-index: 10;
-}
-
-.back-button:hover {
-  background-color: #e3a3a9; /* Darker shade for hover */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for a "lift" effect */
-}
-
-.back-button:active {
-  background-color: #801D1A;
-  color: white;
-}
 
 .ecu-description {
   font-size: 1rem;
   margin-bottom: 20px;
 }
-//-------------------------
-/*.sidebar-services-button,
-.sidebar-button,
-.dialog-close-button {
-  padding: 10px 20px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  z-index: 10;
-}
-
-.sidebar-services-button,
-.sidebar-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-}*/
 
 .add-property-button {
   width: 100%;
@@ -317,64 +202,6 @@
   display: flex;
   flex-direction: row;
 }
-
-//--------------------------------
-
-/* General styles for the input area */
-/*.input-area {
-  width: 340px; 
-  padding: 25px;
-  background-color: #f1f3f5;
-  border: 1px solid #ced4da;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-
-.input-wrapper {
-  width: 100%;
-  margin-bottom: 20px;
-}
-
-
-.input-field {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 12px;
-  border: 1px solid #adb5bd;
-  border-radius: 5px;
-  font-size: 15px;
-  box-sizing: border-box;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.input-field:focus {
-  border-color: #495057;
-  outline: none;
-  box-shadow: 0 0 8px rgba(73, 80, 87, 0.5);
-}
-
-/* Styles for the add property button */
-/*.add-property-button {
-  width: 100%;
-  padding: 12px 18px;
-  font-size: 16px;
-  color: #ffffff;
-  background-color: #007bff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.add-property-button:hover {
-  background-color: #0056b3;
-  box-shadow: 0 4px 10px rgba(0, 86, 179, 0.3);
-}*/
 
 
 

@@ -1,9 +1,9 @@
 <div class="dialog-container">
     <div class="dialog-content">
-        <button *ngIf="showService" class="back-button" (click)="goBack()">&lt;</button>
+        <!--<button *ngIf="showService" class="back-button" (click)="goBack()">&lt;</button>
         <button *ngIf="showService" class="create-service-button" (click)="openCreateServiceDialog()">Create Service</button>
         <button *ngIf="showService" class="create-datastream-button" (click)="createDatastream()">Create Datastream</button>
-        <button *ngIf="showService" class="dialog-save-button" (click)="saveServices()">Save</button>
+        <button *ngIf="showService" class="dialog-save-button" (click)="saveServices()">Save</button>-->
         <button class="dialog-close-button" (click)="close()">Close</button> <!-- Move close button here -->
         <div *ngIf="dialogData.showHardwareDetailsDialogContent">
             <div class="horisontal-container">
@@ -12,25 +12,6 @@
                     <button class="show-services-button" (click)="openDialog()">To Services</button>
                 </div>
             </div>
-            
-      
-               <!--<button class="sidebar-services-button" (click)="dialogData.showListOfServices()">Services</button>--> 
-
-               
-       
-            <!--<div>
-                <h4>Software:</h4>
-                <ul>
-                    <li *ngFor="let detail of dialogData.software">
-                        {{ detail.name }}: {{ detail.value }}
-                    </li>
-                </ul>
-            </div>
-            <div class="input-sidebar">
-                <input type="text" placeholder="Software" [(ngModel)]="dialogData.softwareKey">
-                <input type="text" placeholder="Description" [(ngModel)]="dialogData.softwareValue">
-                <button class="sidebar-button" (click)="dialogData.addSoftwareValue()">Add Software</button>
-            </div>-->
             <div>
                 <h4 class="ecu-properties-header">Description:</h4>
                 <p class="ecu-description">{{ selectedEcu?.description }}</p>
@@ -47,15 +28,15 @@
             </div> 
             <div class="input-sidebar">
                 <input class="input-field" type="text" placeholder="Property" [(ngModel)]="hardwareKey">
-                <input class="input-field" type="text" placeholder="Description" [(ngModel)]="hardwareValue">
+                <input class="input-field" type="text" placeholder="Description" [(ngModel)]="hardwareValue"> 
                 <button class="add-property-button" (click)="addHardwareValue()">Add Property</button>
             </div>
             <button class="dialog-delete-button" (click)="delete()">Delete</button> <!-- Move close button here -->
         </div>
         <app-service *ngIf="showService" [serviceData]="serviceDialogData" (dataStreamsTransport)="getDataStreamsFromServiceComponent($event)" ></app-service>
-        <app-create-service-infrastructure-dialog *ngIf="showCreateDialog" [createServiceDialogData]="serviceDialogData" (closeDialog)="onCloseCreateDialog()"></app-create-service-infrastructure-dialog>
+        <!--<app-create-service-infrastructure-dialog *ngIf="showCreateDialog" [createServiceDialogData]="serviceDialogData" (closeDialog)="onCloseCreateDialog()"></app-create-service-infrastructure-dialog>-->
         <app-service-dialog *ngIf="selectedService" [serviceDetilsData]="serviceDialogData" ></app-service-dialog> 
-        <app-data-stream-dialog *ngIf="showDataStreamDialog" [dataStreamsData]="serviceDialogData"></app-data-stream-dialog>  
+        <!--<app-data-stream-dialog *ngIf="showDataStreamDialog" [dataStreamsData]="serviceDialogData"></app-data-stream-dialog>  -->
     </div> 
 </div>
 

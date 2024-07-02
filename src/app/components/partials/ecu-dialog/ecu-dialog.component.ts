@@ -204,11 +204,6 @@ subscribeOnHardwareProperties(){
     this.showCreateDialog = !this.showCreateDialog;
   }
 
-  goBack(){ 
-    this.showService = false;
-    this.dialogData.showHardwareDetailsDialogContent = true;
-  }
-
   dataForServiceDialog = this;
   showDataStreamDialog: boolean = false;
 
