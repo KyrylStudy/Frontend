@@ -6,11 +6,11 @@
 <button class="create-datastream-button" (click)="serviceData.createDatastream()">Create Datastream</button>
 <button class="dialog-save-button" (click)="saveServices()">Save</button>
 <div class="dropdown-container" tabindex="0" (blur)="showDropdown = false"> 
-    <div class="dropdown-display" (click)="toggleDropdownCreate()">
+    <div class="dropdown-display" (click)="toggleDropdownServiceForShowDataStreams()">
         {{ selectedOption?.name || 'Select Service' }} 
     </div>
     <div class="dropdown-menu" *ngIf="showDropdown">
-        <div class="dropdown-item" *ngFor="let option of servicesOfSelectedEcu" (click)="selectOption(option)"> 
+        <div class="dropdown-item" *ngFor="let option of servicesOfSelectedEcu" (click)="selectServiceForShowDataStreams(option)"> 
             {{ option.name }}
         </div>
     </div>
@@ -100,6 +100,7 @@
 </div>
 <app-create-service-infrastructure-dialog *ngIf="serviceData.showCreateDialog" [createServiceDialogData]="serviceData.serviceDialogData" (closeDialog)="serviceData.onCloseCreateDialog()"></app-create-service-infrastructure-dialog>
 <app-data-stream-dialog *ngIf="showDataStreamDialog" [dataStreamsData]="dataFromServicesDashbord"></app-data-stream-dialog>  
+<app-service-dialog *ngIf="selectedService" [serviceDetilsData]="dataFromServicesDashbord" ></app-service-dialog> 
 <!--</div>
 </div>-->
 <!--</ng-container>-->

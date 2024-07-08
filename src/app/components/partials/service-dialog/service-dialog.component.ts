@@ -3,6 +3,8 @@ import { EcuService } from '../../../services/ecu.service';
 import { LineCreationService } from '../../../services/data-stream.service';
 import { ServiceService } from '../../../services/service.service';
 import { Service } from '../../../shared/models/service';
+import { DataStream } from '../../../shared/models/data_stream';
+import { ArchitectureService } from '../../../services/architecture.service';
 
 @Component({
   selector: 'app-service-dialog',
@@ -11,7 +13,7 @@ import { Service } from '../../../shared/models/service';
 })
 export class ServiceDialogComponent {
 
-  constructor(private serviceService:ServiceService, private ecuService:EcuService , private lineCreationService: LineCreationService/*, private renderer: Renderer2,
+  constructor(private architectureService:ArchitectureService, private serviceService:ServiceService, private ecuService:EcuService , private lineCreationService: LineCreationService/*, private renderer: Renderer2,
     private elementRef: ElementRef*/) { 
 
   }
@@ -44,12 +46,44 @@ export class ServiceDialogComponent {
     );
   }
 
+  dataStreams: DataStream[] = [];
+subscribeOnDataStreams(){
+  this.lineCreationService.dataStreams$.subscribe(
+      {
+        next: data => {
+          this.dataStreams = data;
+        },
+        error: error => {
+          console.error(error);
+        }
+      }
+  );
+}
+
+
+selectedArchitecture: any | null = null;
+subscribeOnSelectedArchitecture(){
+  this.architectureService.selectedArchitecture$.subscribe(
+      {
+        next: data => {
+          this.selectedArchitecture = data;
+        },
+        error: error => {
+          console.error(error);
+        }
+      }
+  );
+}
 
 
 ngOnInit(): void{
+  this.subscribeOnSelectedArchitecture();
+
   this.subscribeOnSelectedService();
 
   this.subscribeOnServices();
+
+  this.subscribeOnDataStreams();
 }
 
   @Input() serviceDetilsData: any | null = null;
@@ -62,17 +96,16 @@ ngOnInit(): void{
   delete(){ 
     //debugger
     var dataStreamsIdDeleteArray: any[] = [];
-    var dataStreams = this.serviceDetilsData.dataForDataStreamDetails.dataStreams;  
+   // var dataStreams = this.lineCreationService.getDataStreams();  
     //var selectedService = this.serviceDetilsData.selectedService;
-    for(let i = 0; i < dataStreams.length; i++){ 
+    for(let i = 0; i < this.dataStreams.length; i++){ 
       
-      if(dataStreams[i].connectedFrom === this.selectedService.id.toString()){
-        dataStreamsIdDeleteArray.push(dataStreams[i].id);
-        this.deleteDataStream(dataStreams[i].id);
-      }else if(dataStreams[i].connectedTo === this.selectedService.id.toString()){        
-        dataStreamsIdDeleteArray.push(dataStreams[i].id);
-        this.deleteDataStream(dataStreams[i].id);
-        
+      if(this.dataStreams[i].connectedFrom === this.selectedService.id.toString()){
+        dataStreamsIdDeleteArray.push(this.dataStreams[i].id);
+        this.deleteDataStream(this.dataStreams[i].id);
+      }else if(this.dataStreams[i].connectedTo === this.selectedService.id.toString()){        
+        dataStreamsIdDeleteArray.push(this.dataStreams[i].id);
+        this.deleteDataStream(this.dataStreams[i].id);        
       }
     }
     this.deleteService(this.serviceDetilsData.selectedService.id);
@@ -90,14 +123,15 @@ ngOnInit(): void{
   }
 
   private deleteDataStream(id: BigInt){
-    this.lineCreationService.deleteDataStream(id).subscribe({
+    this.lineCreationService.deleteDataStream(id).subscribe({ 
       next: (data) => {
         // Assuming the deletion was successful if this callback is called
   
         //console.log("architekture id  ", this.serviceDetilsData.dialogData.selectedArchitecture.id)
-        var architektureId = this.serviceDetilsData.selectedArchitecture.id
+        //var architektureId = this.serviceDetilsData.selectedArchitecture.id
       
-        this.serviceDetilsData.dataForDataStreamDetails.getDataStreams(architektureId);
+        this.serviceDetilsData.getDataStreams(this.selectedArchitecture.id);
+        
       },
       error: (error) => {
         // Handle the error here if needed

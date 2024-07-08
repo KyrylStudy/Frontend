@@ -319,7 +319,12 @@ subscribeOnSelectedArchitecture(){
       {
         next: data => {
           this.selectedArchitecture = data;
-          if (data) {;
+          
+          if(this.selectedArchitecture)
+          this.lineCreationService.getAllDataStreams(this.selectedArchitecture.id).subscribe(data=>{
+            this.dataStreams = data;
+          });
+          if (data) {
            this.ecuService.loadAllHardwares(data.id).subscribe(data => {
             this.serviceService.getAllServices(data);
             console.log(data)
@@ -377,11 +382,19 @@ subscribeOnServicesCount(){
   );
 }
 
-/*private getAllHardwareProperties(id: BigInt){
-  this.ecuService.getAllHardwareByEcuId(id).subscribe(data => {
-    this.hardware = data;
-  });
-}*/
+dataStreams: DataStream[] = [];
+subscribeOnDataStreams(){
+  this.lineCreationService.dataStreams$.subscribe(
+      {
+        next: data => {
+          this.dataStreams = data;
+        },
+        error: error => {
+          console.error(error);
+        }
+      }
+  );
+}
 
   ngOnInit(): void{
 
@@ -391,8 +404,12 @@ subscribeOnServicesCount(){
     this.subscribeOnSelectedHardware();
     this.subscribeOnHardwares();
 
+    this.subscribeOnDataStreams();
+
     this.subscribeOnSelectedArchitecture();
     this.architectureService.loadArchitecture(BigInt(1));
+
+    
 
 
     //if(this.selectedArchitecture)

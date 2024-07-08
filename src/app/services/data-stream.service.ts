@@ -51,6 +51,22 @@ export class LineCreationService {
 
     //------------------------------------Data---Stream----------
 
+    private dataStreamsSubject = new BehaviorSubject<DataStream[]>([]);
+    dataStreams$ = this.dataStreamsSubject.asObservable();
+
+    setDataStreams(dataStreams: DataStream[]): void {
+      this.dataStreamsSubject.next(dataStreams);
+    }
+  
+    getDataStreams(): Observable<DataStream[]> {
+      return this.dataStreams$;
+    }
+
+
+
+
+
+
     baseDataStreamUrl = "http://localhost:8080/api/data-stream/" 
     getAllDataStreams(architectureId: number): Observable<DataStream[]>{
 
@@ -58,7 +74,7 @@ export class LineCreationService {
     }
   
     updateDataStream(DataStream: DataStream, id: BigInt): Observable<any> {
-    return this.httpClient.put(`${this.baseDataStreamUrl + id + '/' + 'update'}`, DataStream);
+    return this.httpClient.put(`${this.baseDataStreamUrl + id + '/update'}`, DataStream);
     }
 
     createDataStream(architectureId: number, NewDataStream: NewDataStream): Observable<any> {

@@ -32,10 +32,10 @@ export class DialogComponent implements OnInit{
  
     this.subscribeOnHardwares();
 
-    this.subscribeOnSelectedService();    
+   // this.subscribeOnSelectedService();    
   }
 
-  selectedService: any | null = null;
+ /* selectedService: any | null = null;
   subscribeOnSelectedService(){
     this.serviceService.selectedService$.subscribe(
         {
@@ -47,7 +47,7 @@ export class DialogComponent implements OnInit{
           }
         }
     );
-  }
+  }*/
 
 
 
@@ -57,7 +57,7 @@ export class DialogComponent implements OnInit{
 
   close(): void {
     this.closeDialog.emit(true);
-    this.serviceService.setSelectedService(null)
+    //this.serviceService.setSelectedService(null)
    // this.dialogData.showServiceDialog = false;
     this.dialogData.showDataStreamDialog = false;
   }

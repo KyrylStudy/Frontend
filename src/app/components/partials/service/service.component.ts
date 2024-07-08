@@ -55,6 +55,7 @@ export class ServiceComponent {
   
   
     this.rewriteLine(ecu);
+    this.lineCreationService.setDataStreams(this.dataStreams); 
  
   }
 
@@ -203,7 +204,23 @@ subscribeOnServicesOfSelectedEcu(){
   );
 }
 
+dataStreams: DataStream[] = [];
+subscribeOnDataStreams(){
+  this.lineCreationService.dataStreams$.subscribe(
+      {
+        next: data => {
+          this.dataStreams = data;
+        },
+        error: error => {
+          console.error(error);
+        }
+      }
+  );
+}
+
 ngOnInit(): void {
+
+  this.subscribeOnDataStreams();
 
   this.subscribeOnSelectedService();
 
@@ -216,11 +233,8 @@ ngOnInit(): void {
   this.subscribeOnSelectedHardware();
   this.subscribeOnHardwares();
 
-// this.dataStreamsTransport.emit(this); 
  this.scrollableEcu.nativeElement.addEventListener('scroll', this.onElementScroll.bind(this));
   this.getDataStreams(this.selectedArchitecture.id);
- // this.options = this.serviceData.dialogData.dialogData.servicesMap.get(this.selectedEcu?.id);
- //this.options = this.serviceData.dialogData.dialogData.servicesMap.get(this.selectedEcu?.id);
 }
 
 /*scrollableEcu:any;
@@ -238,10 +252,11 @@ private getDataStreams(architectureId: number){
 
         //debugger 
         if(this.selectedOption){
-          this.getDataStreamsOfSelectdService(data)
+          this.getDataStreamsOfSelectdService(data);
         }else{
-          this.getAllDataStreams(data)
-        } 
+          this.getAllDataStreams(data);
+        }
+        this.lineCreationService.setDataStreams(this.dataStreams);
       },
       error: (error) => {
         // Handle the error here if needed
@@ -265,7 +280,7 @@ private getDataStreams(architectureId: number){
 ECUwidth = 200 + 10;
 ECUheight = 100 + 10;
 
-dataStreams: DataStream[] = [];
+//dataStreams: DataStream[] = [];
 
   startTargetEcuElementNewBus: any;
   endTargetEcuElementNewBus: any;
@@ -327,7 +342,7 @@ dataStreams: DataStream[] = [];
   
           console.log('New line created:', newDataStream);
         } else {
-          //ecu.connectedTo = "";
+          //ecu.connectedTo = ""; 
           console.log('Start and end ECUs cannot be the same');
         }
         // Reset start and end ECUs
@@ -387,6 +402,8 @@ dataStreams: DataStream[] = [];
    
     this.previousScrollY = scrollTop
 
+    this.lineCreationService.setDataStreams(this.dataStreams);
+
   
   }
 //---------------------------------------------01.06
@@ -413,10 +430,10 @@ saveServices() {
   }
 }
 
-private updateService(Service: Service, id: BigInt){
+/*private updateService(Service: Service, id: BigInt){
 
   this.ecuService.updadeService(Service, id).subscribe();
-}
+}*/
 
 private updateDataStream(DataStream: DataStream, id: BigInt){
 
@@ -426,24 +443,21 @@ private updateDataStream(DataStream: DataStream, id: BigInt){
 //----------------------------17.06
 
 showDropdown = false; 
-toggleDropdownCreate(): void {
-    this.showDropdown = !this.showDropdown;
+toggleDropdownServiceForShowDataStreams(): void {
+    this.showDropdown = true;
 }
 
 
 options:any = [];
 //selectedService: any = null;
 selectedOption: any = null;
-selectOption(option: any): void {
+selectServiceForShowDataStreams(option: any): void {
   if(option){
-    this.selectedService = option;
-    //console.log( this.serviceData.selectedService) 
-    //debugger
     this.selectedOption = option;
     this.dataStreams = [];
     this.getDataStreams(this.selectedArchitecture.id);
   }else{
-    this.selectedService = null;
+    this.selectedOption = null;
   }
 
 
@@ -471,11 +485,11 @@ getDataStreamsOfSelectdService(allDataStreams: any){
     var connectedServices: any = [];
    // console.log(this.selectedService)
     for(let i = 0; i < allDataStreams.length; i++){
-      if(allDataStreams[i].connectedFrom == this.selectedService.id){
+      if(allDataStreams[i].connectedFrom == this.selectedOption.id){
         selectedServiceDataStreams.push(allDataStreams[i]);
         const service = this.el.nativeElement.querySelector(`[serviceId="${Number(allDataStreams[i].connectedTo)}"]`);
         connectedServices.push(service)
-      }else if(allDataStreams[i].connectedTo == this.selectedService.id){
+      }else if(allDataStreams[i].connectedTo == this.selectedOption.id){
         selectedServiceDataStreams.push(allDataStreams[i]);
         const service = this.el.nativeElement.querySelector(`[serviceId="${Number(allDataStreams[i].connectedFrom)}"]`);
         connectedServices.push(service)
@@ -485,20 +499,20 @@ getDataStreamsOfSelectdService(allDataStreams: any){
     for(let i = 0; i < connectedServices.length; i++){
       this.rewriteLine(connectedServices[i])
     }
-    this.rewriteLine(this.selectedService)
+    this.rewriteLine(this.selectedOption)
   }
 
 
-  getAllDataStreams(data: any){ 
+  getAllDataStreams(allDataStreams: any){ 
     var selectedServiceDataStreams:any = [];
     var connectedServices: any = [];
     
-    console.log(data)
-    for(let i = 0; i < data.length; i++){
-      selectedServiceDataStreams.push(data[i]);
-        const service1 = this.el.nativeElement.querySelector(`[serviceId="${Number(data[i].connectedTo)}"]`);
+    console.log(allDataStreams)
+    for(let i = 0; i < allDataStreams.length; i++){
+      selectedServiceDataStreams.push(allDataStreams[i]);
+        const service1 = this.el.nativeElement.querySelector(`[serviceId="${Number(allDataStreams[i].connectedTo)}"]`);
         connectedServices.push(service1)
-        const service2 = this.el.nativeElement.querySelector(`[serviceId="${Number(data[i].connectedFrom)}"]`);
+        const service2 = this.el.nativeElement.querySelector(`[serviceId="${Number(allDataStreams[i].connectedFrom)}"]`);
         connectedServices.push(service2)
     }
     this.dataStreams = selectedServiceDataStreams;
