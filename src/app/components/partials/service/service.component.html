@@ -2,9 +2,9 @@
    <!-- <div class="dialog-container">
         <div class="dialog-content">-->
 <button class="back-button" (click)="goBack()">&lt;</button>
-<button class="create-service-button" (click)="serviceData.openCreateServiceDialog()">Create Service</button> 
-<button class="create-datastream-button" (click)="serviceData.createDatastream()">Create Datastream</button>
-<button class="dialog-save-button" (click)="saveServices()">Save</button>
+<button class="create-service-button" (click)="openCreateServiceDialog()">Create Service</button>  
+<button class="create-datastream-button" (click)="openCreateDatastreamDialog()">Create Datastream</button>
+
 <div class="dropdown-container" tabindex="0" (blur)="showDropdown = false"> 
     <div class="dropdown-display" (click)="toggleDropdownServiceForShowDataStreams()">
         {{ selectedOption?.name || 'Select Service' }} 
@@ -16,7 +16,7 @@
     </div>
 </div>
 <button class="select-all-services-button" (click)="selectAllServices()">Select all Services</button>
-<button class="service-save-button" (click)="saveServices()">Save</button>
+<button class="service-save-button" (click)="updateCurrentState()">Save</button>
 <div class="main-screen">
 
     <div class="button-set">
@@ -98,7 +98,7 @@
         </svg>
     </div>
 </div>
-<app-create-service-infrastructure-dialog *ngIf="serviceData.showCreateDialog" [createServiceDialogData]="serviceData.serviceDialogData" (closeDialog)="serviceData.onCloseCreateDialog()"></app-create-service-infrastructure-dialog>
+<app-create-service-infrastructure-dialog *ngIf="showCreateServiceDialog" [createServiceDialogData]="dataFromServicesDashbord"></app-create-service-infrastructure-dialog>
 <app-data-stream-dialog *ngIf="showDataStreamDialog" [dataStreamsData]="dataFromServicesDashbord"></app-data-stream-dialog>  
 <app-service-dialog *ngIf="selectedService" [serviceDetilsData]="dataFromServicesDashbord" ></app-service-dialog> 
 <!--</div>

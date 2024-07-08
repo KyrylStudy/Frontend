@@ -29,6 +29,7 @@ export class ServiceComponent {
 
 
   openServiceDetailsDialog(service: Service){ 
+    this.updateCurrentState();
     this.serviceService.setSelectedService(service)
   }
 
@@ -224,7 +225,7 @@ ngOnInit(): void {
 
   this.subscribeOnSelectedService();
 
-  this.subscribeOnSelectedArchitecture();
+  this.subscribeOnSelectedArchitecture(); 
 
   this.subscribeOnServices();
 
@@ -290,8 +291,8 @@ ECUheight = 100 + 10;
 
   onEcuClick(ecu: Service, event: MouseEvent){ 
     //this.dataStreamsTransport.emit(this); 
-    console.log(this.serviceData.dialogData.dialogData.creatingDatastreamModus)
-    if(this.serviceData.dialogData.dialogData.creatingDatastreamModus){
+    //console.log(this.creatingDatastreamModus)
+    if(this.creatingDatastreamModus){
       if (!this.startEcu) {
         // First click, select start ECU
         this.startTargetEcuElementNewBus = event.target as HTMLElement;
@@ -349,7 +350,7 @@ ECUheight = 100 + 10;
         
         this.startEcu = null;
         this.endEcu = null;
-        this.serviceData.dialogData.dialogData.creatingDatastreamModus = false;
+        this.creatingDatastreamModus = false;
         setTimeout(()=>{
           this.renderer.removeClass(this.startTargetEcuElementNewBus, 'selected');
           this.renderer.removeClass(this.endTargetEcuElementNewBus, 'selected');
@@ -413,7 +414,7 @@ getLinesForServise(service: Service){
   //2. filter under line.connectedFrom || line.connectedTo === service.id
 }
 
-saveServices() {
+updateCurrentState() {
   //debugger
   console.log(this.hardwares);
   for(let i = 0; i < this.hardwares.length; ++i){
@@ -443,7 +444,8 @@ private updateDataStream(DataStream: DataStream, id: BigInt){
 //----------------------------17.06
 
 showDropdown = false; 
-toggleDropdownServiceForShowDataStreams(): void {
+toggleDropdownServiceForShowDataStreams(): void { 
+  this.updateCurrentState();
     this.showDropdown = true;
 }
 
@@ -523,6 +525,7 @@ getDataStreamsOfSelectdService(allDataStreams: any){
   }
 
   selectAllServices(){ 
+    this.updateCurrentState();
     this.selectedService = null;
     this.selectedOption = null;
     this.getDataStreams(this.selectedArchitecture.id);
@@ -531,7 +534,7 @@ getDataStreamsOfSelectdService(allDataStreams: any){
   selectedDataStream: any; 
 
   openDataStreamDetails(dataStream: DataStream){//------------------------------add logic!!!
-
+    this.updateCurrentState();
     this.selectedDataStream = dataStream;
     this.showDataStreamDialog = true;
     //this.serviceData.showService = false;
@@ -547,7 +550,21 @@ getDataStreamsOfSelectdService(allDataStreams: any){
     this.serviceData.selectedService = null;
   }*/
 
+    /*onCloseCreateDialog(){
+      this.showCreateServiceDialog = false;
+    }*/
+  
+    showCreateServiceDialog: boolean = false;
+    openCreateServiceDialog(){
+      this.updateCurrentState();
+      this.showCreateServiceDialog = true;
+    }
 
+    creatingDatastreamModus: Boolean = false;
+    openCreateDatastreamDialog(){
+      this.updateCurrentState();
+      this.creatingDatastreamModus = true;
+    }
   
 }
 

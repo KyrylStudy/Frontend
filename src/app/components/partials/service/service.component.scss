@@ -379,30 +379,5 @@
   color: white;
 }
 
-.dialog-save-button {
-  position: absolute;
-  top: 5px;
-  right: 100px;
-  margin-right: 10px;
-  padding: 10px 20px;
-  background-color: white;
-  color: #252525;
-  font-size: 1rem;
-  border-radius: 5px;
-  border: 2px solid #009BA0;
-  cursor: pointer;
-  z-index: 10;
-}
-
-.dialog-save-button:hover {
-  background-color: #cef8fa; /* Darker shade for hover */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for a "lift" effect */
-}
-
-.dialog-save-button:active {
-  background-color: #009BA0;
-  color: white;
-}
-
 
 

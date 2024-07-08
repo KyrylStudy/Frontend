@@ -43,18 +43,14 @@ export class MainScreenComponent implements OnInit{
   showHardwareDetailsDialogContent = false;
 
   openHarwareDetailsDialog(hardware: Hardware): void { 
-    this.saveLines();
+    this.updateCurrentState();
     this.ecuService.setSelectedHardware(hardware);
-    //this.showHardwareDetailsDialog = true;
     this.showHardwareDetailsDialogContent = true;
     
-    this.hardwarePropertyService.loadAllHardwareProperties(hardware.id)
-    //this.getAllHardwareProperties(hardware.id);
-   // console.log("ecu: ", this.selectedEcu)
+    this.hardwarePropertyService.loadAllHardwareProperties(hardware.id);
   }
 
   closeHarwareDetailsDialog(): void {
-    //this.showHardwareDetailsDialog = false;
     this.ecuService.setSelectedHardware(null)
     this.showHardwareDetailsDialogContent = false;
   }
@@ -62,8 +58,8 @@ export class MainScreenComponent implements OnInit{
 
 
   selectedConnection: Connection | null = null;
-  openConnectionDialog(connection: Connection): void {
-    this.saveLines();
+  openHardwareConnectionDetailsDialog(connection: Connection): void {
+    this.updateCurrentState();
     this.selectedConnection = connection;
     this.showBusDialog = true;
   }
@@ -437,38 +433,8 @@ subscribeOnDataStreams(){
 
 
 
-  //servicesCountMap: Map<BigInt, number> = new Map();
- // servicesMap: Map<BigInt, Service[]> = new Map();
-  /*getAllServices(): void {
-    // Assuming ecus array is already populated, otherwise, you need to fetch it first
-    if (this.ecus.length > 0) {
-      const serviceObservables: Observable<Service[]>[] = this.ecus.map(ecu => this.ecuService.getAllServicesByEcuId(ecu.id)); 
-      //const serviceObservables = this.ecus.map(ecu => this.ecuService.getAllServicesByEcuId(ecu.id).subscribe(
-      //  data => {
-      //    this.servicesMap.set(ecu.id, data);
-      //    this.servicesCountMap.set(ecu.id, data.length); 
-      //  }
-      //)); 
-      
-      forkJoin(serviceObservables).subscribe(serviceArrays => {
-        serviceArrays.forEach((services, index) => {
-          const ecuId = this.ecus[index].id;
-          this.servicesCountMap.set(ecuId, services.length); 
-          this.servicesMap.set(ecuId, services);
-        });
-      });
-    }
-  }*/
 
 
-//------------------------28.05
-
-
-creatingDatastreamModus: Boolean = false;
-//dataStream: DataStream[] = [];
-
-
-//----------------------01.06
 viewSwitch: boolean = true;
 toggleView(){
   if(this.viewSwitch){
@@ -541,94 +507,6 @@ private graph: { [key: string]: string[] } = {};
     return false;
   }
 
-  //----------------------service--18.06
-  //showService: boolean = false;
-
-  //selectedService: any = null;    ------------------!!!!!!!!!!!
-  //showServiceDialog: boolean = false;
-  //showDataStreamDialog: boolean = false;
- 
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -643,8 +521,7 @@ optionsDropdownCreate = [
 selectedOptionDropdownCreate: any = null;
 
 
-   private updateBus(Line: Connection, id: BigInt){
-    //console.log(Line)
+   updateBus(Line: Connection, id: BigInt){
     this.lineCreationService.updateBus(Line, id).subscribe();
    }
 
@@ -652,18 +529,16 @@ selectedOptionDropdownCreate: any = null;
     this.ecuService.updateHardware(Ecu, id);
   }
 
-   saveLines() {
+   updateCurrentState() {
 
       for(let i = 0; i < this.connections.length; ++i){
-        //console.log(this.linesFromMain[i])
+        
         this.updateBus(this.connections[i], this.connections[i].id);
       }
       for(let i = 0; i < this.ecus.length; ++i){
-        //console.log(this.linesFromMain[i])
+        
         this.updateEcu(this.ecus[i], this.ecus[i].id);
       }
-      //console.log(this.dataFromMain)
-
    }
 
 showDropdown = false; 
@@ -678,6 +553,7 @@ toggleDropdownSelectArchitecture(): void {
 }
 
 selectArchitecture(option: Architecture): void {
+  this.updateCurrentState();
   this.architectureService.setSelectedArchitecture(option);
 
   const svgContainer = document.getElementById('svg-container');
@@ -691,11 +567,8 @@ selectArchitecture(option: Architecture): void {
       svgContainer.removeChild(connection); // Remove each line element
     });
 
-  //this.getAllHardwares(option.id); 
   this.getAllBus(option.id);
-
-  let that = this;
-  setTimeout(function(){that.showDropdownSelectArchitecture = false;}, 10000)
+  this.showDropdownSelectArchitecture = false;
   
 }
 
@@ -889,11 +762,10 @@ onEcuClick(ecu: Hardware, event: MouseEvent){
    
 
 
-selectOption(option: any): void {
+selectOptioWhatToCreate(option: any): void {
+    this.updateCurrentState();
    if (option.label === 'new Hardware') {
-
     this.showCreateHardwareDialog = option.label;
-
   } else if (option.label === 'new Connection') {
     //this.showCreateHardwareDialog = option.label;
     this.creatingBusModus = true;

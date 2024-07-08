@@ -3,14 +3,12 @@
 import { Component, EventEmitter, Output, Input, Renderer2, OnInit } from '@angular/core';
 import { EcuService } from '../../../services/ecu.service';
 import { LineCreationService } from '../../../services/data-stream.service';
-import { Service } from '../../../shared/models/service';
-import { NewConnection } from '../../../shared/models/connection-model';
 import { DataStream } from '../../../shared/models/data_stream';
 import { Hardware } from '../../../shared/models/hardware';
-import { Observable, forkJoin } from 'rxjs';
 import { HardwarePropertyService } from '../../../services/hardware-property.service';
 import { HardwareProperty, NewHardwareProperty } from '../../../shared/models/hardware_property';
 import { ServiceService } from '../../../services/service.service';
+import { ArchitectureService } from '../../../services/architecture.service';
 
 
 @Component({
@@ -20,11 +18,12 @@ import { ServiceService } from '../../../services/service.service';
 })
 export class DialogComponent implements OnInit{
 
-  constructor(private serviceService:ServiceService,  private hardwarePropertyService:HardwarePropertyService, private ecuService:EcuService,private lineCreationService: LineCreationService, private renderer: Renderer2) { 
+  constructor(private architectureService:ArchitectureService, private serviceService:ServiceService,  private hardwarePropertyService:HardwarePropertyService, private ecuService:EcuService,private lineCreationService: LineCreationService, private renderer: Renderer2) { 
   }
 
   selectedEcu: Hardware | null = null;
   ngOnInit(): void{
+    this.subscribeOnSelectedArchitecture();
 
     this.subscribeOnHardwareProperties();
 
@@ -32,22 +31,36 @@ export class DialogComponent implements OnInit{
  
     this.subscribeOnHardwares();
 
-   // this.subscribeOnSelectedService();    
+    this.subscribeOnDataStreams();    
   }
 
- /* selectedService: any | null = null;
-  subscribeOnSelectedService(){
-    this.serviceService.selectedService$.subscribe(
+  dataStreams: DataStream[] = [];
+  subscribeOnDataStreams(){
+    this.lineCreationService.dataStreams$.subscribe(
         {
           next: data => {
-            this.selectedService = data;
+            this.dataStreams = data;
           },
           error: error => {
             console.error(error);
           }
         }
     );
-  }*/
+  }
+
+    selectedArchitecture: any = null;
+subscribeOnSelectedArchitecture(){
+  this.architectureService.selectedArchitecture$.subscribe(
+      {
+        next: data => {
+          this.selectedArchitecture = data;
+        },
+        error: error => {
+          console.error(error);
+        }
+      }
+  );
+}
 
 
 
@@ -83,22 +96,27 @@ export class DialogComponent implements OnInit{
     //this.dialogData.ecus = this.dialogData.ecus.filter((item: { id: any; }) => item.id !== this.dialogData.selectedEcu.id);
 
 //покащо не работает
-    var servicesOfSelectedEcu = this.dialogData.servicesMap.get(this.selectedEcu?.id);
-    var dataStreams: DataStream[] = [];
-    this.lineCreationService.getAllDataStreams(this.dialogData.selectedArchitecture.id).subscribe(data => {
-      dataStreams = data;
-    });
-    if(servicesOfSelectedEcu){
-      for(let i = 0; i < servicesOfSelectedEcu.length; i++){
-        for(let j = 0; j < dataStreams.length; j++){
-          if(servicesOfSelectedEcu[i].id.toString() == dataStreams[j].connectedFrom){
-            this.lineCreationService.deleteDataStream(dataStreams[j].id);
-          }else if(servicesOfSelectedEcu[i].id.toString() == dataStreams[j].connectedTo){
-            this.lineCreationService.deleteDataStream(dataStreams[j].id);
+
+    if(this.selectedEcu)
+    var servicesOfSelectedEcu = this.serviceService.servicesMap.get(this.selectedEcu.id);
+   // var dataStreams: DataStream[] = [];
+   // this.lineCreationService.getAllDataStreams(this.selectedArchitecture.id).subscribe(data => {
+   //   dataStreams = data;
+
+      if(servicesOfSelectedEcu){
+        for(let i = 0; i < servicesOfSelectedEcu.length; i++){
+          for(let j = 0; j < this.dataStreams.length; j++){
+            if(servicesOfSelectedEcu[i].id.toString() == this.dataStreams[j].connectedFrom ||
+             servicesOfSelectedEcu[i].id.toString() == this.dataStreams[j].connectedTo){
+              this.lineCreationService.deleteDataStream(this.dataStreams[j].id).subscribe(data => {
+                //this.lineCreationService.getAllDataStreams(this.selectedArchitecture.id)
+              });
+            }
           }
         }
       }
-    }
+   // });
+    
     
 
     this.closeDialog.emit(true);
@@ -188,21 +206,12 @@ subscribeOnHardwareProperties(){
 
 //-------------------------------28.05
 
-  createDatastream(){
-    this.dialogData.creatingDatastreamModus = !this.dialogData.creatingDatastreamModus;
-  }
+
 
   serviceDialogData: any = this;
 
 
-  onCloseCreateDialog(){
-    this.showCreateDialog = !this.showCreateDialog;
-  }
 
-  showCreateDialog: boolean = false;
-  openCreateServiceDialog(){
-    this.showCreateDialog = !this.showCreateDialog;
-  }
 
   dataForServiceDialog = this;
   showDataStreamDialog: boolean = false;

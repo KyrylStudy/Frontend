@@ -80,6 +80,7 @@ export class CreateHardwareDialogComponent {
   }*/
 
   save(){
+    
     if(this.createHardwareData.showCreateHardwareDialog === this.hardware){
       if (this.selectedOption && this.newHardwareName && this.newHardwareDescription) {
           const newEcu: NewHardware = {

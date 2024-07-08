@@ -31,10 +31,9 @@ export class CreateServiceInfrastructureDialogComponent {
   }
 
   @Input() createServiceDialogData: any | null = null;
-  @Output() closeDialog = new EventEmitter<boolean>();
 
   close(): void {
-    this.closeDialog.emit(true);
+    this.createServiceDialogData.showCreateServiceDialog = false;
   }
 
   newServiceName: any = null;
@@ -53,42 +52,9 @@ export class CreateServiceInfrastructureDialogComponent {
             connectedTo: '9'};
            
             if(this.selectedEcu)
-            this.serviceService.createService(newService, this.selectedEcu.id)
-            /*if(this.selectedEcu){
-              this.ecuService.createService(newService, this.selectedEcu.id).subscribe({
-                next: (data) => {
-                  //this.createServiceDialogData.dialogData.getAllServices();
-  
-                  //var that = this;
-                  //setTimeout(function(){
-                    this.createServiceDialogData.dataForDataStreamDetails.selectedOption = null;
-                    this.createServiceDialogData.dataForDataStreamDetails.selectedService = null;
-                    debugger
-                    if(this.selectedEcu){
-                      
-                      //let jjjjj = this.ecuService.getAllServicesByEcuId(this.selectedEcu.id)
-                     // this.createServiceDialogData.dataForDataStreamDetails.options =
-                       this.ecuService.getAllServicesByEcuId(this.selectedEcu.id).subscribe(
-                        {
-                          next: data => {
-                            this.createServiceDialogData.dataForDataStreamDetails.options = data;
-                          },
-                          error: error => {
-                            console.error(error);
-                          }
-                        }
-                       )
-                    }
-                    //that.createServiceDialogData.dialogData.servicesMap.get(that.selectedEcu.id);
-                 // }, 300)
-                },
-                error: (error) => {
-                  // Handle the error here if needed
-  
-                }
-              });
-            } */        
-             this.closeDialog.emit(true);
+            this.serviceService.createService(newService, this.selectedEcu.id);
+           
+            this.createServiceDialogData.showCreateServiceDialog = false;
       }else {
             console.log("All required feelds have to be filled!")
       }

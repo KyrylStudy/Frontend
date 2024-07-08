@@ -10,7 +10,7 @@
                 {{ selectedOptionDropdownCreate?.label || 'Create' }}
             </div>
             <div class="dropdown-menu" *ngIf="showDropdown">
-                <div class="dropdown-item" *ngFor="let option of optionsDropdownCreate" (click)="selectOption(option)">
+                <div class="dropdown-item" *ngFor="let option of optionsDropdownCreate" (click)="selectOptioWhatToCreate(option)">
                     {{ option.label }}
                 </div>
             </div>
@@ -50,8 +50,8 @@
 
     <div class="header-right">
 
-        <button class="generate-button" (click)="saveLines()">Save</button>
-        <!-- Generate Button -->
+        <!-- <button class="generate-button" (click)="updateCurrentState()">Save</button>
+        Generate Button -->
         <button class="generate-button">Generate</button>
 
         <!-- User Logo -->
@@ -83,7 +83,7 @@
                   [attr.connectedFrom]="connection.connectedFrom"
                   [attr.connectedTo]="connection.connectedTo"
                   [attr.id]="connection.id"
-                  (dblclick)="openConnectionDialog(connection)"/>
+                  (dblclick)="openHardwareConnectionDetailsDialog(connection)"/>
             <line class="connestion-line-overlay" *ngFor="let connection of connections" 
                   [attr.x1]="connection.positionFromX" 
                   [attr.y1]="connection.positionFromY"
@@ -92,7 +92,7 @@
                   [attr.connectedFrom]="connection.connectedFrom"
                   [attr.connectedTo]="connection.connectedTo"
                   [attr.id]="connection.id"
-                  (dblclick)="openConnectionDialog(connection)"/>     
+                  (dblclick)="openHardwareConnectionDetailsDialog(connection)"/>     
         </svg>
           
 
