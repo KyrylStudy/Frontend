@@ -1,9 +1,9 @@
 <!-- main-screen.component.html -->
-    <!-- header.component.html -->
+
 <header class="header">
-    <div class="header-left">
+    <div class="header-left"> 
         <!-- Logo -->
-        <img src="../../../../assets/images/logo-unicaragil-rgb.svg" alt="Logo" class="logo">
+        <img src="../../../../assets/images/logo-autotechagil-rgb.png" alt="Logo" class="logo">
 
         <div class="dropdown-container" tabindex="0" (blur)="showDropdown = false">
             <div class="dropdown-display" (click)="toggleDropdownCreate()">
@@ -15,11 +15,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Buttons -->
-        <!--<button class="move-button">
-            Move <i class="fas fa-hand-paper"></i> 
-        </button>-->
 
         <!-- Architecture dropdown Field -->
         <div class="dropdown-container" tabindex="0" (blur)="showDropdownSelectArchitecture = false">
@@ -40,13 +35,6 @@
         </div>
     </div>
 
-   <!-- <div class="header-center">
-        
-        <label class="switch">
-            <input type="checkbox" id="toggleSwitch" (change)="toggleView()">
-            <span class="slider"></span>
-        </label>
-    </div>-->
 
     <div class="header-right">
 
@@ -113,20 +101,19 @@
                 <!--<div class="content-draggable-item">{{servicesNumber[item.connectedTo]}} Services</div>-->
             </div>
         </ng-container>
-        <ng-container *ngIf="item.type == 'BUS'">
+        <ng-container *ngIf="item.type == 'BUS'"> 
             <div class="bus">
                 <div class="label-bus">{{ item.label + "|" + item.id}}</div>
                 <div class="content-bus"><!--{{ servicesCountMap.get(item.id) || 0 }} Services--></div> <!--number of services-->
                 <!--<div class="content-draggable-item">{{servicesNumber[item.connectedTo]}} Services</div>-->
             </div>
         </ng-container>
-        <ng-container *ngIf="item.type == 'CAN'">
+        <!--<ng-container *ngIf="item.type == 'CAN'">
             <div class="can">
                 <div class="label-can">{{ item.label + "|" + item.id}}</div>
-                <div class="content-can"><!--{{ servicesCountMap.get(item.id) || 0 }} Services--></div> <!--number of services-->
-                <!--<div class="content-draggable-item">{{servicesNumber[item.connectedTo]}} Services</div>-->
+                <div class="content-can"></div>
             </div>
-        </ng-container>
+        </ng-container>-->
 
        
    </div>
@@ -136,8 +123,7 @@
         <bus-dialog *ngIf="showBusDialog" [dialogData]="dialogData" (closeDialog)="onCloseBusDialog()"></bus-dialog>
         <create-hardware-dialog *ngIf="showCreateHardwareDialog" [createHardwareData]="dialogData" (closeDialog)="onCloseCreateHardwareDialog()"></create-hardware-dialog>
       
- 
-    </div>
+ </div>
     
     
 

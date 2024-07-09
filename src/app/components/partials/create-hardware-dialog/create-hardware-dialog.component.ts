@@ -44,7 +44,7 @@ export class CreateHardwareDialogComponent {
   options = [
     { id: 1, label: 'ECU' },
     { id: 2, label: 'BUS' },
-    { id: 3, label: 'CAN' },
+    /*{ id: 3, label: 'CAN' },*/
   ];
 
   //createEcuMod: boolean = false;
@@ -61,11 +61,11 @@ export class CreateHardwareDialogComponent {
 
       this.showDropdown = !this.showDropdown;
       this.selectedOption = option;
-    }else if(option.label === 'CAN'){
+    }/*else if(option.label === 'CAN'){
 
       this.showDropdown = !this.showDropdown;
       this.selectedOption = option;
-    }else{
+    }*/else{
       return;
     }
   }

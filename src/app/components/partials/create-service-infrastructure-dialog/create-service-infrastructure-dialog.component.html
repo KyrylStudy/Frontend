@@ -1,18 +1,18 @@
 <div class="dialog-container">
     <div class="dialog-content">
-        <button class="dialog-close-button" (click)="close()">Close</button> <!-- Move close button here -->
-            <h3> Create Srvice</h3>
+        <button class="dialog-close-button" (click)="close()">Close</button>
+            <h3> Create Service</h3>
 
             <div class="property">
                 <h2>Name*: </h2>
-                <input type="text" placeholder="ECU Name" [(ngModel)]="newServiceName">
+                <input class="input-name" type="text" placeholder="Service Name" [(ngModel)]="newServiceName">
             </div>
             
             <div class="property">
                 <h2>Description*: </h2>
-                <input type="text" placeholder="Description" [(ngModel)]="newServiceDescription">
+                <textarea class="textarea-description" type="text" placeholder="Description" [(ngModel)]="newServiceDescription"></textarea>
             </div>
-            <button class="dialog-save-button" [disabled]="!true" (click)="save()">Save</button> <!-- Move close button here -->
+            <button class="dialog-save-button" [disabled]="!true" (click)="save()">Save</button> 
         </div>
       
 </div>

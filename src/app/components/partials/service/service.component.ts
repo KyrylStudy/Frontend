@@ -68,17 +68,12 @@ export class ServiceComponent {
 
     return { top: rect.top + scrollTop, left: rect.left + scrollLeft };
   }
-
+ 
  // @ViewChildren('draggableItem') draggableItems: QueryList<ElementRef>;
 
   rewriteLine(ecu: Service) {
-    //console.log(this.serviceData.dataStreams)
-    //const ecuDragging: any = document.querySelector('.cdk-drag-dragging');
     const ecuDragging = this.el.nativeElement.querySelector(`[serviceId="${ecu.id}"]`);
-    //const ecuDragging = this.el.nativeElement.querySelector(`#${ecu.id}`);
-    //const ecuDragging = ecu as unknown as HTMLElement;
-    //debugger
-    //var scrollTop = window.scrollY;
+
     var ecuRect = ecuDragging.getBoundingClientRect();
     for(let i = 0; i < this.dataStreams.length; i++){
       if(this.dataStreams[i].connectedFrom == ecu.id.toString()){

@@ -19,29 +19,25 @@
             </div>
             <div class="property">
                 <h2>Name*: </h2>
-                <input type="text" placeholder="ECU Name" [(ngModel)]="newHardwareName">
+                <input class="input-name" type="text" placeholder="ECU Name" [(ngModel)]="newHardwareName">
             </div>
             
             <div class="property">
                 <h2>Description*: </h2>
-                <input type="text" placeholder="Description" [(ngModel)]="newHardwareDescription">
+                <textarea class="textarea-description" type="text" placeholder="Description" [(ngModel)]="newHardwareDescription"></textarea>
             </div>
 
-             <!--<h4>Description: {{ createHardwareData.selectedBus.description}}</h4>
-            <h4>Connected from: {{ createHardwareData.selectedBus.connectedFrom }}</h4>
-            <h4>Connected to: {{ createHardwareData.selectedBus.connectedTo }}</h4>
-           <button class="dialog-delete-button" (click)="delete()">Delete</button>  Move close button here -->
         </div>
         <div *ngIf="createHardwareData.showCreateHardwareDialog === architecture; ">
             <h3> Create Architecture</h3>
-            <div class="property">
+            <div class="property"> 
                 <h2>Name*: </h2>
-                <input type="text" placeholder="ECU Name" [(ngModel)]="newArchitectureName">
+                <input class="input-name" type="text" placeholder="ECU Name" [(ngModel)]="newArchitectureName">
             </div>
             
             <div class="property">
                 <h2>Description*: </h2>
-                <input type="text" placeholder="Description" [(ngModel)]="newArchitectureDescription">
+                <textarea class="textarea-description" type="text" placeholder="Description" [(ngModel)]="newArchitectureDescription"></textarea>
             </div>
         </div>
         <button class="dialog-save-button" [disabled]="!true" (click)="save()">Save</button> <!-- Move close button here -->

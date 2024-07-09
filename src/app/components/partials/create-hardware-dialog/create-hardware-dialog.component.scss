@@ -66,13 +66,14 @@
   }*/
 
   .property {
-    display: flex;
+    display: grid;
+    grid-template-columns: 20% 80%;
     justify-content: flex-start;
     margin-bottom: 20px;
   }
   
-  .property input[type="text"] {
-    width: 45%;
+  .input-name{
+    width: 60%;
     padding: 10px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
@@ -81,26 +82,31 @@
     transition: border-color 0.3s ease;
   }
   
-  .property input[type="text"]::placeholder {
+  .input-name::placeholder,
+  .textarea-description::placeholder { 
     color: #aaa;
   }
   
-  .property input[type="text"]:focus {
+  .input-name:focus,
+  .textarea-description:focus {
     outline: none;
-    border-color: #007bff;
+    border-color: #009BA0;
   }
   
-  .property input[type="text"]:focus::placeholder {
+  .input-name:focus::placeholder,
+  .textarea-description::placeholder {
     color: transparent;
   }
-  
-  .sidebar-services-button,
-  .sidebar-button,
-  .dialog-close-button {
-    padding: 12px 24px;
+
+  .textarea-description {
+    width: 60%;
+    height: 400px;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
     border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
   }
 
   .dialog-delete-button {
@@ -114,13 +120,6 @@
 
   .dialog-delete-button:hover{
     background-color: #e3a3a9;
-  }
-  
-  .sidebar-services-button,
-  .sidebar-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
   }
   
   .dialog-close-button {
@@ -173,33 +172,6 @@
   
   .dialog-save-button:disabled{
     border: 2px solid #801D1A;
-  }
-
-
-  .sidebar-services-button:hover,
-  .sidebar-button:hover {
-    background-color: #0056b3;
-  }
-  
-  
-  .iproperty input[type="text"],
-  .sidebar-services-button,
-  .sidebar-button,
-  .dialog-close-button {
-      padding: 12px 20px; /* Adjusted padding */
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-  }
-  
-  .property input[type="text"] {
-      width: calc(50% - 20px); /* Adjusted width */
-      padding: 10px; /* Adjusted padding */
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 16px;
-      transition: border-color 0.3s ease;
   }
   
 

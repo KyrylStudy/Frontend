@@ -80,8 +80,8 @@ export class MainScreenComponent implements OnInit{
 
 
 //moveEnabled = this.HeaderComponent.moveEnabled;
-  ECUwidth = 200 + 10;
-  ECUheight = 100 + 10;
+  ECUwidth = 150 + 4;
+  ECUheight = 75 + 4;
 
   ecus:Hardware[] = [];
 
@@ -136,7 +136,7 @@ export class MainScreenComponent implements OnInit{
             for(let i = 0; i < this.connections.length; i++){
               if(this.connections[i].connectedFrom == ecu.id.toString()
                 || this.connections[i].connectedTo == ecu.id.toString()){
-                  numberOfConnections++;
+                  numberOfConnections++; 
               }
             }
        
@@ -157,7 +157,7 @@ export class MainScreenComponent implements OnInit{
 //console.log(this.zoomLevel)  //ecuRect
 //console.log(ecuRect.top)
 
-    if(ecu.type == 'BUS' || ecu.type == 'CAN'){
+    if(ecu.type == 'BUS' /*|| ecu.type == 'CAN'*/){
       for(let i = 0; i < this.connections.length; i++){
         if(this.connections[i].connectedFrom == ecu.id.toString()
           || this.connections[i].connectedTo == ecu.id.toString()){
@@ -173,15 +173,15 @@ export class MainScreenComponent implements OnInit{
            // console.log('positionToX  ', this.lines[i].positionToX )
             numberOfConnections++;
         }
-      }//----------------------------------------------------------------------вот єту штуку можно вставить на удаление 
+      }
     }else{
       for(let i = 0; i < this.connections.length; i++){
         if(this.connections[i].connectedFrom == ecu.id.toString()){
-          this.connections[i].positionFromX = (ecuRect.left + (this.ECUwidth/2)).toString();
-          this.connections[i].positionFromY = (ecuRect.top - ((this.ECUheight/2) / this.zoomLevel)).toString();
+          this.connections[i].positionFromX = (ecuRect.left + (this.ECUwidth/2)).toString(); 
+          this.connections[i].positionFromY = (ecuRect.top - (this.ECUheight + (this.ECUheight - this.ECUheight*this.zoomLevel))).toString();
         }else if(this.connections[i].connectedTo == ecu.id.toString()){
           this.connections[i].positionToX = (ecuRect.left + (this.ECUwidth/2)).toString();
-          this.connections[i].positionToY = (ecuRect.top - ((this.ECUheight/2) / this.zoomLevel)).toString();
+          this.connections[i].positionToY = (ecuRect.top - (this.ECUheight + (this.ECUheight - this.ECUheight*this.zoomLevel))).toString();
         }
       }
     }
@@ -190,33 +190,8 @@ export class MainScreenComponent implements OnInit{
 
 }
 
-//-----------------software----------hardware----------
-
-
-
-  /*closeSidebar(): void {
-    this.isSidebarOpen = false;
-  }*/
-
-  // Variables to hold software and hardware input values
-/*softwareKey: string = '';
-softwareValue: string = '';*/
-
-
-
- //software: Software | null = null;
- software:Software[] = [];
- hardware:Software[] = [];
-
-  /*private getAllSoftwareByEcuId(id: BigInt){
-    this.ecuService.getAllSoftwareByEcuId(id).subscribe(data => {
-      this.software = data;
-    });
-  }*/
-
-
-
-  //--------------------------------------------------
+ //software:Software[] = [];
+ //hardware:Software[] = [];
 
   zoomLevel: number = 1; // Initial zoom level
 
@@ -238,32 +213,7 @@ softwareValue: string = '';*/
     }
   }
 
-//------------------------------------------------------------------------------------------- 17.03.2024
 
-
-
-/*addSoftwareValue(): void {
-  if (this.selectedEcu && this.softwareKey && this.softwareValue) {
-    const NewSoftware: NewSoftware = {name: this.softwareKey, value: this.softwareValue};
-  
-    this.ecuService.createSoftware(NewSoftware, this.selectedEcu.id).subscribe(data =>{
-      this.software[this.software.length] = data
-    });
-    this.softwareKey = '';
-    this.softwareValue = '';
-  }
-}*/
-
-
-
-//-----------------------24.03-------------------------------------------------------
-
-/*showListOfServices(): void {
-  this.servisecOfSelectedEcu = this.selectedEcu;
-  this.selectedEcu = null;
-  console.log(this.servisecOfSelectedEcu)
-  console.log(this.selectedEcu)
-}*/
 
 //----------------------01.04.--------------------------------------------------------02.04
 creatingLine = false;
@@ -307,7 +257,6 @@ subscribeOnArchitectures(){
       }
   );
 }
-
 
 selectedArchitecture: Architecture | null = null;
 subscribeOnSelectedArchitecture(){
@@ -405,24 +354,13 @@ subscribeOnDataStreams(){
     this.subscribeOnSelectedArchitecture();
     this.architectureService.loadArchitecture(BigInt(1));
 
-    
-
-
-    //if(this.selectedArchitecture)
-    //this.ecuService.loadAllHardwares(this.selectedArchitecture.id);
-
     this.subscribeOnHardwareProperties();
 
     this.subscribeOnServicesCount();
     this.subscribeOnServices();
-    //this.serviceService.getAllServices(this.ecus);
-    //this.getAllServices();
 
     //-------------------------------------------------
     this.getAllBus(1);
-    //this.getAllArchitectures();
-
-    //this.getAllServices();
   }
 //----------------------------------------------------------------------------------------------
   private getAllBus(architectureId: number){
@@ -432,21 +370,6 @@ subscribeOnDataStreams(){
   }
 
 
-
-
-
-viewSwitch: boolean = true;
-toggleView(){
-  if(this.viewSwitch){
-    this.viewSwitch = false
-    console.log(this.viewSwitch)
-  }else {
-    this.viewSwitch = true
-    console.log(this.viewSwitch)
-  }
-  
-
-}
 //---------------------03.06
 
 private graph: { [key: string]: string[] } = {};
@@ -588,7 +511,7 @@ onEcuClick(ecu: Hardware, event: MouseEvent){
       this.renderer.addClass(this.startTargetEcuElementNewBus, 'selected');
 
       this.startEcu = ecu;
-      if(this.startEcu.type == "BUS" || this.startEcu.type == "CAN"){
+      if(this.startEcu.type == "BUS" /*|| this.startEcu.type == "CAN"*/){
         this.busWidthStart = event.target as HTMLElement;
       }
       
@@ -599,7 +522,7 @@ onEcuClick(ecu: Hardware, event: MouseEvent){
       this.renderer.addClass(this.endTargetEcuElementNewBus, 'selected');
 
       this.endEcu = ecu;
-      if(this.endEcu.type == "BUS" || this.endEcu.type == "CAN"){
+      if(this.endEcu.type == "BUS" /*|| this.endEcu.type == "CAN"*/){
         this.busWidthEnd = event.target as HTMLElement;
       }
 
@@ -608,7 +531,7 @@ onEcuClick(ecu: Hardware, event: MouseEvent){
         // Ensure start and end ECUs are different
         
         //----------------------------------------------------слалать из этого фрагмента функцию
-        if(((this.startEcu.type == "BUS"&&this.endEcu.type != "CAN") || (this.startEcu.type == "CAN"&&this.endEcu.type != "BUS"))){
+        if(((this.startEcu.type == "BUS"/*&&this.endEcu.type != "CAN") || (this.startEcu.type == "CAN"&&this.endEcu.type != "BUS"*/))){
 
           var numberOfConnections = 0;
           if(this.startEcu){
@@ -642,8 +565,6 @@ onEcuClick(ecu: Hardware, event: MouseEvent){
             }
           }
 
-
-
           const newLine: NewConnection = {
           name: 'Bus ' + (this.connections.length + 1), type: 'Bus',
           description: 'default description',
@@ -665,7 +586,7 @@ onEcuClick(ecu: Hardware, event: MouseEvent){
           console.log('New line created:', newLine);
 
 //-------------------------------------------------------слалать из этого фрагмента функцию
-        }else if(((this.endEcu.type == "BUS"&&this.startEcu.type != "CAN") || (this.endEcu.type == "CAN"&&this.startEcu.type != "BUS")) ){
+        }else if(((this.endEcu.type == "BUS"/*&&this.startEcu.type != "CAN") || (this.endEcu.type == "CAN"&&this.startEcu.type != "BUS"*/))){
 
          // this.createNewConnction(this.endEcu, this.startEcu, this.busWidthEnd)
           console.log('end = bus')
