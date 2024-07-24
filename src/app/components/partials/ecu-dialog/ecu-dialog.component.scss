@@ -36,14 +36,16 @@
   }
 }
 
-.dialog-content h3 {
+.ecu-details-header {
   font-size: 2.5rem;
-  margin-bottom: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
   color: #555;
 }
 
-.dialog-content h4 {
+.ecu-properties-header {
   font-size: 1.5rem;
+  margin-top: 10px;
   margin-bottom: 10px;
   color: #555;
 }
@@ -148,10 +150,36 @@
 
 
 
-.ecu-description {
-  font-size: 1rem;
-  margin-bottom: 20px;
+.textarea-description:focus {
+  outline: none;
+  border-color: #009BA0;
 }
+
+.textarea-description::placeholder {
+  color: transparent;
+}
+
+.textarea-description {
+  width: 90%;
+  height: auto;
+  padding: 10px;
+  margin-right: 10px;
+  border: 1px solid #ccc; 
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+
+.ecu-description {
+  width: 90%;
+  height: auto;
+  font-size: 1rem;
+  margin-right: 10px;
+  white-space: normal; /* Allows text to wrap */
+  word-break: break-word; 
+}
+
 
 .add-property-button {
   width: 100%;
@@ -176,7 +204,27 @@
   color: white;
 }
 
-.show-services-button {
+.edit-button {
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  border: 0;
+ /* display: inline-flex;
+  align-items: center;
+  justify-content: center;*/
+}
+
+.edit-button:hover {
+  cursor: pointer;
+  //box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+}
+
+.edit-button:active {
+ // background-color: #009BA0;
+  color: #009BA0;
+}
+
+.green-button {
   margin-left: 20px;
   padding: 10px 20px;
   background-color: white;
@@ -188,12 +236,12 @@
   z-index: 10;
 }
 
-.show-services-button:hover {
+.green-button:hover {
   background-color: #cef8fa; /* Darker shade for hover */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for a "lift" effect */
 }
 
-.show-services-button:active {
+.green-button:active {
   background-color: #009BA0;
   color: white;
 }
@@ -201,7 +249,16 @@
 .horisontal-container {
   display: flex;
   flex-direction: row;
+  //align-items: center; 
 }
+
+.vertical-container{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+
 
 
 

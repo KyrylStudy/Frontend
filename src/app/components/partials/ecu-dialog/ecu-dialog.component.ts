@@ -9,6 +9,7 @@ import { HardwarePropertyService } from '../../../services/hardware-property.ser
 import { HardwareProperty, NewHardwareProperty } from '../../../shared/models/hardware_property';
 import { ServiceService } from '../../../services/service.service';
 import { ArchitectureService } from '../../../services/architecture.service';
+//import { HardwareService } from '../../../services/hardware.service';
 
 
 @Component({
@@ -18,10 +19,35 @@ import { ArchitectureService } from '../../../services/architecture.service';
 })
 export class DialogComponent implements OnInit{
 
-  constructor(private architectureService:ArchitectureService, private serviceService:ServiceService,  private hardwarePropertyService:HardwarePropertyService, private ecuService:EcuService,private lineCreationService: LineCreationService, private renderer: Renderer2) { 
+  constructor(/*private hardwareService:HardwareService,*/  private architectureService:ArchitectureService, private serviceService:ServiceService,
+      private hardwarePropertyService:HardwarePropertyService, private ecuService:EcuService,
+      private lineCreationService: LineCreationService, private renderer: Renderer2) { 
+  }
+  
+  toggleEditDescription(){ 
+    this.descriptionEditMod = true;
+    setTimeout(()=>{
+      this.autoResizeTextarea();
+    },50)
+
   }
 
-  selectedEcu: Hardware | null = null;
+  autoResizeTextarea() {
+    const textarea = document.getElementById('textarea-description');
+    if(textarea){
+      textarea.style.height = textarea.scrollHeight + 'px';
+    }
+  }
+
+  saveDescription(){
+   // this.
+  }
+
+  canselEditingDescription(){
+    this.descriptionEditMod = false;
+  }
+
+  selectedEcu: any = null;
   ngOnInit(): void{
     this.subscribeOnSelectedArchitecture();
 
@@ -48,8 +74,8 @@ export class DialogComponent implements OnInit{
     );
   }
 
-    selectedArchitecture: any = null;
-subscribeOnSelectedArchitecture(){
+  selectedArchitecture: any = null;
+  subscribeOnSelectedArchitecture(){
   this.architectureService.selectedArchitecture$.subscribe(
       {
         next: data => {
@@ -78,17 +104,17 @@ subscribeOnSelectedArchitecture(){
   delete(): void {
    var busIdDeleteArray: any[] = [];
     for(let i = 0; i < this.dialogData.connections.length; i++){
-      if(this.dialogData.connections[i].connectedFrom == this.selectedEcu?.id.toString()){
+      if(this.dialogData.connections[i].connectedFrom == this.selectedEcu.id.toString()){
         busIdDeleteArray.push(this.dialogData.connections[i].id);
         this.deleteBus(this.dialogData.connections[i].id)
-      }else if(this.dialogData.connections[i].connectedTo == this.selectedEcu?.id.toString()){        
+      }else if(this.dialogData.connections[i].connectedTo == this.selectedEcu.id.toString()){        
         busIdDeleteArray.push(this.dialogData.connections[i].id);
         this.deleteBus(this.dialogData.connections[i].id)
         
       }
     }
-    if(this.selectedEcu)
-      this.ecuService.deleteHardware(this.selectedEcu.id);
+
+    this.ecuService.deleteHardware(this.selectedEcu.id);
 
     for(let i = 0; i < busIdDeleteArray.length; i++){
       this.dialogData.connections = this.dialogData.connections.filter((item: { id: any; }) => item.id != busIdDeleteArray[i]);
@@ -97,7 +123,6 @@ subscribeOnSelectedArchitecture(){
 
 //покащо не работает
 
-    if(this.selectedEcu)
     var servicesOfSelectedEcu = this.serviceService.servicesMap.get(this.selectedEcu.id);
    // var dataStreams: DataStream[] = [];
    // this.lineCreationService.getAllDataStreams(this.selectedArchitecture.id).subscribe(data => {
@@ -130,7 +155,7 @@ subscribeOnSelectedArchitecture(){
 
 
 
-subscribeOnSelectedHardware(){
+  subscribeOnSelectedHardware(){
   this.ecuService.selectedHardware$.subscribe(
     {
       next: data => {
@@ -144,7 +169,7 @@ subscribeOnSelectedHardware(){
 }
 
 
-subscribeOnHardwares(){
+  subscribeOnHardwares(){
   this.ecuService.hardwares$.subscribe(
       {
         next: data => {
@@ -206,13 +231,7 @@ subscribeOnHardwareProperties(){
 
 //-------------------------------28.05
 
-
-
   serviceDialogData: any = this;
-
-
-
-
   dataForServiceDialog = this;
   showDataStreamDialog: boolean = false;
 
@@ -223,5 +242,12 @@ subscribeOnHardwareProperties(){
       console.log("data from services geted ", this.dataForDataStreamDetails)
 
     }
+
+    descriptionEditMod: boolean = false;
+
+
+
+    // Initialize the auto resize for existing content on page load
+
 
 }

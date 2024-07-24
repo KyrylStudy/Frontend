@@ -515,7 +515,7 @@ onEcuClick(ecu: Hardware, event: MouseEvent){
         this.busWidthStart = event.target as HTMLElement;
       }
       
-      console.log('Selected start ECU:', this.startEcu);
+      //console.log('Selected start ECU:', this.startEcu);
     } else if (!this.endEcu) {
       // Second click, select end ECU and create line
       this.endTargetEcuElementNewBus = event.target as HTMLElement;
@@ -526,7 +526,7 @@ onEcuClick(ecu: Hardware, event: MouseEvent){
         this.busWidthEnd = event.target as HTMLElement;
       }
 
-      console.log('Selected end ECU:', this.endEcu);
+      //console.log('Selected end ECU:', this.endEcu);
       if (this.startEcu !== this.endEcu) {
         // Ensure start and end ECUs are different
         
@@ -583,7 +583,7 @@ onEcuClick(ecu: Hardware, event: MouseEvent){
             //this.setValueToShare(this);
           });
   
-          console.log('New line created:', newLine);
+          console.log('New line created:', newLine); 
 
 //-------------------------------------------------------слалать из этого фрагмента функцию
         }else if(((this.endEcu.type == "BUS"/*&&this.startEcu.type != "CAN") || (this.endEcu.type == "CAN"&&this.startEcu.type != "BUS"*/))){
@@ -655,10 +655,7 @@ onEcuClick(ecu: Hardware, event: MouseEvent){
           console.log("ECU has to be connected with BUS or CAN")
         }
       
-       
-
       } else {
-        //ecu.connectedTo = "";
         console.log('Start and end ECUs cannot be the same');
       }
       // Reset start and end ECUs
@@ -672,7 +669,7 @@ onEcuClick(ecu: Hardware, event: MouseEvent){
       }, 1000)
 
     }
-    console.log('Creating a line between ECUs');
+   // console.log('Creating a line between ECUs');
   } else {
     // Default ECU click handling logic
     console.log("default ecu click")
