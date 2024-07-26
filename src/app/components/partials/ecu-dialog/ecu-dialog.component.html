@@ -26,8 +26,8 @@
                 </div>
             </div>
             <div>
-                <h4 class="ecu-properties-header">Description:</h4>
                 <ng-container *ngIf="descriptionEditMod">
+                    <h4 class="ecu-properties-header">Description:</h4>
                     <div class="horisontal-container">
                         <textarea id="textarea-description" class="textarea-description" type="text"
                          [(ngModel)]="selectedEcu.description">{{ selectedEcu.description }}</textarea>
@@ -43,11 +43,12 @@
                 </ng-container>
                 <ng-container *ngIf="!descriptionEditMod">
                     <div class="horisontal-container">
-                        <p class="hardware-description">{{ selectedEcu?.description }}</p> 
+                        <h4 class="ecu-properties-header">Description:</h4>
                         <button class="manipulation-button" (click)="editDescription()">
                             <i class="fas fa-edit fa-lg"></i>
                         </button>
                     </div>
+                    <p class="hardware-description">{{ selectedEcu?.description }}</p> 
                    
 
                 </ng-container>
