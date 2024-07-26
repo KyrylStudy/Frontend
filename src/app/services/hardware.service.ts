@@ -17,7 +17,7 @@ import { ArchitectureService } from './architecture.service';
 @Injectable({
   providedIn: 'root'
 })
-export class EcuService {
+export class HardwareService {
 
  
   constructor(private httpClient: HttpClient, private architectureService:ArchitectureService,) { }

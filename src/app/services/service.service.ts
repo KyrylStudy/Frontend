@@ -2,7 +2,8 @@ import { AfterViewInit, Injectable, OnInit } from '@angular/core';
 import { BehaviorSubject, Observable, forkJoin, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Service, newService } from '../shared/models/service';
-import { EcuService } from './ecu.service';
+//import { EcuService } from './ecu.service';
+import { HardwareService } from './hardware.service';
 import { Hardware } from '../shared/models/hardware';
 
 @Injectable({
@@ -10,11 +11,11 @@ import { Hardware } from '../shared/models/hardware';
 })
 export class ServiceService /*implements OnInit, AfterViewInit*/{
 
-  constructor(private httpClient: HttpClient, private ecuService:EcuService,) { }
+  constructor(private httpClient: HttpClient, private hardwareService:HardwareService,) { }
 
   hardwares: Hardware[] = [];
   subscribeOnHardwares(){
-    this.ecuService.hardwares$.subscribe(
+    this.hardwareService.hardwares$.subscribe(
         {
           next: data => {
             this.hardwares = data;
@@ -102,7 +103,7 @@ selectedHardware: Hardware | null = null;
 deleteService(id: BigInt): void {
   this.httpClient.delete<Service>(`${this.serviceUrl + id + '/delete'}`).pipe(
     tap(() => {
-      this.ecuService.getSelectedHardware().subscribe(data => {
+      this.hardwareService.getSelectedHardware().subscribe(data => {
         this.selectedHardware = data;
       })
       

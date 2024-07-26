@@ -3,7 +3,7 @@ import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup, moveItemInArray } 
 import { Hardware, NewHardware } from '../../../shared/models/hardware';
 import { Connection } from '../../../shared/models/connection-model';
 import { NewConnection } from '../../../shared/models/connection-model';
-import { EcuService } from '../../../services/ecu.service';
+import { HardwareService } from '../../../services/hardware.service';
 //import { HeaderComponent } from '../header/header.component';
 //import { sample_lines } from '../../../../data'; // Import sample_lines from data.ts
 import { LineCreationService } from '../../../services/data-stream.service';
@@ -21,6 +21,7 @@ import { MainInternalServiceService } from '../../../services/main-internal-serv
 import { ArchitectureService } from '../../../services/architecture.service';
 import { HardwarePropertyService } from '../../../services/hardware-property.service';
 import { ServiceService } from '../../../services/service.service';
+//import { WELCOME_ARCHITECTURE } from '../../../shared/models/architectures';
 
 
 
@@ -44,14 +45,14 @@ export class MainScreenComponent implements OnInit{
 
   openHarwareDetailsDialog(hardware: Hardware): void { 
     this.updateCurrentState();
-    this.ecuService.setSelectedHardware(hardware);
+    this.hardwareService.setSelectedHardware(hardware);
     this.showHardwareDetailsDialogContent = true;
     
     this.hardwarePropertyService.loadAllHardwareProperties(hardware.id);
   }
 
   closeHarwareDetailsDialog(): void {
-    this.ecuService.setSelectedHardware(null)
+    this.hardwareService.setSelectedHardware(null)
     this.showHardwareDetailsDialogContent = false;
   }
 
@@ -93,7 +94,7 @@ export class MainScreenComponent implements OnInit{
   dataFromHeader: any;
 
   constructor(private serviceService:ServiceService, private hardwarePropertyService:HardwarePropertyService, private architectureService:ArchitectureService,
-     private mainInternalService:MainInternalServiceService, private ecuService:EcuService, private lineCreationService: LineCreationService, private renderer: Renderer2,
+     private mainInternalService:MainInternalServiceService, private hardwareService:HardwareService, private lineCreationService: LineCreationService, private renderer: Renderer2,
     private elementRef: ElementRef) { 
 
 
@@ -219,7 +220,7 @@ export class MainScreenComponent implements OnInit{
 creatingLine = false;
 
 subscribeOnSelectedHardware(){
-  this.ecuService.selectedHardware$.subscribe(
+  this.hardwareService.selectedHardware$.subscribe(
       {
         next: data => {
           this.selectedEcu = data;
@@ -232,7 +233,7 @@ subscribeOnSelectedHardware(){
 }
 
 subscribeOnHardwares(){
-  this.ecuService.hardwares$.subscribe(
+  this.hardwareService.hardwares$.subscribe(
       {
         next: data => {
           this.ecus = data;
@@ -270,7 +271,7 @@ subscribeOnSelectedArchitecture(){
             this.dataStreams = data;
           });
           if (data) {
-           this.ecuService.loadAllHardwares(data.id).subscribe(data => {
+           this.hardwareService.loadAllHardwares(data.id).subscribe(data => {
             this.serviceService.getAllServices(data);
             console.log(data)
            });
@@ -352,7 +353,8 @@ subscribeOnDataStreams(){
     this.subscribeOnDataStreams();
 
     this.subscribeOnSelectedArchitecture();
-    this.architectureService.loadArchitecture(BigInt(1));
+    //this.architectureService.loadArchitecture(BigInt(1));
+    
 
     this.subscribeOnHardwareProperties();
 
@@ -360,7 +362,7 @@ subscribeOnDataStreams(){
     this.subscribeOnServices();
 
     //-------------------------------------------------
-    this.getAllBus(1);
+    //this.getAllBus(1);
   }
 //----------------------------------------------------------------------------------------------
   private getAllBus(architectureId: number){
@@ -449,7 +451,7 @@ selectedOptionDropdownCreate: any = null;
    }
 
     updateEcu(Ecu: Hardware, id: BigInt): void {
-    this.ecuService.updateHardware(Ecu, id);
+    this.hardwareService.updateHardware(Ecu, id);
   }
 
    updateCurrentState() {
@@ -464,15 +466,15 @@ selectedOptionDropdownCreate: any = null;
       }
    }
 
-showDropdown = false; 
+showDropdownCreate = false; 
 toggleDropdownCreate(): void {
-    this.showDropdown = true;
+    this.showDropdownCreate = !this.showDropdownCreate;
 }
 
 
 showDropdownSelectArchitecture = false; 
 toggleDropdownSelectArchitecture(): void {
-    this.showDropdownSelectArchitecture = true;
+    this.showDropdownSelectArchitecture = !this.showDropdownSelectArchitecture;
 }
 
 selectArchitecture(option: Architecture): void {
@@ -493,6 +495,12 @@ selectArchitecture(option: Architecture): void {
   this.getAllBus(option.id);
   this.showDropdownSelectArchitecture = false;
   
+}
+
+showArchitectureDetails: boolean = false;
+openArchitectureDetails(){
+  this.showArchitectureDetails = true;
+  console.log(this.selectedArchitecture)
 }
 
 startEcu: Hardware | null = null;
@@ -566,7 +574,7 @@ onEcuClick(ecu: Hardware, event: MouseEvent){
           }
 
           const newLine: NewConnection = {
-          name: 'Bus ' + (this.connections.length + 1), type: 'Bus',
+          name: 'Connection ' + (this.connections.length + 1), type: 'Connection',
           description: 'default description',
           positionFromX:  (this.startEcu.positionX - 2 + positionOfConnection*numberOfConnections).toString(),
           positionFromY: (this.startEcu.positionY - 38).toString(),
@@ -693,7 +701,7 @@ selectOptioWhatToCreate(option: any): void {
   } else {
     this.selectedOptionDropdownCreate = option;
   }
-  this.showDropdown = false; 
+  this.showDropdownCreate = false; 
 
 }
 

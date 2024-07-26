@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { EcuService } from '../../../services/ecu.service';
+//import { EcuService } from '../../../services/ecu.service';
+import { HardwareService } from '../../../services/hardware.service';
 import { LineCreationService } from '../../../services/data-stream.service';
 import { ServiceService } from '../../../services/service.service';
 import { Service } from '../../../shared/models/service';
@@ -13,7 +14,7 @@ import { ArchitectureService } from '../../../services/architecture.service';
 })
 export class ServiceDialogComponent {
 
-  constructor(private architectureService:ArchitectureService, private serviceService:ServiceService, private ecuService:EcuService , private lineCreationService: LineCreationService/*, private renderer: Renderer2,
+  constructor(private architectureService:ArchitectureService, private serviceService:ServiceService/*, private ecuService:EcuService */, private lineCreationService: LineCreationService/*, private renderer: Renderer2,
     private elementRef: ElementRef*/) { 
 
   }

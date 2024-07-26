@@ -50,13 +50,13 @@
   color: #555;
 }
 
-.dialog-content ul {
+.hardware-properties-list {
   list-style: none;
   padding: 0;
   margin-top: 10px;
 }
  
-.dialog-content li {
+.hardware-property {
 
   font-size: 1rem;
   color: #666;
@@ -164,19 +164,25 @@
   height: auto;
   padding: 10px;
   margin-right: 10px;
-  border: 1px solid #ccc; 
+  border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 1rem;
   transition: border-color 0.3s ease;
 }
 
+/*.hardware-description-wrapper{
+  display: grid;
+  grid-template-columns: 90%;
+  gap: 5px;
+}*/
 
-.ecu-description {
+
+.hardware-description {
   width: 90%;
   height: auto;
   font-size: 1rem;
   margin-right: 10px;
-  white-space: normal; /* Allows text to wrap */
+  white-space: pre-line; /* Allows text to wrap */
   word-break: break-word; 
 }
 
@@ -201,26 +207,22 @@
 
 .add-property-button:active {
   background-color: #009BA0;
-  color: white;
 }
 
-.edit-button {
+.manipulation-button {
+  display: flex;
+  justify-content: left;
   margin: 0;
-  padding: 0;
+  padding: 5px;
   background-color: transparent;
   border: 0;
- /* display: inline-flex;
-  align-items: center;
-  justify-content: center;*/
 }
 
-.edit-button:hover {
+.manipulation-button:hover {
   cursor: pointer;
-  //box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
 }
 
-.edit-button:active {
- // background-color: #009BA0;
+.manipulation-button:active {
   color: #009BA0;
 }
 
@@ -256,6 +258,11 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+.toServices-wrapper {
+  display: flex;
+  align-items: center; 
 }
 
 

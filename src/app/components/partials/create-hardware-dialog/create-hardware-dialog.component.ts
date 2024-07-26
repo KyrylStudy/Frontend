@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { EcuService } from '../../../services/ecu.service';
+//import { EcuService } from '../../../services/ecu.service';
+import { HardwareService } from '../../../services/hardware.service';
 import { LineCreationService } from '../../../services/data-stream.service';
 import { NewHardware } from '../../../shared/models/hardware';
 import { NewArchitecture } from '../../../shared/models/architectures';
@@ -12,7 +13,7 @@ import { ArchitectureService } from '../../../services/architecture.service';
 })
 export class CreateHardwareDialogComponent {
 
-  constructor(private architectureService:ArchitectureService, private ecuService:EcuService, private lineCreationService: LineCreationService) { 
+  constructor(private architectureService:ArchitectureService, private hardwareService:HardwareService, private lineCreationService: LineCreationService) { 
   }
 
   ngOnInit(): void {
@@ -92,7 +93,7 @@ export class CreateHardwareDialogComponent {
             connectedTo: this.createHardwareData.ecus.length};
            
            // this.createNewHardware(newEcu, this.createHardwareData.selectedArchitecture.id);
-            this.ecuService.createHardware(newEcu, this.createHardwareData.selectedArchitecture.id);
+            this.hardwareService.createHardware(newEcu, this.createHardwareData.selectedArchitecture.id);
             
            
             this.closeDialog.emit(true);

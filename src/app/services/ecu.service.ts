@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+/*import { Injectable } from '@angular/core';
 import { Hardware } from '../shared/models/hardware';
 import { NewHardware } from '../shared/models/hardware';
 import { HttpClient } from '@angular/common/http';
@@ -105,7 +105,7 @@ export class EcuService {
 //private servicesSubject = new BehaviorSubject<Service[]>([]);
 //services$ = this.servicesSubject.asObservable();
 
-serviceUrl = "http://localhost:8080/api/services/"
+//serviceUrl = "http://localhost:8080/api/services/"
 
 /*getAllServicesByEcuId(ecu_id: BigInt):Observable<Service[]>{
   return this.httpClient.get<Service[]>(`${this.serviceUrl + 'ecu/' + ecu_id }`);
@@ -123,9 +123,9 @@ serviceUrl = "http://localhost:8080/api/services/"
 }*/
 
 //updateServiceUrl = "http://localhost:8080/api/services/"
-updadeService(Service: Service, id: BigInt):Observable<any>{
+/*updadeService(Service: Service, id: BigInt):Observable<any>{
   return this.httpClient.put(`${this.serviceUrl + id  + '/update'}`, Service);
-}
+}*/
 
 //deleteServiceUrl = 'http://localhost:8080/api/services/';
 /*deleteService(id: BigInt): Observable<any> {
@@ -179,4 +179,4 @@ allServicesInArchitecture$ = this.allServicesInArchitectureSubject.asObservable(
 
 
 
-}
+//}

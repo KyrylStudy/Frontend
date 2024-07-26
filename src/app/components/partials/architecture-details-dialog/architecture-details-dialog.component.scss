@@ -1,0 +1,344 @@
+.dialog-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.dialog-content {
+  position: relative; /* Set to relative */
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  width: 80%;
+  height: 80vh;
+  margin: auto;
+  text-align: left;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.dialog-content h3 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.dialog-content h4 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #555;
+}
+
+.dialog-content ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+.dialog-content li {
+  margin-bottom: 8px;
+  font-size: 16px;
+  color: #666;
+}
+
+/*.input-sidebar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}*/
+
+.property {
+  display: grid;
+  grid-template-columns: 20% 80%;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+}
+
+.input-name{
+  width: 60%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+.input-name::placeholder,
+.textarea-description::placeholder { 
+  color: #aaa;
+}
+
+.input-name:focus,
+.textarea-description:focus {
+  outline: none;
+  border-color: #009BA0;
+}
+
+.input-name:focus::placeholder,
+.textarea-description::placeholder {
+  color: transparent;
+}
+
+.textarea-description {
+  width: 60%;
+  height: 400px;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+.dialog-delete-button {
+  position: absolute;
+  bottom: 0;
+  margin-bottom: 10px;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: white;
+  border: 2px solid #801D1A;
+  font-size: 1rem;
+}
+
+.dialog-delete-button:hover {
+  background-color: #e3a3a9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dialog-delete-button:active {
+  background-color: #801D1A;
+  color: white;
+}
+
+.dialog-close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 10px 20px;
+  background-color: white;
+  color: #252525;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 2px solid #801D1A;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.dialog-close-button:hover {
+  background-color: #e3a3a9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dialog-close-button:active {
+  background-color: #801D1A;
+  color: white;
+}
+
+.dialog-save-button {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  padding: 10px 20px;
+  background-color: white;
+  color: #252525;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 2px solid #009BA0;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.dialog-save-button:hover {
+  background-color: #cef8fa; /* Darker shade for hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for a "lift" effect */
+}
+
+.dialog-save-button:active {
+  background-color: #009BA0;
+  color: white;
+}
+
+.dialog-save-button:disabled{
+  border: 2px solid #801D1A;
+}
+
+
+
+/* custom-dropdown.component.css */
+.dropdown-container {
+position: relative;
+border: 2px solid transparent;
+width: 200px; /* Adjust as needed */
+cursor: pointer;
+background-color: white;
+}
+
+.dropdown-display {
+padding: 10px;
+color: #252525; /* Dark text for readability */
+display: flex;
+align-items: center;
+justify-content: space-between;
+}
+
+.dropdown-menu {
+position: absolute;
+top: 100%;
+left: 0;
+right: 0;
+background: #fff;
+border-top: none;
+z-index: 1000;
+max-height: 200px; /* Adjust as needed */
+overflow-y: auto;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-item {
+padding: 10px;
+border-bottom: 1px solid #eee;
+cursor: pointer;
+border-bottom: 1px solid #801D1A;
+}
+
+.dropdown-item:hover {
+background-color: #f0f0f0;
+}
+
+/* Optional: Add an icon to the dropdown display */
+.dropdown-display::after {
+content: '\25BC'; /* Downward arrow */
+font-size: 0.8em;
+margin-left: 5px;
+}
+
+
+.dropdown-container:hover {
+border-bottom-color: #801D1A; /* Color change on hover */
+}
+
+.dropdown-container:focus {
+outline: none;
+border-bottom-color: #801D1A;
+}
+
+
+
+
+//-------------------------------------
+
+.horisontal-container {
+  display: flex;
+  flex-direction: row;
+  //align-items: center; 
+}
+
+.vertical-container{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.architecture-details-header {
+  font-size: 2.5rem;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: #555;
+}
+
+.description-header {
+  font-size: 1.5rem;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: #555;
+}
+
+.manipulation-button {
+  display: flex;
+  justify-content: left;
+  margin: 0;
+  padding: 5px;
+  background-color: transparent; 
+  border: 0;
+}
+
+.manipulation-button:hover {
+  cursor: pointer;
+}
+
+.manipulation-button:active {
+  color: #009BA0;
+}
+
+.input-field {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+.input-field::placeholder {
+  color: #aaa;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: #009BA0;
+}
+
+.input-field:focus::placeholder {
+  color: transparent;
+}
+
+.textarea-description:focus {
+  outline: none;
+  border-color: #009BA0;
+}
+
+.textarea-description::placeholder {
+  color: transparent;
+}
+
+.textarea-description {
+  width: 90%;
+  height: auto;
+  padding: 10px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+
+.description {
+  width: 90%;
+  height: auto;
+  font-size: 1rem;
+  margin-right: 10px;
+  white-space: pre-line; /* Allows text to wrap */
+  word-break: break-word; 
+}
+

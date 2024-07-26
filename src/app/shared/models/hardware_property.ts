@@ -1,5 +1,5 @@
 export class HardwareProperty {
-    id!: number;
+    id!: BigInt;
     name!: string;
     value!: string;
 }

@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { EcuService } from '../../../services/ecu.service';
+//import { EcuService } from '../../../services/ecu.service';
+import { HardwareService } from '../../../services/hardware.service';
 import { newService } from '../../../shared/models/service';
 import { Hardware } from '../../../shared/models/hardware';
 import { ServiceService } from '../../../services/service.service';
@@ -12,12 +13,12 @@ import { ServiceService } from '../../../services/service.service';
 })
 export class CreateServiceInfrastructureDialogComponent {
 
-  constructor(private serviceService:ServiceService, private ecuService:EcuService, /*private lineCreationService: LineCreationService*/) { }
+  constructor(private serviceService:ServiceService, private hardwareService:HardwareService, /*private lineCreationService: LineCreationService*/) { }
 
   selectedEcu: Hardware | null = null;
   ngOnInit(): void{
 
-      this.ecuService.selectedHardware$.subscribe(
+      this.hardwareService.selectedHardware$.subscribe(
           {
             next: data => {
               this.selectedEcu = data;

@@ -1,7 +1,8 @@
 // dialog.component.ts
 
 import { Component, EventEmitter, Output, Input, Renderer2, OnInit } from '@angular/core';
-import { EcuService } from '../../../services/ecu.service';
+//import { EcuService } from '../../../services/ecu.service';
+import { HardwareService } from '../../../services/hardware.service';
 import { LineCreationService } from '../../../services/data-stream.service';
 import { DataStream } from '../../../shared/models/data_stream';
 import { Hardware } from '../../../shared/models/hardware';
@@ -20,11 +21,45 @@ import { ArchitectureService } from '../../../services/architecture.service';
 export class DialogComponent implements OnInit{
 
   constructor(/*private hardwareService:HardwareService,*/  private architectureService:ArchitectureService, private serviceService:ServiceService,
-      private hardwarePropertyService:HardwarePropertyService, private ecuService:EcuService,
-      private lineCreationService: LineCreationService, private renderer: Renderer2) { 
+      private hardwarePropertyService:HardwarePropertyService, private hardwareService:HardwareService,
+      private lineCreationService: LineCreationService, private renderer: Renderer2) { }
+
+
+  nameEditMod: boolean = false;
+  editName(){
+    this.nameEditMod = true;
+  }
+
+  canselEditingName(){
+    this.nameEditMod = false;
+  }
+
+  saveName(){
+    this.hardwareService.updateHardware(this.selectedEcu, this.selectedEcu.id);
+    this.nameEditMod = false;
+  }
+
+
+  hardwarePropertyEditMod: boolean = false;
+  hardwarePropertyId: any = null;
+  editProperty(hardwareProperty: HardwareProperty){
+    this.hardwarePropertyId = hardwareProperty.id;
+  }
+
+  canselEditingProperty(){
+    this.hardwarePropertyId = null;
+  }
+
+  deleteProperty(hardwareProperty: HardwareProperty){
+    this.hardwarePropertyService.deleteHardwareProperty(hardwareProperty.id, this.selectedEcu.id)
+  }
+
+  saveProperty(hardwareProperty: HardwareProperty){
+    this.hardwarePropertyService.updateHardwareProperty(hardwareProperty, hardwareProperty.id, this.selectedEcu.id)
+    this.hardwarePropertyId = null;
   }
   
-  toggleEditDescription(){ 
+  editDescription(){ 
     this.descriptionEditMod = true;
     setTimeout(()=>{
       this.autoResizeTextarea();
@@ -40,7 +75,8 @@ export class DialogComponent implements OnInit{
   }
 
   saveDescription(){
-   // this.
+    this.hardwareService.updateHardware(this.selectedEcu, this.selectedEcu.id);
+    this.descriptionEditMod = false;
   }
 
   canselEditingDescription(){
@@ -114,7 +150,7 @@ export class DialogComponent implements OnInit{
       }
     }
 
-    this.ecuService.deleteHardware(this.selectedEcu.id);
+    this.hardwareService.deleteHardware(this.selectedEcu.id);
 
     for(let i = 0; i < busIdDeleteArray.length; i++){
       this.dialogData.connections = this.dialogData.connections.filter((item: { id: any; }) => item.id != busIdDeleteArray[i]);
@@ -156,7 +192,7 @@ export class DialogComponent implements OnInit{
 
 
   subscribeOnSelectedHardware(){
-  this.ecuService.selectedHardware$.subscribe(
+  this.hardwareService.selectedHardware$.subscribe(
     {
       next: data => {
         this.selectedEcu = data;
@@ -170,7 +206,7 @@ export class DialogComponent implements OnInit{
 
 
   subscribeOnHardwares(){
-  this.ecuService.hardwares$.subscribe(
+  this.hardwareService.hardwares$.subscribe(
       {
         next: data => {
           this.hardwares = data;

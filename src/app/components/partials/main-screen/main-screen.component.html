@@ -5,11 +5,11 @@
         <!-- Logo -->
         <img src="../../../../assets/images/logo-autotechagil-rgb.png" alt="Logo" class="logo">
 
-        <div class="dropdown-container" tabindex="0" (blur)="showDropdown = false">
+        <div class="dropdown-container" tabindex="0" (blur)="showDropdownCreate = false">
             <div class="dropdown-display" (click)="toggleDropdownCreate()">
                 {{ selectedOptionDropdownCreate?.label || 'Create' }}
             </div>
-            <div class="dropdown-menu" *ngIf="showDropdown">
+            <div class="dropdown-menu" *ngIf="showDropdownCreate">
                 <div class="dropdown-item" *ngFor="let option of optionsDropdownCreate" (click)="selectOptioWhatToCreate(option)">
                     {{ option.label }}
                 </div>
@@ -55,9 +55,20 @@
   
     <!-- Your draggable items will go here                                             start of the main-->
     <div class="main-screen">
-        <div class="button-set">
+        <div class="start-screen" *ngIf="selectedArchitecture?.id === 0">
+            <p>Please, select an Architecture from the list above!</p>
+        </div>
+        
+
+        <div class="zoom-buttons-wrapper">
             <button class="zoomButton" (click)="zoomIn()">+</button>
             <button class="zoomButton" (click)="zoomOut()">-</button>
+        </div>
+
+        <div class="architecture-details-button-wrapper">
+            <button class="architecture-details-button" (click)="openArchitectureDetails()">
+                <i class="fas fa-cog fa-2xl"></i>
+            </button>
         </div>
        
         <div class="drag-boundary" [style.zoom]="zoomLevel">
@@ -119,6 +130,7 @@
    </div>
 </div>
 
+        <app-architecture-details-dialog *ngIf="showArchitectureDetails" [architectureDetailsData]="dialogData"></app-architecture-details-dialog>
         <ecu-dialog *ngIf="selectedEcu" [dialogData]="dialogData" (closeDialog)="closeHarwareDetailsDialog()"></ecu-dialog>
         <bus-dialog *ngIf="showBusDialog" [dialogData]="dialogData" (closeDialog)="onCloseBusDialog()"></bus-dialog>
         <create-hardware-dialog *ngIf="showCreateHardwareDialog" [createHardwareData]="dialogData" (closeDialog)="onCloseCreateHardwareDialog()"></create-hardware-dialog>

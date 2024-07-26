@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output, Input } from '@angular/core';
 import { LineCreationService } from '../../../services/data-stream.service';
 //import { Connection } from '../../../shared/models/connection-model';
-import { EcuService } from '../../../services/ecu.service';
+//import { EcuService } from '../../../services/ecu.service';
 import { Hardware } from '../../../shared/models/hardware';
 
 @Component({
@@ -42,7 +42,7 @@ export class BusDialogComponent {
     this.closeDialog.emit(true);
   }
 
-  constructor(private lineCreationService: LineCreationService, private ecuService:EcuService) {}
+  constructor(private lineCreationService: LineCreationService/*, private ecuService:EcuService*/) {}
 
   private deleteBus(id: BigInt){
     this.lineCreationService.deleteBus(id).subscribe();

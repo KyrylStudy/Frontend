@@ -1,7 +1,8 @@
 import { Component, ElementRef, EventEmitter, Input, Output,QueryList,Renderer2, ViewChild, ViewChildren } from '@angular/core';
 import { Service } from '../../../shared/models/service';
 import { NewDataStream } from '../../../shared/models/data_stream';
-import { EcuService } from '../../../services/ecu.service';
+//import { EcuService } from '../../../services/ecu.service';
+import { HardwareService } from '../../../services/hardware.service';
 import { DataStream } from '../../../shared/models/data_stream';
 import { LineCreationService } from '../../../services/data-stream.service';
 import { Hardware } from '../../../shared/models/hardware';
@@ -35,7 +36,7 @@ export class ServiceComponent {
 
 
   constructor(private architectureService:ArchitectureService, private serviceService:ServiceService, private renderer: Renderer2, private el: ElementRef,
-     private ecuService: EcuService, private lineCreationService: LineCreationService) { 
+     private hardwareService: HardwareService, private lineCreationService: LineCreationService) { 
   }
 
 
@@ -142,7 +143,7 @@ subscribeOnSelectedArchitecture(){
 
 selectedEcu: any | null = null;
 subscribeOnSelectedHardware(){
-  this.ecuService.selectedHardware$.subscribe(
+  this.hardwareService.selectedHardware$.subscribe(
       {
         next: data => {
           this.selectedEcu = data;
@@ -156,7 +157,7 @@ subscribeOnSelectedHardware(){
 
 hardwares: any[] = [];
 subscribeOnHardwares(){
-  this.ecuService.hardwares$.subscribe(
+  this.hardwareService.hardwares$.subscribe(
       {
         next: data => {
           this.hardwares = data;
@@ -441,7 +442,7 @@ private updateDataStream(DataStream: DataStream, id: BigInt){
 showDropdown = false; 
 toggleDropdownServiceForShowDataStreams(): void { 
   this.updateCurrentState();
-    this.showDropdown = true;
+  this.showDropdown = !this.showDropdown;
 }
 
 

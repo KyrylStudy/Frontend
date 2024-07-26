@@ -10,3 +10,10 @@ export class NewArchitecture {
     type!: String;
     description!: String;
 }
+
+export const START_ARCHITECTURE: Architecture = {
+    id: 0,
+    name: 'Select Architecture',
+    type: 'Architecture',
+    description: 'Welcome Architecture Description',
+    };

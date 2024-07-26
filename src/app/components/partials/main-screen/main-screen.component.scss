@@ -17,6 +17,13 @@ $FooterPadding: 10px;
   overflow: hidden;
 }
 
+.start-screen{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .drag-boundary {
   height: 100%; 
   position: relative;
@@ -165,9 +172,29 @@ $FooterPadding: 10px;
   cursor: pointer;
 }
 
+.architecture-details-button-wrapper{
+  position: absolute;
+  margin-left: auto;
+  right: 10px;
+  z-index: 5;
+}
 
+.architecture-details-button{
+  margin: 0;
+  margin-top: 15px;
+  background-color: transparent;
+  border: 0;
+}
 
-.button-set {
+.architecture-details-button:hover {
+  cursor: pointer;
+}
+
+.architecture-details-button:active {
+  color: #009BA0;
+}
+
+.zoom-buttons-wrapper {
   position: absolute;
   display: flex;
   flex-direction: column;

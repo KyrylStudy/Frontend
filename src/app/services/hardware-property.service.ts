@@ -15,7 +15,7 @@ export class HardwarePropertyService {
   private hardwareProreriesSubject = new BehaviorSubject<HardwareProperty[]>([]);
   hardwareProreries$ = this.hardwareProreriesSubject.asObservable();
 
-  hardwarePropertyUrl = "http://localhost:8080/api/ecus/"
+  hardwarePropertyUrl = "http://localhost:8080/api/ecu/"
 
   loadAllHardwareProperties(hardwareId: BigInt): void{
     this.httpClient.get<HardwareProperty[]>(`${this.hardwarePropertyUrl + hardwareId + '/hardwares' }`).pipe(
@@ -25,8 +25,20 @@ export class HardwarePropertyService {
 
   createHardwareProperty(newHardwareProperty: NewHardwareProperty, hardwareId: BigInt): void {
     this.httpClient.post<HardwareProperty>(`${this.hardwarePropertyUrl + hardwareId + '/hardware'}`, newHardwareProperty).pipe(
-      tap(() => this.loadAllHardwareProperties(hardwareId)) 
+      tap(() => this.loadAllHardwareProperties(hardwareId))  
     ).subscribe(); 
+  }
+
+  updateHardwareProperty(hardwareProperty: HardwareProperty, id: BigInt, hardwareId: BigInt): void {
+    this.httpClient.put<HardwareProperty>(`${this.hardwarePropertyUrl + 'hardware/' + id + '/update'}`, hardwareProperty).pipe(
+      tap(() => this.loadAllHardwareProperties(hardwareId))  
+    ).subscribe();
+  }
+
+  deleteHardwareProperty(id: BigInt, hardwareId: BigInt): void {
+    this.httpClient.delete<HardwareProperty>(`${this.hardwarePropertyUrl + 'hardware/' + id + '/delete'}`).pipe(
+      tap(() => this.loadAllHardwareProperties(hardwareId))  
+    ).subscribe();
   }
 
 }
