@@ -34,7 +34,7 @@ import { ServiceService } from '../../../services/service.service';
 })
 export class MainScreenComponent implements OnInit{
 
-  showCreateHardwareDialog: any = null;
+
   showBusDialog: boolean = false;
   
   
@@ -70,9 +70,9 @@ export class MainScreenComponent implements OnInit{
     this.showBusDialog = false;
   }
 
-  onCloseCreateHardwareDialog(): void {
+ /* onCloseCreateHardwareDialog(): void {
     this.showCreateHardwareDialog = null;
-  }
+  }*/
 
  //--------01.04.--------------
  connections: Connection[] = [];
@@ -81,8 +81,8 @@ export class MainScreenComponent implements OnInit{
 
 
 //moveEnabled = this.HeaderComponent.moveEnabled;
-  ECUwidth = 150 + 4;
-  ECUheight = 75 + 4;
+  ECUwidth = 150 + 4;//content + border 
+  ECUheight = 75 + 4 + 25; //content + border + lable with margin
 
   ecus:Hardware[] = [];
 
@@ -109,7 +109,7 @@ export class MainScreenComponent implements OnInit{
     ecu.positionX = boundingClientRect.x - parentPosition.left;
     ecu.positionY = boundingClientRect.y - parentPosition.top;
   
-    this.rewriteLine(ecu);
+    //this.rewriteLine(ecu);
  
   }
 
@@ -122,96 +122,68 @@ export class MainScreenComponent implements OnInit{
     return { top: rect.top + scrollTop, left: rect.left + scrollLeft };
   }
 
-  rewriteLine(ecu: Hardware) {
-   
+  rewriteLine(event: any, ecu: Hardware) {
+    this.onDragEnded(event, ecu);//--------------------------------------------------попробовать рефакторизовать трохи 
     const ecuDragging: any = document.querySelector('.cdk-drag-dragging');
-
     var ecuRect = ecuDragging.getBoundingClientRect();
+    var numberOfConnections = 0;
 
-   
-//console.log(ecuDragging.offsetWidth)
-   //----------------------------------------------------------------------вот єту штуку можно вставить на удаление 
-          
-          var numberOfConnections = 0;
-         
-            for(let i = 0; i < this.connections.length; i++){
-              if(this.connections[i].connectedFrom == ecu.id.toString()
-                || this.connections[i].connectedTo == ecu.id.toString()){
-                  numberOfConnections++; 
-              }
-            }
-       
-
-
-          //const busWidth = ecuDragging.children[0].offsetWidth;
-
-          var positionOfConnection = 0;
-          if(numberOfConnections >= 1){
-            //debugger
-            var positionOfConnection = Number(ecuRect.width)/(numberOfConnections - 1);
-          }else{
-            positionOfConnection = 0
-          }
-          //console.log('positionOfConnection  ', positionOfConnection)
-
-          numberOfConnections = 0;
-//console.log(this.zoomLevel)  //ecuRect
-//console.log(ecuRect.top)
-
-    if(ecu.type == 'BUS' /*|| ecu.type == 'CAN'*/){
-      for(let i = 0; i < this.connections.length; i++){
-        if(this.connections[i].connectedFrom == ecu.id.toString()
-          || this.connections[i].connectedTo == ecu.id.toString()){
-            if(this.connections[i].connectedTo == ecu.id.toString()){
-              this.connections[i].positionToX = (ecuRect.left + positionOfConnection*numberOfConnections).toString();
-              this.connections[i].positionToY = (ecuRect.top - (96 + (96 - 96*this.zoomLevel)) /*- ecuRect.height*this.zoomLevel*/).toString();
-              //console.log(this.lines[i].positionToX = (ecuRect.left + positionOfConnection*numberOfConnections).toString())
-            }else {
-              this.connections[i].positionFromX = (ecuRect.left + positionOfConnection*numberOfConnections).toString();
-              this.connections[i].positionFromY = (ecuRect.top - (96 + (96 - 96*this.zoomLevel)) /*- ecuRect.height*this.zoomLevel*/).toString();
-             // console.log(this.lines[i].positionFromX = (ecuRect.left + positionOfConnection*numberOfConnections).toString())
-            }
-           // console.log('positionToX  ', this.lines[i].positionToX )
+    for (let i = 0; i < this.connections.length; i++) {
+        if (this.connections[i].connectedFrom == ecu.id.toString() ||
+            this.connections[i].connectedTo == ecu.id.toString()) {
             numberOfConnections++;
         }
-      }
-    }else{
-      for(let i = 0; i < this.connections.length; i++){
-        if(this.connections[i].connectedFrom == ecu.id.toString()){
-          this.connections[i].positionFromX = (ecuRect.left + (this.ECUwidth/2)).toString(); 
-          this.connections[i].positionFromY = (ecuRect.top - (this.ECUheight + (this.ECUheight - this.ECUheight*this.zoomLevel))).toString();
-        }else if(this.connections[i].connectedTo == ecu.id.toString()){
-          this.connections[i].positionToX = (ecuRect.left + (this.ECUwidth/2)).toString();
-          this.connections[i].positionToY = (ecuRect.top - (this.ECUheight + (this.ECUheight - this.ECUheight*this.zoomLevel))).toString();
-        }
-      }
     }
 
+    var positionOfConnection = 0;
+    if (numberOfConnections >= 1) {
+        positionOfConnection = Number(ecuRect.width) / (numberOfConnections - 1);
+    }
 
+    numberOfConnections = 0;
 
+    if (ecu.type == 'BUS') {
+        for (let i = 0; i < this.connections.length; i++) {
+            if (this.connections[i].connectedFrom == ecu.id.toString() ||
+                this.connections[i].connectedTo == ecu.id.toString()) {
+                if (this.connections[i].connectedTo == ecu.id.toString()) {
+                    this.connections[i].positionToX = (ecu.positionX + positionOfConnection * numberOfConnections).toString();
+                    this.connections[i].positionToY = (ecu.positionY + 3 + 25).toString();
+                } else {
+                    this.connections[i].positionFromX = (ecu.positionX + positionOfConnection * numberOfConnections).toString();
+                    this.connections[i].positionFromY = (ecu.positionY + 3 + 25).toString();
+                }
+                numberOfConnections++;
+            }
+        }
+    } else {
+        for (let i = 0; i < this.connections.length; i++) {
+            if (this.connections[i].connectedFrom == ecu.id.toString()) {
+                this.connections[i].positionFromX = (ecu.positionX + (this.ECUwidth / 2)).toString();
+                this.connections[i].positionFromY = (ecu.positionY + (this.ECUheight / 2)).toString();
+            } else if (this.connections[i].connectedTo == ecu.id.toString()) {
+                this.connections[i].positionToX = (ecu.positionX + (this.ECUwidth / 2)).toString();
+                this.connections[i].positionToY = (ecu.positionY + (this.ECUheight / 2)).toString();
+            }
+        }
+    }
 }
 
- //software:Software[] = [];
- //hardware:Software[] = [];
 
   zoomLevel: number = 1; // Initial zoom level
 
   zoomIn() {
-    if(this.zoomLevel < 1.1){
+   // if(this.zoomLevel < 1.1){
       this.zoomLevel += 0.1; // Increase zoom level 
-
-      console.log(this.servicesCountMap)
-      //console.log(this.servicesMap) 
-      //this.initializeGraph(this.connections);
-      //console.log('can i reach? ', this.canReach('41', '51'));//-----------------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    }
+   //  }
 
   }
 
   zoomOut() {
-    if (this.zoomLevel > 0.7) {
+   // if (this.zoomLevel > 0.7) {
       this.zoomLevel -= 0.1; // Decrease zoom level, ensuring it doesn't go below 0.1
-    }
+   // }
+    
   }
 
 
@@ -438,12 +410,7 @@ private graph: { [key: string]: string[] } = {};
 
 //----------------------------------------------------------------------------HEADER---START-----
 
-optionsDropdownCreate = [
-  { id: 1, label: 'new Hardware' },
-  { id: 3, label: 'new Connection' },
-  { id: 4, label: 'new Architecture' },
-];
-selectedOptionDropdownCreate: any = null;
+
 
 
    updateBus(Line: Connection, id: BigInt){
@@ -685,23 +652,26 @@ onEcuClick(ecu: Hardware, event: MouseEvent){
   }
 
   
-   
+  optionsDropdownCreate = [
+    { id: 1, label: 'new Hardware' },
+    { id: 3, label: 'new Connection' },
+    { id: 4, label: 'new Architecture' },
+  ];
+  //selectedOptionDropdownCreate: any = null;
 
-
+showCreateHardwareDialog: boolean = false;
+showCreateArchitectureDialog: boolean = false;
 selectOptioWhatToCreate(option: any): void {
     this.updateCurrentState();
    if (option.label === 'new Hardware') {
-    this.showCreateHardwareDialog = option.label;
+    this.showCreateHardwareDialog = true;
   } else if (option.label === 'new Connection') {
-    //this.showCreateHardwareDialog = option.label;
     this.creatingBusModus = true;
   } else if (option.label === 'new Architecture'){
-    this.showCreateHardwareDialog = option.label;
-    this.selectedOptionDropdownCreate = option;   
-  } else {
-    this.selectedOptionDropdownCreate = option;
-  }
-  this.showDropdownCreate = false; 
+    this.showCreateArchitectureDialog = true;  
+  } 
+
+  this.showDropdownCreate = false;  
 
 }
 

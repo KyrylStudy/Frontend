@@ -1,0 +1,23 @@
+<div class="dialog-container">
+    <div class="dialog-content">
+        <div>
+            <button class="dialog-close-button" (click)="close()">Close</button> <!-- Move close button here -->
+
+            <h3> Create Architecture</h3>
+            <div class="property"> 
+                <h2>Name*: </h2>
+                <input class="input-name" type="text" placeholder="ECU Name" [(ngModel)]="newArchitectureName">
+            </div>
+                
+            <div class="property">
+                <h2>Description*: </h2>
+                <textarea class="textarea-description" type="text" placeholder="Description" [(ngModel)]="newArchitectureDescription"></textarea>
+            </div>
+        
+            <button class="dialog-save-button" [disabled]="!true" (click)="save()">Save</button> 
+        </div>
+    </div>
+</div>
+
+
+
