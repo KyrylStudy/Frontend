@@ -17,34 +17,37 @@
 </div>
 <button class="select-all-services-button" (click)="selectAllServices()">Select all Services</button>
 <button class="service-save-button" (click)="updateCurrentState()">Save</button>
+
+<div class="zoom-button-set">
+    <button class="zoom-button" (click)="zoomIn()">+</button>
+    <button class="zoom-button" (click)="zoomOut()">-</button>
+    
+</div>
+
 <div class="main-screen">
 
-    <div class="button-set">
-        <button class="zoomButton" (click)="zoomIn()">+</button>
-        <button class="zoomButton" (click)="zoomOut()">-</button>
-        
-    </div>
-    <div class="horisontal-wrapper">
+
+    <div id="horisontal-wrapper" class="horisontal-wrapper">
         
         <div class="ecu">
             
 
-            <h4 class="ecu-name">{{ selectedEcu?.label + "|" + selectedEcu?.id }}</h4>
-            <div class="drag-boundary" [style.zoom]="zoomLevel">
+            <h4 class="ecu-name">{{ selectedEcu.label + "|" + selectedEcu.id }}</h4>
+            <div id="drag-boundary-{{selectedEcu.id}}" class="drag-boundary" [style.zoom]="zoomLevel">
 
                 <div *ngFor="let item of servicesMap.get(selectedEcu.id)"
                     cdkDrag
                     cdkDragBoundary=".drag-boundary"
                     [style.transform]="'translateX(' + item.positionX + 'px) translateY(' + item.positionY + 'px)'"
-                    (cdkDragEnded)="onDragEnded($event, item)"
-                    (cdkDragMoved)="rewriteLine(item)" 
+                    (cdkDragEnded)="handleDragMoved($event, item)"
+                    (cdkDragMoved)="handleDragMoved($event, item)" 
                     class="draggable-item"
                     (dblclick)="openServiceDetailsDialog(item)"
                     (click)="onEcuClick(item, $event)"
                     [attr.serviceId]="item.id" 
                     [id]="item.id"  >
                     <div class="label-draggable-item">{{ item.name + "|" + item.id }}</div>
-                    <div class="content-draggable-item">Service</div> <!--number of services-->
+                    <div class="content-draggable-item">S</div> <!--number of services-->
                 </div>
             </div>
         </div>
@@ -55,21 +58,21 @@
                     <div *ngIf="serviceData.dialogData.canReach(selectedEcu.id.toString(), item1.id.toString()) && item1.type =='ECU'">
                     <div class="ecu1">
                         <h4 class="ecu-name">{{ item1.label + "|" + item1.id }}</h4>
-                        <div class="drag-boundary" [style.zoom]="zoomLevel">
+                        <div id="drag-boundary-{{item1.id}}" class="drag-boundary" [style.zoom]="zoomLevel">
                             <div *ngFor="let item of servicesMap.get(item1.id)"
                                 cdkDrag
                                 cdkDragBoundary=".drag-boundary"
                                 [style.transform]="'translateX(' + item.positionX + 'px) translateY(' + item.positionY + 'px)'"
-                                (cdkDragEnded)="onDragEnded($event, item)"
-                                (cdkDragMoved)="rewriteLine(item)"
+                                (cdkDragEnded)="handleDragMoved($event, item)"
+                                (cdkDragMoved)="handleDragMoved($event,item)"
                                 class="draggable-item" 
                                 (dblclick)="openServiceDetailsDialog(item)" 
                                 (click)="onEcuClick(item, $event)"
                                 [attr.serviceId]="item.id" 
-                                [id]="item.id" 
+                                [id]="item.id"  
                                 #draggableItem>
                                 <div class="label-draggable-item">{{ item.name + "|" + item.id }}</div>
-                                <div class="content-draggable-item">Service</div> <!--number of services-->
+                                <div class="content-draggable-item">S</div> <!--number of services-->
                             </div>
                         </div>
                     </div>
@@ -77,14 +80,61 @@
             </div>  
         </div> 
         <svg id="svg-container" class="connestion-line-container" [style.zoom]="zoomLevel"> 
-            <line class="connestion-line" *ngFor="let line of dataStreams" 
+
+           <!-- <defs>
+                <linearGradient id="reciever-sender" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" style="stop-color:#ff0000; stop-opacity:1" />
+                  <stop offset="100%" style="stop-color:#0800ff; stop-opacity:1" />
+                </linearGradient>
+            </defs>
+            <defs>
+                <linearGradient id="sender-reciever" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" style="stop-color:#0800ff; stop-opacity:1" />
+                  <stop offset="100%" style="stop-color:#ff0000; stop-opacity:1" />
+                </linearGradient>
+            </defs>-->
+
+
+            <defs>
+                <marker
+                  id="arrowhead"
+                  refX="30" 
+                  refY="2.5" 
+                  markerWidth="12"
+                  markerHeight="5" 
+                  orient="auto-start-reverse">
+                  
+                  <!-- Updated polygon to match the new dimensions -->
+                  <polygon points="0 0, 12 2.5, 0 5" fill="black" />
+                </marker>
+            </defs>
+
+            <defs>
+                <!-- A marker to be used as an arrowhead -->
+                <marker
+                  id="arrow"
+                  refX="30" 
+                  refY="2.5" 
+                  markerWidth="12"
+                  markerHeight="5" 
+                  orient="auto-start-reverse">
+                  
+                  <!-- Updated polygon to match the new dimensions -->
+                  <polygon points="0 0, 12 2.5, 0 5" fill="black" />
+                </marker>
+              </defs>
+
+
+            <line class="connestion-line" *ngFor="let line of dataStreams" marker-end="url(#arrow)"
+                [attr.marker-start]="line.twoWayConnection === true ? 'url(#arrowhead)' : ''"
+              
                   [attr.x1]="line.positionFromX" 
                   [attr.y1]="line.positionFromY"
                   [attr.x2]="line.positionToX" 
                   [attr.y2]="line.positionToY"
                   [attr.connectedFrom]="line.connectedFrom"
                   [attr.connectedTo]="line.connectedTo"
-                  [attr.id]="line.id"
+                  [attr.dataStreamId]="line.id"
                   (dblclick)="openDataStreamDetails(line)"/>
             <line class="connestion-line-overlay" *ngFor="let line of dataStreams" 
                   [attr.x1]="line.positionFromX" 
@@ -93,7 +143,7 @@
                   [attr.y2]="line.positionToY"
                   [attr.connectedFrom]="line.connectedFrom"
                   [attr.connectedTo]="line.connectedTo"
-                  [attr.id]="line.id"
+                 
                   (dblclick)="openDataStreamDetails(line)"/>     
         </svg>
     </div>

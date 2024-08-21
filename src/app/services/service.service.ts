@@ -26,12 +26,6 @@ export class ServiceService /*implements OnInit, AfterViewInit*/{
         }
     );
   }
-
-  
-
-  
-
-  
   
   //ngOnInit(): void{
     //this.subscribeOnHardwares();
@@ -135,7 +129,7 @@ allServicesInArchitectureMap$ = this.allServicesInArchitectureMapSubject.asObser
 
     if (hardwares.length) {
 
-      const serviceObservables = hardwares.map(hardware => this.getAllServicesByEcuId(hardware.id).subscribe(
+      hardwares.map(hardware => this.getAllServicesByEcuId(hardware.id).subscribe(
         services => {
           this.servicesMap.set(hardware.id, services);
           this.allServicesInArchitectureMapSubject.next(new Map(this.servicesMap));

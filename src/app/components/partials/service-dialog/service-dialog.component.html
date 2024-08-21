@@ -3,26 +3,102 @@
         <button class="dialog-close-button" (click)="close()">Close</button> <!-- Move close button here -->
         <div class="service-details" > 
         <div class="horisontal-container">
-            <h3>{{ selectedService.name }}</h3> 
+            <ng-container *ngIf="!nameEditMod">
+                <h3 class="ecu-details-header">{{ selectedService.name }}</h3> 
+                <button class="manipulation-button" (click)="editName()">
+                    <i class="fas fa-edit fa-lg"></i>
+                </button>
+            </ng-container>
+            <ng-container *ngIf="nameEditMod">
+                <div class="input-name-wrapper">
+                    <input class="input-field" [(ngModel)]="selectedService.name" />
+                </div>
+                <div class="vertical-container">
+                    <button class="manipulation-button" (click)="canselEditingName()">
+                        <i class="fas fa-times fa-lg"></i>
+                    </button>
+                    <button class="manipulation-button" (click)="saveName()"> 
+                        <i class="fas fa-save fa-lg"></i>
+                    </button>
+                </div>
+            </ng-container>
         </div>
         <div>
-            <h4 class="ecu-properties-header">Description:</h4>
-            <p class="ecu-description">{{ selectedService.description }}</p>
+            <ng-container *ngIf="descriptionEditMod">
+                <h4 class="ecu-properties-header">Description:</h4>
+                <div class="horisontal-container">
+                    <textarea id="textarea-description" class="textarea-description" type="text"
+                     [(ngModel)]="selectedService.description">{{ selectedService.description }}</textarea>
+                    <div class="vertical-container">
+                        <button class="manipulation-button" (click)="canselEditingDescription()">
+                            <i class="fas fa-times fa-lg"></i>
+                        </button>
+                        <button class="manipulation-button" (click)="saveDescription()">
+                            <i class="fas fa-save fa-lg"></i>
+                        </button>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="!descriptionEditMod">
+                <div class="horisontal-container">
+                    <h4 class="ecu-properties-header">Description:</h4>
+                    <button class="manipulation-button" (click)="editDescription()">
+                        <i class="fas fa-edit fa-lg"></i>
+                    </button>
+                </div>
+                <p class="hardware-description">{{ selectedService.description }}</p> 
+               
+
+            </ng-container>
         </div>
         
-        <div>
+        <!--<div>
             <h4 class="ecu-properties-header">Properties:</h4> 
             <ul>
-                <li *ngFor="let detail of serviceDetilsData.software">   <!-- поменять на проперти-->
+                <li *ngFor="let detail of serviceProperties">    поменять на проперти
                     <span class="property-name">{{ detail.name }}:</span>
                     <span class="property-value">{{ detail.value }}</span>
                 </li>
             </ul>
-        </div>
+        </div> -->
+        <div>
+            <h4 class="ecu-properties-header">Properties:</h4>
+
+            
+                <ul class="service-properties-list">
+                    <li class="service-property" *ngFor="let detail of serviceProperties"> 
+                        <ng-container *ngIf="detail.id !== servicePropertyId">
+                            <span class="property-name">{{ detail.name }}:</span>
+                            <span class="property-value">{{ detail.value }}</span>
+                            <div class="horisontal-container">
+                                <button id="{{ detail.id }}" class="manipulation-button" (click)="editProperty(detail)">
+                                    <i class="fas fa-edit fa-lg"></i>
+                                </button>
+                                <button id="{{ detail.id }}" class="manipulation-button" (click)="deleteProperty(detail)">
+                                    <i class="fas fa-trash fa-lg"></i>
+                                </button>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="detail.id === servicePropertyId">
+                            <input class="input-field" [(ngModel)]="detail.name" />
+                            <input class="input-field" [(ngModel)]="detail.value" />
+                            <div class="vertical-container">
+                                <button class="manipulation-button" (click)="canselEditingProperty()">
+                                    <i class="fas fa-times fa-lg"></i>
+                                </button>
+                                <button class="manipulation-button" (click)="saveProperty(detail)">
+                                    <i class="fas fa-save fa-lg"></i>
+                                </button>
+                            </div>
+                        </ng-container>
+                    </li>
+                </ul>
+
+        </div> 
         <div class="input-sidebar">
-            <input class="input-field" type="text" placeholder="Property" [(ngModel)]="serviceDetilsData.softwareKey">
-            <input class="input-field" type="text" placeholder="Description" [(ngModel)]="serviceDetilsData.softwareValue">
-            <button class="add-property-button" (click)="serviceDetilsData.addHardwareValue()">Add Property</button>
+            <input class="input-field" type="text" placeholder="Property" [(ngModel)]="this.propertyKey">
+            <input class="input-field" type="text" placeholder="Description" [(ngModel)]="this.propertyValue">
+            <button class="add-property-button" (click)="addServiceProperty()">Add Property</button>
         </div>
         <button class="dialog-delete-button" (click)="delete()">Delete</button> <!-- Move close button here -->
     </div>

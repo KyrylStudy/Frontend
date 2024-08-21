@@ -16,13 +16,16 @@
   background-color: #ffffff;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 30px;
+  padding-top: 50px;
+  padding-left: 40px;
+  padding-bottom: 30px;
+  padding-right: 30px;
   width: 90%;
-  height: 90vh;
+  height: 85vh;
   margin: auto;
   text-align: left;
   animation: slideIn 0.3s ease-out;
-  overflow-y: auto; /* Allows scrolling if content overflows */
+ // overflow-y: auto; 
 }
 
 @keyframes slideIn {
@@ -73,6 +76,10 @@
   word-break: break-word; 
 }
 
+.input-name-wrapper{
+  margin-bottom: 10px;
+}
+
 .input-sidebar {
   display: grid;
   grid-template-columns: 20% 70% 10%; /* 80/20 split */
@@ -82,9 +89,10 @@
 
 .input-field {
   padding: 10px;
+  //margin-bottom: 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
-  font-size: 16px;
+  font-size: 1rem;
   transition: border-color 0.3s ease;
 }
 
@@ -160,10 +168,10 @@
 }
 
 .textarea-description {
-  width: 90%;
+  width: 89%;
   height: auto;
   padding: 10px;
-  margin-right: 10px;
+  margin-right: 5px;
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 1rem;
@@ -186,29 +194,6 @@
   word-break: break-word; 
 }
 
-
-.add-property-button {
-  width: 100%;
-  margin-left: 5px;
-  padding: 10px 20px;
-  background-color: white;
-  color: #252525;
-  font-size: 1rem;
-  border-radius: 5px;
-  border: 2px solid #009BA0;
-  cursor: pointer;
-  z-index: 10;
-}
-
-.add-property-button:hover {
-  background-color: #cef8fa; 
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
-}
-
-.add-property-button:active {
-  background-color: #009BA0;
-}
-
 .manipulation-button {
   display: flex;
   justify-content: left;
@@ -219,7 +204,7 @@
 }
 
 .manipulation-button:hover {
-  cursor: pointer;
+  cursor: pointer; 
 }
 
 .manipulation-button:active {
@@ -227,7 +212,7 @@
 }
 
 .green-button {
-  margin-left: 20px;
+  margin-left: 5px;
   padding: 10px 20px;
   background-color: white;
   color: #252525;
@@ -251,7 +236,6 @@
 .horisontal-container {
   display: flex;
   flex-direction: row;
-  //align-items: center; 
 }
 
 .vertical-container{
@@ -263,6 +247,7 @@
 .toServices-wrapper {
   display: flex;
   align-items: center; 
+  margin-left: 15px;
 }
 
 

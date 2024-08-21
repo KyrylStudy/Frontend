@@ -12,6 +12,24 @@ export class DataStreamDialogComponent implements OnInit{
   constructor(private architectureService:ArchitectureService, private lineCreationService: LineCreationService) { 
   }
 
+  twoWayConnectionEditMod: boolean = false;
+  /*editTwoWayConnection(){
+    this.twoWayConnectionEditMod = true;
+    this.dataStreamsData.selectedDataStream.twoWayConnection = !this.dataStreamsData.selectedDataStream.twoWayConnection;
+  }*/
+  twoWayConnectionChange(event:any){
+    this.dataStreamsData.selectedDataStream.twoWayConnection = event.target.checked;
+    console.log(this.dataStreamsData.selectedDataStream.twoWayConnection)
+  }
+
+  /*canselTwoWayConnection(){
+    this.twoWayConnectionEditMod = false;
+  }
+
+  saveTwoWayConnection(){
+    this.twoWayConnectionEditMod = false;
+  }*/
+
   selectedArchitecture: any | null = null;
   subscribeOnSelectedArchitecture(){
   this.architectureService.selectedArchitecture$.subscribe(

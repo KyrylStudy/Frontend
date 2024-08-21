@@ -24,6 +24,39 @@
     animation: slideIn 0.3s ease-out;
     overflow-y: auto; 
   }*/
+
+  .green-button {
+    margin-left: 20px;
+    padding: 10px 20px;
+    background-color: white;
+    color: #252525;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 2px solid #009BA0;
+    cursor: pointer;
+    z-index: 10;
+  }
+  
+  .green-button:hover {
+    background-color: #cef8fa; /* Darker shade for hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for a "lift" effect */
+  }
+  
+  .green-button:active {
+    background-color: #009BA0;
+    color: white;
+  }
+  
+  .horisontal-container {
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .vertical-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
   
   @keyframes slideIn {
     from {
@@ -36,39 +69,44 @@
     }
   }
   
-  .service-details h3 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #555;
-  }
-  
-  .service-details h4 {
-    font-size: 18px;
+  .ecu-details-header {
+    font-size: 2.5rem;
+    margin-top: 10px;
     margin-bottom: 10px;
     color: #555;
   }
   
-  .service-details ul {
+  .ecu-properties-header {
+    font-size: 1.5rem;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: #555;
+  }
+  
+  .service-properties-list {
     list-style: none;
     padding: 0;
     margin-top: 10px;
   }
-   
-  .service-details li {
-  
+
+  .service-property {
     font-size: 1rem;
     color: #666;
     display: grid;
     grid-template-columns: 20% 70% 10%; /* 80/20 split */
     gap: 5px;
     margin-bottom: 10px;
-    
   }
+
   
   .property-name,
   .property-value{
     white-space: normal; /* Allows text to wrap */
     word-break: break-word; 
+  }
+
+  .input-name-wrapper{
+    margin-bottom: 10px;
   }
   
   .input-sidebar {
@@ -80,9 +118,10 @@
   
   .input-field {
     padding: 10px;
+    //margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 6px;
-    font-size: 16px;
+    font-size: 1rem;
     transition: border-color 0.3s ease;
   }
   
@@ -127,7 +166,7 @@
     color: white;
   }
   
-  .dialog-delete-button {
+  .dialog-delete-button { 
     padding: 10px 20px;
     border-radius: 6px;
     cursor: pointer;
@@ -171,16 +210,20 @@
     color: white;
   }
   
-  .ecu-description {
+  .hardware-description {
+    width: 90%;
+    height: auto;
     font-size: 1rem;
-    margin-bottom: 20px;
+    margin-right: 10px;
+    white-space: pre-line; /* Allows text to wrap */
+    word-break: break-word; 
   }
 
   
   .add-property-button {
     width: 100%;
     margin-left: 5px;
-    padding: 10px 20px;
+    padding: 10px 10px;
     background-color: white;
     color: #252525;
     font-size: 1rem;
@@ -242,8 +285,44 @@
   .dialog-delete-button:hover{
     background-color: #e3a3a9;
   }
-  
 
+  //-------------------------
+  .manipulation-button {
+    display: flex;
+    justify-content: left;
+    margin: 0;
+    padding: 5px;
+    background-color: transparent;
+    border: 0;
+  }
+  
+  .manipulation-button:hover {
+    cursor: pointer;
+  }
+  
+  .manipulation-button:active {
+    color: #009BA0;
+  }
+  
+  .textarea-description:focus {
+    outline: none;
+    border-color: #009BA0;
+  }
+  
+  .textarea-description::placeholder {
+    color: transparent;
+  }
+  
+  .textarea-description {
+    width: 88.5%;
+    height: auto;
+    padding: 10px;
+    margin-right: 5px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+  }
   
 
 

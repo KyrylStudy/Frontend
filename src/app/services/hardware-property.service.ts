@@ -24,7 +24,7 @@ export class HardwarePropertyService {
   }
 
   createHardwareProperty(newHardwareProperty: NewHardwareProperty, hardwareId: BigInt): void {
-    this.httpClient.post<HardwareProperty>(`${this.hardwarePropertyUrl + hardwareId + '/hardware'}`, newHardwareProperty).pipe(
+    this.httpClient.post<NewHardwareProperty>(`${this.hardwarePropertyUrl + hardwareId + '/hardware'}`, newHardwareProperty).pipe(
       tap(() => this.loadAllHardwareProperties(hardwareId))  
     ).subscribe(); 
   }

@@ -23,6 +23,41 @@ export class ServiceComponent {
   dataForServiceDialog = this;
   //showServiceDialog:boolean = false; 
 
+  setSenderRecieverStylesOnDataStreams(){
+    
+    console.log(228)
+
+    this.dataStreams.forEach((item, index)=>{
+      const element = this.el.nativeElement.querySelector(`[dataStreamId="${item.id}"]`);
+      //const element = document.querySelector(`[dataStreamId="${item.id}"]`);
+      if(element)
+      element.style.cssText += 'marker-start: url(#arrowhead)';
+      /*if(element){
+        const computedStyles = window.getComputedStyle(element);
+        for (let i = 0; i < computedStyles.length; i++) {
+          if(computedStyles[i] === 'stroke'){
+           
+          }
+          console.log(`${computedStyles[i]}: ${computedStyles.getPropertyValue(computedStyles[i])}`);
+      }
+      }*/
+      //console.log(element.style.stroke)
+      //const nativeElement = this.lineElement.nativeElement;
+      //this.renderer.setStyle(element, 'stroke', 'url(#reciever-sender)');
+
+      //this.renderer.setAttribute(element, 'stroke', '!url(#reciever-sender)');
+
+      //element.style.setProperty('stroke', 'url(#reciever-sender)', 'important');
+
+
+      //element.style.stroke = "url(#reciever-sender)"
+      //console.log(element.style.stroke)
+      
+      console.log(element)
+    })
+  }
+
+
   goBack(){ 
     this.serviceData.showService = false; 
     this.serviceData.dialogData.showHardwareDetailsDialogContent = true; 
@@ -40,17 +75,10 @@ export class ServiceComponent {
   }
 
 
-  onDragEnded(event: any, ecu: Service): void {
+  /*onDragEnded(event: any, ecu: Service): void {
     const element = event.source.getRootElement();
     const boundingClientRect = element.getBoundingClientRect();
     const parentPosition = this.getElementPosition(element.parentElement);
-
-    const ecuDragging: any = document.querySelector('.cdk-drag-dragging'); 
-
-    var ecuRect = ecuDragging.getBoundingClientRect();
-
-   // ecu.positionX = ecuRect.left//boundingClientRect.x - parentPosition.left;
-    //ecu.positionY = ecuRect.top//boundingClientRect.y - parentPosition.top;
 
     ecu.positionX = boundingClientRect.x - parentPosition.left; 
     ecu.positionY = boundingClientRect.y - parentPosition.top;
@@ -68,49 +96,155 @@ export class ServiceComponent {
     const scrollLeft = window.scrollX || document.documentElement.scrollLeft || document.body.scrollLeft || 0;
 
     return { top: rect.top + scrollTop, left: rect.left + scrollLeft };
-  }
+  }*/
  
- // @ViewChildren('draggableItem') draggableItems: QueryList<ElementRef>;
 
   rewriteLine(ecu: Service) {
     const ecuDragging = this.el.nativeElement.querySelector(`[serviceId="${ecu.id}"]`);
-
     var ecuRect = ecuDragging.getBoundingClientRect();
-    for(let i = 0; i < this.dataStreams.length; i++){
-      if(this.dataStreams[i].connectedFrom == ecu.id.toString()){
-        this.dataStreams[i].positionFromX = (ecuRect.left /*+ (this.serviceData.ECUwidth/2)*/).toString();
-        this.dataStreams[i].positionFromY = (ecuRect.top /*- ((this.serviceData.ECUheight/2) / this.zoomLevel)*/).toString();
-      }else if(this.dataStreams[i].connectedTo == ecu.id.toString()){
-        this.dataStreams[i].positionToX = (ecuRect.left /*+ (this.serviceData.ECUwidth/2)*/).toString();
-        this.dataStreams[i].positionToY = (ecuRect.top /*- ((this.serviceData.ECUheight/2) / this.zoomLevel)*/).toString();
+
+    //const parentPosition = this.getElementPosition(ecuDragging.parentElement);
+    var ParentEcuId:any;
+    this.servicesMap.forEach((value:any, key:any)=>{
+      for(let i = 0; i < value.length; i++){
+        if(value[i].id === ecu.id){
+          ParentEcuId = key;
+        }
+        
       }
+    })
+    const parentEcu:any = document.getElementById(`drag-boundary-${ParentEcuId}`);
+    const parentPosition = parentEcu.getBoundingClientRect();
+
+    var positionX =  parentPosition.left;
+    var positionY =  parentPosition.top;
+
+    const workArea:any = document.getElementById("horisontal-wrapper");
+    const workAreaPosition = workArea.getBoundingClientRect();
+
+    var workAreaPositionX =  workAreaPosition.left;
+    var workAreaPositionY =  workAreaPosition.top;
+
+
+   // console.log("positionX ", positionX, " | ", ParentEcuId)
+   // console.log("positionY ", positionY, " | ", ParentEcuId)
+if(this.zoomLevel === 1){
+  for (let i = 0; i < this.dataStreams.length; i++) {
+    if (this.dataStreams[i].connectedFrom === ecu.id.toString()) {
+      console.log(this.dataStreams[i])
+        this.dataStreams[i].positionFromX = (ecu.positionX + (this.ServiceWidth / 2) + positionX - workAreaPositionX - 2).toString();
+        this.dataStreams[i].positionFromY = (ecu.positionY + (this.ServiceHeight / 2) + positionY - workAreaPositionY - 5).toString();
+    } else if (this.dataStreams[i].connectedTo === ecu.id.toString()) {
+        this.dataStreams[i].positionToX = (ecu.positionX + (this.ServiceWidth / 2) + positionX - workAreaPositionX - 2).toString();
+        this.dataStreams[i].positionToY = (ecu.positionY + (this.ServiceHeight / 2) + positionY - workAreaPositionY - 5).toString();
     }
+  }
+}else if(this.zoomLevel === 2){
+  for (let i = 0; i < this.dataStreams.length; i++) {
+    if (this.dataStreams[i].connectedFrom === ecu.id.toString()) {
+        this.dataStreams[i].positionFromX = (ecu.positionX + (this.ServiceWidth / 2) + positionX - workAreaPositionX + (38)).toString();
+        this.dataStreams[i].positionFromY = (ecu.positionY + (this.ServiceHeight / 2) + positionY - workAreaPositionY + (28)).toString();
+    } else if (this.dataStreams[i].connectedTo === ecu.id.toString()) {
+        this.dataStreams[i].positionToX = (ecu.positionX + (this.ServiceWidth / 2) + positionX - workAreaPositionX + (38)).toString();
+        this.dataStreams[i].positionToY = (ecu.positionY + (this.ServiceHeight / 2) + positionY - workAreaPositionY + (28)).toString();
+    }
+  }
+}   
 }
+
+
+
+handleDragMoved(event: any, item: any): void {
+  this.setElementPosition(event, item);
+  this.rewriteLine(item);
+}
+
+setElementPosition(event: any, ecu: Hardware): void {
+  const element = event.source.getRootElement();
+  
+  
+  const boundingClientRect = element.getBoundingClientRect();
+  const parentPosition = this.getElementPosition(element.parentElement);
+
+  ecu.positionX = (boundingClientRect.x - parentPosition.left);
+  ecu.positionY = (boundingClientRect.y - parentPosition.top) ;
+
+
+  //ecu.positionX = (event.pointerPosition.x );
+ // ecu.positionY = (event.pointerPosition.y) ;
+ /*var ParentEcuId:any;
+ this.servicesMap.forEach((value:any, key:any)=>{
+   for(let i = 0; i < value.length; i++){
+     if(value[i].id === ecu.id){
+       ParentEcuId = key;
+     }
+     
+   }
+ })
+ const parentEcu:any = document.getElementById(`drag-boundary-${ParentEcuId}`);
+ const parentPosition = parentEcu.getBoundingClientRect();
+
+ var positionX =  parentPosition.left;
+ var positionY =  parentPosition.top;
+  
+
+ const elementRect = event.source.element.nativeElement.getBoundingClientRect();
+
+ let newX = (event.pointerPosition.x - positionX) / this.zoomLevel;
+ let newY = (event.pointerPosition.y - positionY) / this.zoomLevel;
+ console.log(newX)
+ // Ensure the element stays within the boundaries
+ newX = Math.max(0, Math.min(newX, parentEcu.width - elementRect.width / this.zoomLevel));
+ newY = Math.max(0, Math.min(newY, parentEcu.height - elementRect.height / this.zoomLevel));
+
+ ecu.positionX = newX;
+ ecu.positionY = newY;*/
+
+}
+
+
+private getElementPosition(element: any): { left: number, top: number } {
+  const rect = element.getBoundingClientRect();
+  const scrollTop = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+  const scrollLeft = window.scrollX || document.documentElement.scrollLeft || document.body.scrollLeft || 0;
+
+  return { top: rect.top + scrollTop, left: rect.left + scrollLeft };
+}
+
+/*rewriteLine1(ecu: Service) {
+
+
+      for (let i = 0; i < this.dataStreams.length; i++) {
+          if (this.dataStreams[i].connectedFrom == ecu.id.toString()) {
+              this.dataStreams[i].positionFromX = (ecu.positionX + (this.ServiceWidth / 2)).toString();
+              this.dataStreams[i].positionFromY = (ecu.positionY + (this.ServiceHeight / 2)).toString();
+          } else if (this.dataStreams[i].connectedTo == ecu.id.toString()) {
+              this.dataStreams[i].positionToX = (ecu.positionX + (this.ServiceWidth / 2)).toString();
+              this.dataStreams[i].positionToY = (ecu.positionY + (this.ServiceHeight / 2)).toString();
+          }
+      }
+  }*/
+//}
+
 
 //---------------zoom-----------
 zoomLevel: number = 1; // Initial zoom level
 
 zoomIn() {
-  this.zoomLevel += 0.1; // Increase zoom level 
+  if(this.zoomLevel === 1)
+  this.zoomLevel += 1; // Increase zoom level 
   this.getDataStreams(this.selectedArchitecture.id);
-  /*console.log(this.serviceData.selectedEcu.id)
-  console.log(this.serviceData.servicesMap.get(this.serviceData.selectedEcu.id))
 
-  for(let i = 0; i < this.serviceData.servicesMap.get(this.serviceData.selectedEcu.id).length; i++){
-    this.rewriteLine(this.serviceData.servicesMap.get(this.serviceData.selectedEcu.id)[i]);
-  }*/
-
- // console.log(this.servicesMap) 
 }
 
 zoomOut() {
-  if (this.zoomLevel > 0.1) {
-    this.zoomLevel -= 0.1; // Decrease zoom level, ensuring it doesn't go below 0.1
+  if(this.zoomLevel !== 1){
+    this.zoomLevel -= 1; // Decrease zoom level, ensuring it doesn't go below 0.1
     this.getDataStreams(this.selectedArchitecture.id);
-    /*for(let i = 0; i < this.serviceData.servicesMap.get(this.serviceData.selectedEcu.id).length; i++){
-      this.rewriteLine(this.serviceData.servicesMap.get(this.serviceData.selectedEcu.id)[i]);
-    }*/
   }
+    
+   
+
 }
 
 selectedService: any | null = null;
@@ -230,9 +364,50 @@ ngOnInit(): void {
   this.subscribeOnSelectedHardware();
   this.subscribeOnHardwares();
 
- this.scrollableEcu.nativeElement.addEventListener('scroll', this.onElementScroll.bind(this));
-  this.getDataStreams(this.selectedArchitecture.id);
+  this.scrollableEcu.nativeElement.addEventListener('scroll', this.onElementScroll.bind(this));
+  this.getDataStreams(this.selectedArchitecture.id)
+  
+  //this.setSenderRecieverStylesOnDataStreams()
 }
+
+@ViewChildren('line') lines!: QueryList<ElementRef>;
+
+
+ngAfterViewInit() {
+  console.log("228:           ", this.lines)
+  this.setSenderRecieverStylesOnDataStreams();
+  /*this.lines.forEach((lineElement, index) => {
+    const line = lineElement.nativeElement;
+    //const gradient = this.getGradientForLine(line.getAttribute('connectedFrom'), line.getAttribute('connectedTo'));
+    this.renderer.setAttribute(line, 'stroke', 'url(#reciever-sender)');
+
+    //const element = this.el.nativeElement.querySelector(`[dataStreamId="${item.id}"]`);
+    //  console.log(element.style.stroke)
+      //const nativeElement = this.lineElement.nativeElement;
+      //this.renderer.setStyle(line, 'stroke', 'url(#reciever-sender)');
+
+
+      //element.style.stroke = "url(#reciever-sender)"
+      console.log(line.style.stroke)
+      console.log(line)
+  });*/
+}
+
+private getGradientForLine(connectedFrom: string, connectedTo: string): string {
+  // Determine which gradient to use based on connectedFrom and connectedTo
+  // For simplicity, assume sender-receiver if condition matches
+  if (connectedFrom === 'sender' && connectedTo === 'receiver') {
+    return 'url(#sender-reciever)';
+  } else if (connectedFrom === 'receiver' && connectedTo === 'sender') {
+    return 'url(#reciever-sender)';
+  }
+  return 'none'; // Default style if no gradient
+}
+
+
+/*ngAfterViewInit() {
+  this.setSenderRecieverStylesOnDataStreams();
+}*/
 
 /*scrollableEcu:any;
 ngAfterViewInit(){
@@ -249,11 +424,13 @@ private getDataStreams(architectureId: number){
 
         //debugger 
         if(this.selectedOption){
-          this.getDataStreamsOfSelectdService(data);
+          this.getDataStreamsOfSelectdService(data); 
         }else{
-          this.getAllDataStreams(data);
+          this.dataStreams = data;
+          this.rewriteAllDataStreams();
         }
         this.lineCreationService.setDataStreams(this.dataStreams);
+       // this.setSenderRecieverStylesOnDataStreams();
       },
       error: (error) => {
         // Handle the error here if needed
@@ -274,8 +451,8 @@ private getDataStreams(architectureId: number){
 
 
 //------------------------------create new line(data stream)
-ECUwidth = 200 + 10;
-ECUheight = 100 + 10;
+ServiceWidth = 40 + 4;//content + border 
+ServiceHeight = 40 + 4 + 12; //content + border + lable with margin
 
 //dataStreams: DataStream[] = [];
 
@@ -288,6 +465,7 @@ ECUheight = 100 + 10;
   onEcuClick(ecu: Service, event: MouseEvent){ 
     //this.dataStreamsTransport.emit(this); 
     //console.log(this.creatingDatastreamModus)
+    
     if(this.creatingDatastreamModus){
       if (!this.startEcu) {
         // First click, select start ECU
@@ -318,13 +496,13 @@ ECUheight = 100 + 10;
           var ecuRect = ecuDragging.getBoundingClientRect();
 
           const newDataStream: NewDataStream = {
-          name: 'Service ' + (this.dataStreams.length + 1),
-          type: 'Service',
+          name: 'Data Stream ' + (this.dataStreams.length + 1),
+          type: 'Data Stream',
           description: 'default description',
           positionFromX: (this.startLinePsition.left /*+ (this.serviceData.ECUwidth/2)*/).toString(),
-          positionFromY: (this.startLinePsition.top - ((this.ECUheight/2) / this.zoomLevel)).toString(),
+          positionFromY: (this.startLinePsition.top - ((this.ServiceHeight/2) / this.zoomLevel)).toString(),
           positionToX: (ecuRect.left /*+ (this.serviceData.ECUwidth/2)*/).toString(),
-          positionToY: (ecuRect.top - ((this.ECUheight/2) / this.zoomLevel)).toString(),
+          positionToY: (ecuRect.top - ((this.ServiceHeight/2) / this.zoomLevel)).toString(),
           connectedFrom: this.startEcu.id.toString(),
           connectedTo: this.endEcu.id.toString(), twoWayConnection: false};
 
@@ -336,6 +514,8 @@ ECUheight = 100 + 10;
             //console.log(this.lines)
             //this.setValueToShare(this);
           });
+
+
   
           console.log('New line created:', newDataStream);
         } else {
@@ -387,13 +567,26 @@ ECUheight = 100 + 10;
           }
         }
       
-        if (adjustFromY) {
-          dataStream.positionFromY = (Number(dataStream.positionFromY) - (scrollTop - this.previousScrollY)).toString();
+        //scroll for normal zoom
+        if(this.zoomLevel === 1){
+          if (adjustFromY) {
+            dataStream.positionFromY = (Number(dataStream.positionFromY) - (scrollTop - this.previousScrollY)).toString();
+          }
+          
+          if (adjustToY) {
+            dataStream.positionToY = (Number(dataStream.positionToY) - (scrollTop - this.previousScrollY)).toString();
+          }
+          //scroll for zoom x2
+        }else if(this.zoomLevel === 2){
+          if (adjustFromY) {
+            dataStream.positionFromY = (Number(dataStream.positionFromY) - 0.5*(scrollTop - this.previousScrollY)).toString();
+          }
+          
+          if (adjustToY) {
+            dataStream.positionToY = (Number(dataStream.positionToY) - 0.5*(scrollTop - this.previousScrollY)).toString();
+          }
         }
-        
-        if (adjustToY) {
-          dataStream.positionToY = (Number(dataStream.positionToY) - (scrollTop - this.previousScrollY)).toString();
-        }
+
       }
 
    
@@ -501,23 +694,12 @@ getDataStreamsOfSelectdService(allDataStreams: any){
   }
 
 
-  getAllDataStreams(allDataStreams: any){ 
-    var selectedServiceDataStreams:any = [];
-    var connectedServices: any = [];
-    
-    console.log(allDataStreams)
-    for(let i = 0; i < allDataStreams.length; i++){
-      selectedServiceDataStreams.push(allDataStreams[i]);
-        const service1 = this.el.nativeElement.querySelector(`[serviceId="${Number(allDataStreams[i].connectedTo)}"]`);
-        connectedServices.push(service1)
-        const service2 = this.el.nativeElement.querySelector(`[serviceId="${Number(allDataStreams[i].connectedFrom)}"]`);
-        connectedServices.push(service2)
-    }
-    this.dataStreams = selectedServiceDataStreams;
-    for(let i = 0; i < connectedServices.length; i++){ 
-      this.rewriteLine(connectedServices[i])
-    }
-    //console.log(connectedServices) 
+  rewriteAllDataStreams(){ 
+    this.servicesMap.forEach((serviscesOfEcu: any, ecu: any)=>{
+      for(let i = 0; i < serviscesOfEcu.length; i++){
+        this.rewriteLine(serviscesOfEcu[i])
+      }
+    })
   }
 
   selectAllServices(){ 

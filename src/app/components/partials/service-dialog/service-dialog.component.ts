@@ -6,6 +6,8 @@ import { ServiceService } from '../../../services/service.service';
 import { Service } from '../../../shared/models/service';
 import { DataStream } from '../../../shared/models/data_stream';
 import { ArchitectureService } from '../../../services/architecture.service';
+import { ServiceProperyService } from '../../../services/service-propery.service';
+import { ServiceProperty, NewServiceProperty } from '../../../shared/models/service_property';
 
 @Component({
   selector: 'app-service-dialog',
@@ -14,7 +16,57 @@ import { ArchitectureService } from '../../../services/architecture.service';
 })
 export class ServiceDialogComponent {
 
-  constructor(private architectureService:ArchitectureService, private serviceService:ServiceService/*, private ecuService:EcuService */, private lineCreationService: LineCreationService/*, private renderer: Renderer2,
+  nameEditMod:boolean = false;
+  editName(){
+    this.nameEditMod = true;
+  }
+
+  canselEditingName(){
+    this.nameEditMod = false;
+  }
+
+  saveName(){
+    this.serviceService.updadeService(this.selectedService, this.selectedService.id);
+    this.nameEditMod = false;
+  }
+
+  descriptionEditMod:boolean = false;
+
+  editDescription(){
+    this.descriptionEditMod = true; 
+    setTimeout(()=>{
+      this.autoResizeTextarea();
+    },50)
+  }
+
+  canselEditingDescription(){
+    this.descriptionEditMod = false;  
+  }
+
+  saveDescription(){
+    this.serviceService.updadeService(this.selectedService, this.selectedService.id);
+    this.descriptionEditMod = false; 
+  }
+
+  servicePropertyId: any = null; 
+  editProperty(serviceProperty: ServiceProperty){
+    this.servicePropertyId = serviceProperty.id;
+  }
+
+  canselEditingProperty(){
+    this.servicePropertyId = null;
+  }
+
+  deleteProperty(serviceProperty: ServiceProperty){
+    this.serviceProperyService.deleteServiceProperty(serviceProperty.id, this.selectedService.id)
+  }
+
+  saveProperty(serviceProperty: ServiceProperty){
+    this.serviceProperyService.updateServiceProperty(serviceProperty, serviceProperty.id, this.selectedService.id)
+    this.servicePropertyId = null;
+  }
+
+  constructor(private serviceProperyService:ServiceProperyService, private architectureService:ArchitectureService, private serviceService:ServiceService/*, private ecuService:EcuService */, private lineCreationService: LineCreationService/*, private renderer: Renderer2,
     private elementRef: ElementRef*/) { 
 
   }
@@ -47,7 +99,7 @@ export class ServiceDialogComponent {
     );
   }
 
-  dataStreams: DataStream[] = [];
+dataStreams: DataStream[] = [];
 subscribeOnDataStreams(){
   this.lineCreationService.dataStreams$.subscribe(
       {
@@ -76,6 +128,20 @@ subscribeOnSelectedArchitecture(){
   );
 }
 
+serviceProperties: ServiceProperty[] = [];
+subscribeOnServiceProperties(){
+  this.serviceProperyService.serviceProreries$.subscribe(
+      {
+        next: data => {
+          this.serviceProperties = data;
+        },
+        error: error => {
+          console.error(error);
+        }
+      }
+  );
+}
+
 
 ngOnInit(): void{
   this.subscribeOnSelectedArchitecture();
@@ -85,6 +151,9 @@ ngOnInit(): void{
   this.subscribeOnServices();
 
   this.subscribeOnDataStreams();
+
+  this.subscribeOnServiceProperties();
+  this.serviceProperyService.loadAllServiceProperties(this.selectedService.id);
 }
 
   @Input() serviceDetilsData: any | null = null;
@@ -139,6 +208,28 @@ ngOnInit(): void{
         console.error('Error deleting Data Stream', error);
       }
     });
+  }
+
+  propertyKey: string = '';
+  propertyValue: string = '';
+
+  addServiceProperty(): void {
+    if (this.selectedService && this.propertyKey && this.propertyValue) {
+
+      const newServiceProperty: NewServiceProperty = {name: this.propertyKey, value: this.propertyValue};
+
+      this.serviceProperyService.createServiceProperty(newServiceProperty, this.selectedService.id);
+
+      this.propertyKey = '';
+      this.propertyValue = '';
+    }
+  }
+
+  autoResizeTextarea() {
+    const textarea = document.getElementById('textarea-description');
+    if(textarea){
+      textarea.style.height = textarea.scrollHeight + 'px';
+    }
   }
 
 }

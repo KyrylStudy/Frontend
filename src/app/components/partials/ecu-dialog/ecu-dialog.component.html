@@ -7,10 +7,12 @@
                     <h3 class="ecu-details-header">{{ selectedEcu.label }}</h3> 
                     <button class="manipulation-button" (click)="editName()">
                         <i class="fas fa-edit fa-lg"></i>
-                    </button>
+                    </button> 
                 </ng-container>
                 <ng-container *ngIf="nameEditMod">
-                    <input class="input-field" [(ngModel)]="selectedEcu.label" />
+                    <div class="input-name-wrapper">
+                        <input class="input-field" [(ngModel)]="selectedEcu.label" />
+                    </div>
                     <div class="vertical-container">
                         <button class="manipulation-button" (click)="canselEditingName()">
                             <i class="fas fa-times fa-lg"></i>
@@ -48,7 +50,7 @@
                             <i class="fas fa-edit fa-lg"></i>
                         </button>
                     </div>
-                    <p class="hardware-description">{{ selectedEcu?.description }}</p> 
+                    <p class="hardware-description">{{ selectedEcu.description }}</p> 
                    
 
                 </ng-container>
@@ -58,8 +60,8 @@
                 <h4 class="ecu-properties-header">Properties:</h4>
 
                 
-                    <ul class="hardware-properties-list ">
-                        <li class="hardware-property" *ngFor="let detail of hardwareProperties"> 
+                    <ul class="hardware-properties-list">
+                        <li class="hardware-property" *ngFor="let detail of hardwareProperties">  
                             <ng-container *ngIf="detail.id !== hardwarePropertyId">
                                 <span class="property-name">{{ detail.name }}:</span>
                                 <span class="property-value">{{ detail.value }}</span>
@@ -98,5 +100,5 @@
         <app-service *ngIf="showService" [serviceData]="serviceDialogData" (dataStreamsTransport)="getDataStreamsFromServiceComponent($event)" ></app-service>
     </div> 
 </div>
-
+ 
 

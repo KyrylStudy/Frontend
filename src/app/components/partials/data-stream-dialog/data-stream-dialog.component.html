@@ -18,6 +18,14 @@
             <h4>Description: {{ dataStreamsData.selectedDataStream.description}}</h4>
             <h4>Connected from: {{ dataStreamsData.selectedDataStream.connectedFrom }}</h4>
             <h4>Connected to: {{ dataStreamsData.selectedDataStream.connectedTo }}</h4>
+            
+           
+                <div class="horisontal-container">
+                    <h4>Two way connection: </h4>
+                    <input type="checkbox" [(ngModel)]="dataStreamsData.selectedDataStream.twoWayConnection" (change)="twoWayConnectionChange($event)">
+                </div>
+          
+           
             <button class="dialog-delete-button" (click)="deleteDataStreamButton()">Delete</button>  
         </div>
     </div>

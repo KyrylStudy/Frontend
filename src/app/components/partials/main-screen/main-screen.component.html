@@ -72,14 +72,14 @@
             </button>
         </div>
        
-        <div class="drag-boundary" [style.zoom]="zoomLevel">
+        <div class="drag-boundary" [style.zoom]="zoomLevel"> 
 
             <div *ngFor="let item of ecus" 
             cdkDrag
             cdkDragBoundary=".drag-boundary"
             [style.transform]="'translateX(' + item.positionX + 'px) translateY(' + item.positionY + 'px)'"
         
-            (cdkDragEnded)="onDragEnded($event, item)"
+            (cdkDragEnded)="setElementPosition($event, item)"
             (cdkDragMoved)="rewriteLine($event,item)"
             class="draggable-item"
             (dblclick)="openHarwareDetailsDialog(item)"

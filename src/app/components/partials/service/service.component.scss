@@ -1,5 +1,17 @@
-$ServiceWidth: 150px;
-$ServiceHeight: 75px;
+$ServiceWidth: 40px;
+$ServiceHeight: 40px;
+
+$sender-color: #0800ff;
+$receiver-color: red;
+
+// Mixin for linear gradient to show direction of data stream
+@mixin linear-gradient($direction, $start-color, $end-color) {
+  background-image: linear-gradient($direction, $start-color, $end-color);
+}
+
+.sender-receiver-gradient{
+  @include linear-gradient(to right, $sender-color, $receiver-color);
+}
 
 .main-screen {
   height: 100%;
@@ -8,7 +20,7 @@ $ServiceHeight: 75px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  //padding: 20px;
   box-sizing: border-box;
   overflow: hidden;
   position: relative; /* To allow absolute positioning of button-set */
@@ -21,6 +33,7 @@ $ServiceHeight: 75px;
  // gap: 5px; /* Space between .ecu elements */
   width: 100%;
   height: 100%;
+  position: absolute;
 }
 
 .ecu {
@@ -31,16 +44,19 @@ $ServiceHeight: 75px;
   flex-direction: column;
   height: 100%;
   position: relative;
-  margin-left: 12px;
+  //margin-left: 12px;
   box-sizing: border-box;
   overflow-y: auto;
 }
 
 
 .ecu1 {
+  display: flex;
+  flex-direction: column;
   border-bottom: 2px solid black; 
   box-sizing: border-box; 
   height: 300px;
+  position: relative;
 }
 
 .ecu-name {
@@ -54,7 +70,7 @@ $ServiceHeight: 75px;
 .drag-boundary {
   height: 100%;
   width: 100%;
-  position: relative;
+  //position: relative;
 }
 
 .cdk-drag-preview {
@@ -78,18 +94,24 @@ $ServiceHeight: 75px;
   background-color: transparent;
   width: $ServiceWidth;
   height: $ServiceHeight; 
-  cursor: pointer;
+  cursor: move;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   overflow: hidden;
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+ // transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
   z-index: 2;
 }
 
 .label-draggable-item {
+  height: 10px;
+  width: 100%;
   font-weight: bold;
-  margin-bottom: 5px;
+  margin-bottom: 2px;
+  font-size: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .content-draggable-item {
@@ -102,18 +124,22 @@ $ServiceHeight: 75px;
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 0.7rem;
 }
 
 .connestion-line-container {
-  width: 90%;
-  height: 100%;
+  width: 99%;
+  height: 97%;
   position: absolute;
   z-index: 1;
 }
 
 .connestion-line {
-  stroke: black;
-  stroke-width: 2;
+  //stroke: gradient('to right', $sender-color, $receiver-color);
+  stroke:#000000;
+ // stroke: url(#sender-reciever);
+ //background: linear-gradient(90deg, red 0%, yellow 50%, green 100%);;
+  stroke-width: 1;
 }
 
 .connestion-line:hover {
@@ -129,16 +155,16 @@ $ServiceHeight: 75px;
   cursor: pointer;
 }
 
-.button-set {
+.zoom-button-set {
   position: absolute;
-  top: 15px; /* Position 10px from the top */
-  left: -5px; /* Position 10px from the left */
+  top: 45px; /* Position 10px from the top */
+  left: 0px; /* Position 10px from the left */
   display: flex;
   flex-direction: column;
-  z-index: 5;
+  z-index: 100;
 }
 
-.zoomButton {
+.zoom-button {
   width: 30px;
   margin: 5px;
   padding: 5px;
@@ -186,7 +212,7 @@ $ServiceHeight: 75px;
 .dropdown-container {
   position: absolute;
   top: 5px;
-  left: 408px;
+  left: 375px;
   border: 2px solid transparent;
   width: 200px; /* Adjust as needed */
   cursor: pointer;
@@ -253,7 +279,7 @@ $ServiceHeight: 75px;
 .select-all-services-button {
   position: absolute;
   top: 5px;
-  left: 620px;
+  left: 585px;
   margin-right: 10px;
   padding: 10px 20px;
   background-color: white;
@@ -278,7 +304,7 @@ $ServiceHeight: 75px;
 .back-button {
   position: absolute;
   top: 5px;
-  left: 30px;
+  left: 5px;
   padding: 10px 8px;
   background-color: white;
   color: #252525;
@@ -302,7 +328,7 @@ $ServiceHeight: 75px;
 .create-service-button {
   position: absolute;
   top: 5px;
-  left: 62px;
+  left: 37px;
   margin-right: 10px;
   padding: 10px 20px;
   background-color: white;
@@ -327,7 +353,7 @@ $ServiceHeight: 75px;
 .create-datastream-button {
   position: absolute;
   top: 5px;
-  left: 220px;
+  left: 190px;
   margin-right: 10px;
   padding: 10px 20px;
   background-color: white;
