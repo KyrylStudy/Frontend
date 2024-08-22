@@ -67,7 +67,9 @@ getAllServicesByEcuId(ecu_id: BigInt):Observable<Service[]>{
 
 loadAllServices(ecuId: BigInt): void{
   this.httpClient.get<Service[]>(`${this.serviceUrl + 'ecu/' + ecuId }`).pipe(
-    tap(services => this.servicesSubject.next(services))
+    tap(services => {
+      this.servicesSubject.next(services);
+    })
   ).subscribe();
 }
 
@@ -81,14 +83,14 @@ createService(newService: newService, ecuId: BigInt): void {
   ).subscribe(); 
 }
 
-updadeService(Service: Service, id: BigInt): void {
+updadeService(Service: Service, id: BigInt/*, ecuId: BigInt*/): void {
   this.httpClient.put<Service>(`${this.serviceUrl + id + '/update'}`, Service).pipe(
     tap(() => {
       /*this.architectureService.getSelectedArchitecture().subscribe(data => {
         this.selectedArchitecture = data;
       })*/
-       // this.loadAllServices(id);
-        this.getAllServices(this.hardwares)
+        //this.loadAllServices(ecuId); 
+        this.getAllServices(this.hardwares);
     })  // Обновить список после изменения
   ).subscribe();
 }

@@ -10,7 +10,7 @@
         {{ selectedOption?.name || 'Select Service' }} 
     </div>
     <div class="dropdown-menu" *ngIf="showDropdown">
-        <div class="dropdown-item" *ngFor="let option of servicesOfSelectedEcu" (click)="selectServiceForShowDataStreams(option)"> 
+        <div class="dropdown-item" *ngFor="let option of servicesOfSelectedEcu" (click)="selectServiceForShowDataStreams(option)">  
             {{ option.name }}
         </div>
     </div>

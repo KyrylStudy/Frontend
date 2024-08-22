@@ -1,30 +1,3 @@
-/*.dialog-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-  }
-  
-  .dialog-content {
-    position: relative;
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 30px;
-    width: 90%;
-    height: 90vh;
-    margin: auto;
-    text-align: left;
-    animation: slideIn 0.3s ease-out;
-    overflow-y: auto; 
-  }*/
-
   .green-button {
     margin-left: 20px;
     padding: 10px 20px;
@@ -210,7 +183,7 @@
     color: white;
   }
   
-  .hardware-description {
+  .description {
     width: 90%;
     height: auto;
     font-size: 1rem;
@@ -264,7 +237,7 @@
     background-color: #ffffff;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 30px;
+    padding: 10px 20px;
     width: 80%;
     height: 80vh;
     margin: auto;

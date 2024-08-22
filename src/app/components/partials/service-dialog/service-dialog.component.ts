@@ -8,6 +8,7 @@ import { DataStream } from '../../../shared/models/data_stream';
 import { ArchitectureService } from '../../../services/architecture.service';
 import { ServiceProperyService } from '../../../services/service-propery.service';
 import { ServiceProperty, NewServiceProperty } from '../../../shared/models/service_property';
+import { Hardware } from '../../../shared/models/hardware';
 
 @Component({
   selector: 'app-service-dialog',
@@ -26,7 +27,7 @@ export class ServiceDialogComponent {
   }
 
   saveName(){
-    this.serviceService.updadeService(this.selectedService, this.selectedService.id);
+    this.serviceService.updadeService(this.selectedService, this.selectedService.id/*, this.selectedEcu.id*/);
     this.nameEditMod = false;
   }
 
@@ -44,7 +45,7 @@ export class ServiceDialogComponent {
   }
 
   saveDescription(){
-    this.serviceService.updadeService(this.selectedService, this.selectedService.id);
+    this.serviceService.updadeService(this.selectedService, this.selectedService.id/*, this.selectedEcu.id*/);
     this.descriptionEditMod = false; 
   }
 
@@ -66,8 +67,8 @@ export class ServiceDialogComponent {
     this.servicePropertyId = null;
   }
 
-  constructor(private serviceProperyService:ServiceProperyService, private architectureService:ArchitectureService, private serviceService:ServiceService/*, private ecuService:EcuService */, private lineCreationService: LineCreationService/*, private renderer: Renderer2,
-    private elementRef: ElementRef*/) { 
+  constructor(private serviceProperyService:ServiceProperyService, private architectureService:ArchitectureService, private serviceService:ServiceService, private hardwareService:HardwareService ,
+     private lineCreationService: LineCreationService/*, private renderer: Renderer2, private elementRef: ElementRef*/) { 
 
   }
 
@@ -113,7 +114,6 @@ subscribeOnDataStreams(){
   );
 }
 
-
 selectedArchitecture: any | null = null;
 subscribeOnSelectedArchitecture(){
   this.architectureService.selectedArchitecture$.subscribe(
@@ -142,6 +142,19 @@ subscribeOnServiceProperties(){
   );
 }
 
+/*selectedEcu: any | null = null;
+subscribeOnSelectedHardware(){
+  this.hardwareService.selectedHardware$.subscribe(
+      {
+        next: data => {
+          this.selectedEcu = data;
+        },
+        error: error => {
+          console.error(error);
+        }
+      }
+  );
+}*/
 
 ngOnInit(): void{
   this.subscribeOnSelectedArchitecture();
@@ -151,6 +164,8 @@ ngOnInit(): void{
   this.subscribeOnServices();
 
   this.subscribeOnDataStreams();
+
+  //this.subscribeOnSelectedHardware();
 
   this.subscribeOnServiceProperties();
   this.serviceProperyService.loadAllServiceProperties(this.selectedService.id);

@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { LineCreationService } from '../../../services/data-stream.service';
 import { ArchitectureService } from '../../../services/architecture.service';
+import { DataStreamProperty, NewDataStreamProperty } from '../../../shared/models/data_stream_property';
+import { DataStreamPropertyService } from '../../../services/data-stream-property.service';
 
 @Component({
   selector: 'app-data-stream-dialog',
@@ -9,26 +11,92 @@ import { ArchitectureService } from '../../../services/architecture.service';
 }) 
 export class DataStreamDialogComponent implements OnInit{
 
-  constructor(private architectureService:ArchitectureService, private lineCreationService: LineCreationService) { 
+  constructor(private architectureService:ArchitectureService, private lineCreationService: LineCreationService,
+     private dataStreamPropertyService:DataStreamPropertyService) { 
   }
 
   twoWayConnectionEditMod: boolean = false;
-  /*editTwoWayConnection(){
-    this.twoWayConnectionEditMod = true;
-    this.dataStreamsData.selectedDataStream.twoWayConnection = !this.dataStreamsData.selectedDataStream.twoWayConnection;
-  }*/
-  twoWayConnectionChange(event:any){
-    this.dataStreamsData.selectedDataStream.twoWayConnection = event.target.checked;
-    console.log(this.dataStreamsData.selectedDataStream.twoWayConnection)
+  
+  save(){
+
   }
 
-  /*canselTwoWayConnection(){
-    this.twoWayConnectionEditMod = false;
+  nameEditMod:boolean = false;
+  editName(){
+    this.nameEditMod = true;
   }
 
-  saveTwoWayConnection(){
-    this.twoWayConnectionEditMod = false;
-  }*/
+  canselEditingName(){
+    this.nameEditMod = false;
+  }
+
+  saveName(){
+    this.lineCreationService.updateDataStream(this.dataStreamsData.selectedDataStream, this.dataStreamsData.selectedDataStream.id);
+    this.nameEditMod = false;
+  }
+
+  descriptionEditMod:boolean = false;
+  editDescription(){ 
+    this.descriptionEditMod = true;
+    setTimeout(()=>{
+      this.autoResizeTextarea();
+    },50)
+
+  }
+
+  autoResizeTextarea() {
+    const textarea = document.getElementById('textarea-description');
+    if(textarea){
+      textarea.style.height = textarea.scrollHeight + 'px';
+    }
+  }
+
+  saveDescription(){
+    this.lineCreationService.updateDataStream(this.dataStreamsData.selectedDataStream, this.dataStreamsData.selectedDataStream.id);
+    this.descriptionEditMod = false;
+  }
+
+  canselEditingDescription(){
+    this.descriptionEditMod = false;
+  }
+
+  twoWayConnectionChange(){
+   this.dataStreamsData.selectedDataStream.twoWayConnection = !this.dataStreamsData.selectedDataStream.twoWayConnection;
+   this.lineCreationService.updateDataStream(this.dataStreamsData.selectedDataStream, this.dataStreamsData.selectedDataStream.id);
+  }
+
+  dataStreamPropertyId: any = null; 
+  editProperty(dataStreamProperty: DataStreamProperty){
+    this.dataStreamPropertyId = dataStreamProperty.id;
+  }
+
+  canselEditingProperty(){
+    this.dataStreamPropertyId = null;
+  }
+
+  deleteProperty(dataStreamProperty: DataStreamProperty){
+    this.dataStreamPropertyService.deleteDataStreamProperty(dataStreamProperty.id, this.dataStreamsData.selectedDataStream.id)
+  }
+
+  saveProperty(dataStreamProperty: DataStreamProperty){
+    this.dataStreamPropertyService.updateDataStreamProperty(dataStreamProperty, dataStreamProperty.id, this.dataStreamsData.selectedDataStream.id)
+    this.dataStreamPropertyId = null;
+  }
+
+  propertyKey: string = '';
+  propertyValue: string = '';
+
+  addServiceProperty(): void {
+    if (this.dataStreamsData.selectedDataStream && this.propertyKey && this.propertyValue) {
+
+      const newDataStreamProperty: NewDataStreamProperty = {name: this.propertyKey, value: this.propertyValue};
+
+      this.dataStreamPropertyService.createDataStreamProperty(newDataStreamProperty, this.dataStreamsData.selectedDataStream.id);
+
+      this.propertyKey = '';
+      this.propertyValue = '';
+    }
+  }
 
   selectedArchitecture: any | null = null;
   subscribeOnSelectedArchitecture(){
@@ -38,14 +106,32 @@ export class DataStreamDialogComponent implements OnInit{
           this.selectedArchitecture = data;
         },
         error: error => {
-          console.error(error);
+          console.error(error); 
         }
       }
     );
   }
 
+  dataStreamProperties: DataStreamProperty[] = [];
+  subscribeOnDataStreamProperties(){
+    this.dataStreamPropertyService.dataStreamProreries$.subscribe(
+        {
+          next: data => {
+            this.dataStreamProperties = data;
+          },
+          error: error => {
+            console.error(error);
+          }
+        }
+    );
+  }
+
   ngOnInit(): void {
     this.subscribeOnSelectedArchitecture()
+
+    this.dataStreamPropertyService.loadAllDataStreamProperties(this.dataStreamsData.selectedDataStream.id);
+
+    this.subscribeOnDataStreamProperties();
   }
 
   close(){

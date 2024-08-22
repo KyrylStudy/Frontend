@@ -16,7 +16,9 @@
   background-color: #ffffff;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-  padding: 30px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 20px;
   width: 80%;
   height: 80vh;
   margin: auto;
@@ -36,34 +38,37 @@
     }
   }
   
-  .dialog-content h3 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #333;
-  }
-  
-  .dialog-content h4 {
-    font-size: 18px;
+  .data-stream-details-header {
+    font-size: 2rem;
     margin-bottom: 10px;
     color: #555;
   }
   
-  .dialog-content ul {
+  .data-stream-properties-header {
+    font-size: 1.5rem;
+    margin-top: 10px;
+    color: #555;
+  }
+  
+  .data-stream-properties-list {
     list-style: none;
     padding: 0;
     margin-top: 10px;
   }
-  
-  .dialog-content li {
-    margin-bottom: 8px;
-    font-size: 16px;
+
+  .data-stream-property {
+    font-size: 1rem;
     color: #666;
+    display: grid;
+    grid-template-columns: 20% 70% 10%; /* 80/20 split */
+    gap: 5px;
+    margin-bottom: 10px;
   }
 
   .dialog-close-button {
     position: absolute;
-    top: 5px;
-    right: 10px;
+    top: 20px;
+    right: 20px;
     background-color: white;
     border: 2px solid #801D1A;
     font-size: 1rem;
@@ -89,23 +94,7 @@
 
 
 
-  .dialog-delete-button {
-    padding: 12px 24px;
-    border-radius: 6px;
-    cursor: pointer;
-    //transition: background-color 0.3s ease;
-    background-color: white;
-    border: 2px solid #801D1A;
-  }
 
-  .dialog-delete-button:hover{
-    background-color: #e3a3a9;
-  }
-
-  .dialog-delete-button:active {
-    background-color: #801D1A;
-    color: white;
-  }
   
   .manipulation-button {
     display: flex;
@@ -168,9 +157,129 @@
     display: flex;
     flex-direction: row;
   } 
-  
 
+  .dialog-save-button {
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+    padding: 10px 20px;
+    background-color: white;
+    color: #252525;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 2px solid #009BA0;
+    cursor: pointer;
+    z-index: 10;
+  }
   
+  .dialog-save-button:hover {
+    background-color: #cef8fa; /* Darker shade for hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for a "lift" effect */
+  }
+  
+  .dialog-save-button:active {
+    background-color: #009BA0;
+    color: white;
+  }
+  
+  .dialog-save-button:disabled{
+    border: 2px solid #801D1A;
+  }
+
+  .dialog-delete-button {
+    position: absolute;
+    bottom: 10px;
+    left: 20px;
+    padding: 10px 20px;
+    background-color: white;
+    color: #252525;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 2px solid #801D1A;
+    cursor: pointer;
+    z-index: 10;
+  }
+
+  .dialog-delete-button:hover{
+    background-color: #e3a3a9;
+  }
+
+  .dialog-delete-button:active {
+    background-color: #801D1A;
+    color: white;
+  }
+
+  .checkbox-wrapper{
+    margin-left: 5px;
+    padding-top: 7px;
+  }
+
+  .textarea-description:focus {
+    outline: none;
+    border-color: #009BA0;
+  }
+  
+  .textarea-description::placeholder {
+    color: transparent;
+  }
+  
+  .textarea-description {
+    margin-top: 10px;
+    width: 89%;
+    height: auto;
+    padding: 10px;
+    margin-right: 5px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+  }
+  
+  .description {
+    margin-top: 10px;
+    width: 90%;
+    height: auto;
+    font-size: 1rem;
+    margin-right: 10px;
+    white-space: pre-line; /* Allows text to wrap */
+    word-break: break-word; 
+  }
+
+  .input-sidebar {
+    display: grid;
+    grid-template-columns: 20% 70% 10%; /* 80/20 split */
+    gap: 5px;
+    margin-bottom: 10px;
+  }
+
+  .property-name,
+  .property-value{
+    white-space: normal; /* Allows text to wrap */
+    word-break: break-word; 
+  }
+
+  .add-property-button {
+    width: 100%;
+    margin-left: 5px;
+    padding: 10px 10px;
+    background-color: white;
+    color: #252525;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 2px solid #009BA0;
+    cursor: pointer;
+    z-index: 10;
+  }
+  
+  .add-property-button:hover {
+    background-color: #cef8fa; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+  }
+  
+  .add-property-button:active {
+    background-color: #009BA0;
+    color: white;
+  }
   
 
   
